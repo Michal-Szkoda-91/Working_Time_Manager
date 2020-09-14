@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:working_time_management/Calendar/calendar.dart';
+import 'package:working_time_management/Workers/workers.dart';
 
 void main() {
-  runApp(MyApp());
+  initializeDateFormatting().then((_) => runApp(MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -9,7 +12,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.blue[900],
+        accentColor: Colors.blue,
+        cardColor: Colors.orange,
+        selectedRowColor: Colors.blue[200],
       ),
       home: MyHomePage(title: 'Menadżer czasu pracy'),
     );
@@ -40,19 +46,20 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(25),
         child: AppBar(
-          backgroundColor: Colors.blue[900],
+          backgroundColor: Theme.of(context).primaryColor,
           title: Text(widget.title),
         ),
       ),
       bottomNavigationBar: new BottomNavigationBar(
-        backgroundColor: Colors.blue[900],
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Theme.of(context).primaryColor,
         currentIndex: _page,
         onTap: (index) {
           this._controller.animateToPage(index,
               duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOut);
+              curve: Curves.bounceIn);
         },
-        items: <BottomNavigationBarItem>[
+        items: [
           new BottomNavigationBarItem(
               icon: new Icon(Icons.calendar_today),
               title: new Text("Kalendarz")),
@@ -60,9 +67,11 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: new Icon(Icons.work), title: new Text("Pracodawcy")),
           new BottomNavigationBarItem(
               icon: new Icon(Icons.people), title: new Text("Pracownicy")),
+          new BottomNavigationBarItem(
+              icon: new Icon(Icons.search), title: new Text("Wyszukaj")),
         ],
-        unselectedItemColor: Colors.blue,
-        selectedItemColor: Colors.orange,
+        unselectedItemColor: Theme.of(context).accentColor,
+        selectedItemColor: Theme.of(context).cardColor,
       ),
       body: new PageView(
         controller: _controller,
@@ -73,13 +82,16 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         children: <Widget>[
           new Center(
-            child: Text("Kalendarz"),
+            child: Calendar(),
           ),
           new Center(
             child: Text("Pracodawcy"),
           ),
           new Center(
-            child: Text("Pracownicy"),
+            child: Workers(),
+          ),
+          new Center(
+            child: Text("Wyszukiwarka"),
           ),
         ],
       ),
