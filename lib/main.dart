@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:working_time_management/Calendar/calendar.dart';
+import 'package:working_time_management/Employers/employers.dart';
 import 'package:working_time_management/Workers/workers.dart';
 
 void main() {
@@ -56,8 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
         currentIndex: _page,
         onTap: (index) {
           this._controller.animateToPage(index,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.bounceIn);
+              duration: const Duration(milliseconds: 800), curve: Curves.ease);
         },
         items: [
           new BottomNavigationBarItem(
@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Calendar(),
           ),
           new Center(
-            child: Text("Pracodawcy"),
+            child: Employers(),
           ),
           new Center(
             child: Workers(),

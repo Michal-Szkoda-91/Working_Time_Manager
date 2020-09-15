@@ -1,36 +1,36 @@
 //druga strona do dodawania pracownika
 import 'package:flutter/material.dart';
-import 'package:working_time_management/helpers/workersHelper.dart';
-import 'package:working_time_management/models/workersModel.dart';
+import 'package:working_time_management/helpers/employersHelper.dart';
+import 'package:working_time_management/models/employersModel.dart';
 
 // ignore: must_be_immutable
-class AddWorkers extends StatefulWidget {
+class AddEmployers extends StatefulWidget {
   final String title;
-  final WorkersModel workersModel;
+  final EmployersModel employersModel;
   int position;
 
-  AddWorkers(this.workersModel, this.title, this.position);
+  AddEmployers(this.employersModel, this.title, this.position);
 
   @override
-  _AddWorkersState createState() {
-    return _AddWorkersState(this.title, this.workersModel);
+  _AddEmployersState createState() {
+    return _AddEmployersState(this.title, this.employersModel);
   }
 }
 
-class _AddWorkersState extends State<AddWorkers> {
-  WorkersModel workersModel;
+class _AddEmployersState extends State<AddEmployers> {
+  EmployersModel employersModel;
   TextEditingController namecontroller = new TextEditingController();
   TextEditingController shortNameController = new TextEditingController();
   String title;
-  WorkersHelper workersHelper = WorkersHelper();
+  EmployersHelper employersHelper = EmployersHelper();
   RegExp re = RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*^%0-9-]');
 
-  _AddWorkersState(this.title, this.workersModel);
+  _AddEmployersState(this.title, this.employersModel);
 
   @override
   Widget build(BuildContext context) {
-    namecontroller.text = workersModel.name;
-    shortNameController.text = workersModel.shortName;
+    namecontroller.text = employersModel.name;
+    shortNameController.text = employersModel.shortName;
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -45,7 +45,7 @@ class _AddWorkersState extends State<AddWorkers> {
                 updateName();
               },
               decoration: InputDecoration(
-                hintText: 'Imie pracownika',
+                hintText: 'Imie pracodawcy',
               ),
               controller: namecontroller,
             ),
@@ -115,27 +115,27 @@ class _AddWorkersState extends State<AddWorkers> {
 
   //funkcje pomocnicze do ustawienia imienia i ksywy
   void updateName() {
-    workersModel.name = namecontroller.text;
+    employersModel.name = namecontroller.text;
   }
 
   void updateShortname() {
-    workersModel.shortName = shortNameController.text;
+    employersModel.shortName = shortNameController.text;
   }
 
 //funkcja zatwierdzajaca dane
   void _saveData(String nameGets) async {
     Navigator.pop(context, true);
-    int checkResult = await workersHelper.getWorkerName(nameGets);
+    int checkResult = await employersHelper.getEmployerName(nameGets);
     if (checkResult == 0 && nameGets.substring(nameGets.length - 1) != " ") {
       int result;
-      result = await workersHelper.insertWorker(workersModel);
+      result = await employersHelper.insertEmployer(employersModel);
       if (result != 0) {
-        _showDialog('Status', 'Dodano pracownika');
+        _showDialog('Status', 'Dodano pracodawcę');
       } else {
-        _showDialog('Status', 'Nie udało się dodać pracownikia');
+        _showDialog('Status', 'Nie udało się dodać pracodawcy');
       }
     } else {
-      _showDialog('Status', 'Ten pracownik już istnieje');
+      _showDialog('Status', 'Ten pracodawca już istnieje');
     }
   }
 
