@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:working_time_management/Workers/workersDetail.dart';
-import 'package:working_time_management/helpers/workersHelper.dart';
-import 'package:working_time_management/models/workersModel.dart';
+import 'package:working_time_management/Employers/addEmployers.dart';
+import 'package:working_time_management/Employers/emplyersDetail.dart';
+import 'package:working_time_management/helpers/employersHelper.dart';
+import 'package:working_time_management/models/employersModel.dart';
 
-import 'addWorkers.dart';
-
-class Workers extends StatefulWidget {
+class Employers extends StatefulWidget {
   @override
-  _WorkersState createState() => _WorkersState();
+  _EmployersState createState() => _EmployersState();
 }
 
-class _WorkersState extends State<Workers> {
-  WorkersHelper databasehelper = WorkersHelper();
-  List<WorkersModel> workersModelList;
+class _EmployersState extends State<Employers> {
+  EmployersHelper databasehelper = EmployersHelper();
+  List<EmployersModel> employersModelList;
   int count = 0;
 
   @override
   Widget build(BuildContext context) {
     //sprawdzanie czy lista nie jest pusta
-    if (workersModelList == null) {
-      workersModelList = List<WorkersModel>();
+    if (employersModelList == null) {
+      employersModelList = List<EmployersModel>();
       updateListView();
     }
     updateListView();
@@ -31,7 +30,7 @@ class _WorkersState extends State<Workers> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           navigateToDetail(
-              WorkersModel('', '', 0.0, '', ''), "Dodaj Pracownika", 0);
+              EmployersModel('', '', 0.0, '', ''), "Dodaj Pracodawce", 0);
         },
         child: Icon(Icons.add),
         backgroundColor: Theme.of(context).primaryColor,
@@ -54,11 +53,11 @@ class _WorkersState extends State<Workers> {
               ),
               //wyswietlenie imienia i tytulu
               title: Text(
-                this.workersModelList[position].name,
+                this.employersModelList[position].name,
                 style: new TextStyle(fontSize: 22),
               ),
               subtitle: Text(
-                this.workersModelList[position].shortName,
+                this.employersModelList[position].shortName,
                 style: new TextStyle(fontSize: 14),
               ),
               //ikona usowania oraz dodana do niej metoda
@@ -68,12 +67,12 @@ class _WorkersState extends State<Workers> {
                     color: Theme.of(context).primaryColor,
                   ),
                   onTap: () {
-                    deleteWorkers(position);
+                    deleteEmployers(position);
                   }),
               //po nacisnieciu elementu w liscie
               onTap: () {
-                navigateToWorkerDetail(this.workersModelList[position],
-                    'Dane Pracownika', position);
+                navigateToWorkerDetail(this.employersModelList[position],
+                    'Dane Pracodawcy', position);
               },
             ),
           );
@@ -84,12 +83,12 @@ class _WorkersState extends State<Workers> {
   void updateListView() {
     final Future<Database> dbFuture = databasehelper.initialDatabase();
     dbFuture.then((databse) {
-      Future<List<WorkersModel>> workersModelListFuture =
-          databasehelper.getWorkersList();
-      workersModelListFuture.then((workersModelList) {
+      Future<List<EmployersModel>> employersModelListFuture =
+          databasehelper.getEmployersList();
+      employersModelListFuture.then((employersModelList) {
         setState(() {
-          this.workersModelList = workersModelList;
-          this.count = workersModelList.length;
+          this.employersModelList = employersModelList;
+          this.count = employersModelList.length;
         });
       });
     });
@@ -97,10 +96,10 @@ class _WorkersState extends State<Workers> {
 
   //nawigowanie do strony
   void navigateToDetail(
-      WorkersModel workersObject, String title, int position) async {
+      EmployersModel employersObject, String title, int position) async {
     bool result =
         await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return AddWorkers(workersObject, title, position);
+      return AddEmployers(employersObject, title, position);
     }));
     if (result == true) {
       updateListView();
@@ -108,7 +107,7 @@ class _WorkersState extends State<Workers> {
   }
 
   //usuwanie Pracownicy
-  deleteWorkers(int position) {
+  deleteEmployers(int position) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -118,7 +117,7 @@ class _WorkersState extends State<Workers> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                "Napewno usunąć pracownika?",
+                "Napewno usunąć pracodawcę?",
                 style: TextStyle(fontSize: 20),
               ),
               Row(
@@ -127,7 +126,7 @@ class _WorkersState extends State<Workers> {
                   new RaisedButton(
                     color: Theme.of(context).accentColor,
                     onPressed: () {
-                      _delete(context, workersModelList[position]);
+                      _delete(context, employersModelList[position]);
                       Navigator.pop(context);
                       return;
                     },
@@ -162,17 +161,17 @@ class _WorkersState extends State<Workers> {
     );
   }
 
-  //nawigowanie do strony z wyswietleniem informacji o pracowniku
+  //nawigowanie do strony z wyswietleniem informacji o pracodawcy
   void navigateToWorkerDetail(
-      WorkersModel workersModel, String title, int position) async {
+      EmployersModel employersModel, String title, int position) async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return WorkersDetail(workersModel, title, position);
+      return EmployersDetail(employersModel, title, position);
     }));
   }
 
   //usuwanie pracownika
-  void _delete(BuildContext context, WorkersModel workersModel) async {
-    int result = await databasehelper.deleteWorker(workersModel.id);
+  void _delete(BuildContext context, EmployersModel employersModel) async {
+    int result = await databasehelper.deleteEmployer(employersModel.id);
     if (result != 0) {
       updateListView();
     }
