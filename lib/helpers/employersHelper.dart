@@ -101,10 +101,9 @@ class EmployersHelper {
   }
 
   //POBIERANIE pojedynczej kolumny do listy
-  Future<List<EmployersModel>> getShortNameList() async {
+  Future<List<EmployersModel>> getNameList() async {
     Database db = await this.database;
-    var response =
-        await db.rawQuery('SELECT $colshortName from $employersTable');
+    var response = await db.rawQuery('SELECT $colname from $employersTable');
     List<EmployersModel> list =
         response.map((c) => EmployersModel.fromMapObject(c)).toList();
     return list;
@@ -146,5 +145,12 @@ class EmployersHelper {
     SET notes = ?
     WHERE shortName = ?
     ''', [textToWrite, shortName]);
+  }
+
+  //pobieranie listy imion
+  Future<List> getEmployersNameList() async {
+    Database db = await this.database;
+    var queryResult = await db.rawQuery('SELECT $colname FROM $employersTable');
+    return queryResult;
   }
 }

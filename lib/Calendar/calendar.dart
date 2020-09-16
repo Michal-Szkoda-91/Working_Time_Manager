@@ -2,7 +2,13 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:working_time_management/Calendar/widgets.dart';
+import 'package:working_time_management/helpers/employersHelper.dart';
+import 'package:working_time_management/models/employersModel.dart';
+
+import '../globals.dart';
 
 class Calendar extends StatefulWidget {
   @override
@@ -13,14 +19,20 @@ class _CalendarState extends State<Calendar> {
   CalendarController _controller;
   Map<DateTime, List<dynamic>> _events;
   List<dynamic> _selectedEvents;
-  TextEditingController _eventController;
   SharedPreferences prefs;
+  String dropdownValue;
+  String choosenEmployerName;
+
+  //dane pracodawców
+  EmployersHelper employersHelper = EmployersHelper();
+  List<EmployersModel> employersModelList;
+  int employersLenght = 0;
+  List<String> nameList;
 
   @override
   void initState() {
     super.initState();
     _controller = CalendarController();
-    _eventController = TextEditingController();
     _events = {};
     _selectedEvents = [];
     initPrefs();
@@ -53,8 +65,39 @@ class _CalendarState extends State<Calendar> {
     return newMap;
   }
 
+  //PRACODAWCY
+
+  //pobieranie listy modeli
+  void updateListViewEmployers() {
+    final Future<Database> dbFuture = employersHelper.initialDatabase();
+    dbFuture.then((databse) {
+      Future<List<EmployersModel>> employersModelListFuture =
+          employersHelper.getEmployersList();
+      employersModelListFuture.then((employersModelList) {
+        setState(() {
+          this.employersModelList = employersModelList;
+          this.employersLenght = employersModelList.length;
+        });
+      });
+    });
+  }
+
+  //metoda tworzaca liste imion Pracodawcow z bazy danych
+  createNameList() {
+    nameList = [];
+    for (int i = 0; i < employersLenght; i++) {
+      nameList.add(this.employersModelList[i].name);
+    }
+  }
+
+  //pobranie wybranego numeru wg imion
+  int choosenNameNumber(String name) {
+    return nameList.indexOf(name);
+  }
+
   @override
   Widget build(BuildContext context) {
+    updateListViewEmployers();
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
@@ -161,6 +204,7 @@ class _CalendarState extends State<Calendar> {
             ),
             calendarController: _controller,
           ),
+          //event wyswietlany pod kalendarzem
           ..._selectedEvents.map((event) => GestureDetector(
                 onLongPress: () {},
                 child: ListTile(
@@ -172,13 +216,16 @@ class _CalendarState extends State<Calendar> {
                   ),
                 ),
               )),
+          //przycisk odpowiedzialny za dodawanie nowego eventu
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               RaisedButton(
                 color: Theme.of(context).accentColor,
                 onPressed: () {
-                  _showDialog();
+                  dropdownValue = null;
+                  _showDialogAddEvent();
+                  createNameList();
                 },
                 child: Text(
                   "Dodaj",
@@ -195,44 +242,115 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-  void _showDialog() async {
-    await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              content: TextField(
-                controller: _eventController,
+//okienko wyświetlające się przy dodawaniu nowego eventu
+  void _showDialogAddEvent() async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: Theme.of(context).selectedRowColor,
+            content: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    //Tutaj wybieramy z listy u kogo pracujemy
+                    DropdownButton<String>(
+                      hint: Text("Wybierz pracodawcę"),
+                      value: dropdownValue,
+                      isDense: true,
+                      onChanged: (newValue) {
+                        setState(() {
+                          dropdownValue = newValue;
+                          choosenEmployerName =
+                              nameList[choosenNameNumber(dropdownValue)];
+                        });
+                      },
+                      items: nameList.map((var value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                    //napisy rozpoczecia i zakonczenia timeu pracy oraz TimePickery do wyboru godzin
+                    Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Text(
+                                "Godz. rozp.",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Text(
+                                "Godz. zak.",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Container(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                  left: BorderSide(
+                                      width: 1.0, color: Colors.black),
+                                )),
+                                child: TimeWorkStart()),
+                            Container(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                  left: BorderSide(
+                                      width: 1.0, color: Colors.black),
+                                )),
+                                child: TimeWorkStop()),
+                          ],
+                        ),
+                      ],
+                    ),
+                    //picker do wyboru timeu przerwy
+                    Container(child: BreakTime()),
+                    Text(timeStart.toString()),
+                    Text(timeStop.toString()),
+                    Text(timeBreak.toString()),
+                    Text(workTimeCounter(workStart, workStop,
+                        timeBreak)), //tak pobieram czas pracy do bazy danych
+                  ],
+                ),
               ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Close"),
-                  //zapisywanie eventu do shared Pref
-                  onPressed: () {
-                    if (_eventController.text.isEmpty) return;
-                    if (_events[_controller.selectedDay] != null) {
-                      _events[_controller.selectedDay]
-                          .add(_eventController.text);
-                    } else {
-                      _events[_controller.selectedDay] = [
-                        _eventController.text
-                      ];
-                    }
-                    prefs.setString("events", json.encode(encodeMap(_events)));
-                    _eventController.clear();
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            ));
-    setState(() {
-      _selectedEvents = _events[_controller.selectedDay];
-    });
+            ),
+          );
+        });
+      },
+    );
   }
 
-  void _showMessage(String title, String message) {
-    AlertDialog alertDialog = AlertDialog(
-      title: Text(title),
-      content: Text(message),
-    );
-    showDialog(context: context, builder: (_) => alertDialog);
+//funkcja obliczajaca time pracy
+  String workTimeCounter(var startTime, var stopTime, var breakTime) {
+    if (startTime == null) {
+      return "0";
+    }
+    var timeWork = stopTime.difference(startTime);
+    var p = timeWork.toString();
+    var hours = double.parse(p.split(":")[0]);
+    var minutes = double.parse(p.split(":")[1]);
+    double time = (hours + (minutes / 60)) - (breakTime / 60);
+    if (startTime.hour == stopTime.hour &&
+        startTime.minute > stopTime.minute &&
+        time > 0) {
+      time *= -1;
+    }
+    if (time <= 0) {
+      return "błąd";
+    } else {
+      timeWorkSum = time;
+      return time.toStringAsFixed(2);
+    }
   }
 }
