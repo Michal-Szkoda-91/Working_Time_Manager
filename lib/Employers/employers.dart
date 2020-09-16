@@ -21,7 +21,6 @@ class _EmployersState extends State<Employers> {
     //sprawdzanie czy lista nie jest pusta
     if (employersModelList == null) {
       employersModelList = List<EmployersModel>();
-      updateListView();
     }
     updateListView();
 
@@ -79,7 +78,7 @@ class _EmployersState extends State<Employers> {
         });
   }
 
-  //dodawanie rekordow do bazy
+  //pobieranie listy modeli
   void updateListView() {
     final Future<Database> dbFuture = databasehelper.initialDatabase();
     dbFuture.then((databse) {
