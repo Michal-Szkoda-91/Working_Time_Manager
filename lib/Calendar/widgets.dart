@@ -23,13 +23,13 @@ class _TimeWorkStart extends State<TimeWorkStart> {
         is24HourMode: true,
         normalTextStyle: TextStyle(
           fontSize: 20,
-          color: Colors.black,
+          color: Theme.of(context).accentColor,
           fontWeight: FontWeight.w500,
         ),
         highlightedTextStyle: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w500,
-            color: Theme.of(context).cardColor),
+            color: Theme.of(context).primaryColor),
         spacing: 1,
         itemHeight: 25,
         isForce2Digits: true,
@@ -63,13 +63,13 @@ class _TimeWorkStop extends State<TimeWorkStop> {
         is24HourMode: true,
         normalTextStyle: TextStyle(
           fontSize: 20,
-          color: Colors.black,
+          color: Theme.of(context).accentColor,
           fontWeight: FontWeight.w500,
         ),
         highlightedTextStyle: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w500,
-            color: Theme.of(context).cardColor),
+            color: Theme.of(context).primaryColor),
         spacing: 1,
         itemHeight: 25,
         isForce2Digits: true,
@@ -146,4 +146,53 @@ String getHourString(var data) {
   }
   String napis = houors + ":" + minutes;
   return napis;
+}
+
+//widget do wyświetlania wybranych pracowników danego eventu
+class MultiSelectChip extends StatefulWidget {
+  final List<String> reportList;
+  final Function(List<String>) onSelectionChanged;
+
+  MultiSelectChip(this.reportList, {this.onSelectionChanged});
+
+  @override
+  _MultiSelectChipState createState() => _MultiSelectChipState();
+}
+
+class _MultiSelectChipState extends State<MultiSelectChip> {
+  List<String> selectedChoices = List();
+
+  _buildChoiceList() {
+    List<Widget> choices = List();
+
+    widget.reportList.forEach((item) {
+      choices.add(Container(
+        padding: const EdgeInsets.all(2.0),
+        child: ChoiceChip(
+          label: Text(
+            item,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          selected: selectedChoices.contains(item),
+          onSelected: (selected) {
+            setState(() {
+              selectedChoices.contains(item)
+                  ? selectedChoices.remove(item)
+                  : selectedChoices.add(item);
+              widget.onSelectionChanged(selectedChoices);
+            });
+          },
+        ),
+      ));
+    });
+
+    return choices;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      children: _buildChoiceList(),
+    );
+  }
 }
