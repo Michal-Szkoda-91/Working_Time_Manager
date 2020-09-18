@@ -6,7 +6,9 @@ import 'package:sqflite/sqflite.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:working_time_management/Calendar/widgets.dart';
 import 'package:working_time_management/helpers/employersHelper.dart';
+import 'package:working_time_management/helpers/workersHelper.dart';
 import 'package:working_time_management/models/employersModel.dart';
+import 'package:working_time_management/models/workersModel.dart';
 
 import '../globals.dart';
 
@@ -20,14 +22,71 @@ class _CalendarState extends State<Calendar> {
   Map<DateTime, List<dynamic>> _events;
   List<dynamic> _selectedEvents;
   SharedPreferences prefs;
-  String dropdownValue;
+  String employerNameValue;
   String choosenEmployerName;
 
+  //PRACODAWCY i PRACOWNICY
   //dane pracodawców
   EmployersHelper employersHelper = EmployersHelper();
   List<EmployersModel> employersModelList;
   int employersLenght = 0;
-  List<String> nameList;
+
+  //dane pracowników
+  WorkersHelper workersHelper = WorkersHelper();
+  List<WorkersModel> workersModelList;
+  int workersLenght = 0;
+
+  //pobieranie listy modeli pracodawców
+  void updateListViewEmployers() {
+    final Future<Database> dbFuture = employersHelper.initialDatabase();
+    dbFuture.then((databse) {
+      Future<List<EmployersModel>> employersModelListFuture =
+          employersHelper.getEmployersList();
+      employersModelListFuture.then((employersModelList) {
+        setState(() {
+          this.employersModelList = employersModelList;
+          this.employersLenght = employersModelList.length;
+        });
+      });
+    });
+  }
+
+  //pobieranie listy modeli pracodawców
+  void updateListViewWorkers() {
+    final Future<Database> dbFuture = workersHelper.initialDatabase();
+    dbFuture.then((databse) {
+      Future<List<WorkersModel>> workersModelListFuture =
+          workersHelper.getWorkersList();
+      workersModelListFuture.then((workersModelList) {
+        setState(() {
+          this.workersModelList = workersModelList;
+          this.workersLenght = workersModelList.length;
+        });
+      });
+    });
+  }
+
+  //metoda tworzaca liste imion Pracodawcow z bazy danych
+  createNameList() {
+    employersNameList = [];
+    workersShortNameList = [];
+    for (int i = 0; i < employersLenght; i++) {
+      employersNameList.add(this.employersModelList[i].name);
+    }
+    for (int i = 0; i < workersLenght; i++) {
+      workersShortNameList.add(this.workersModelList[i].shortName);
+    }
+  }
+
+  //pobranie wybranego numeru wg imion
+  int choosenNameNumberEmployer(String name) {
+    return employersNameList.indexOf(name);
+  }
+
+  //pobranie wybranego numeru wg imion
+  int choosenNameNumberWorker(String name) {
+    return workersShortNameList.indexOf(name);
+  }
 
   @override
   void initState() {
@@ -65,39 +124,10 @@ class _CalendarState extends State<Calendar> {
     return newMap;
   }
 
-  //PRACODAWCY
-
-  //pobieranie listy modeli
-  void updateListViewEmployers() {
-    final Future<Database> dbFuture = employersHelper.initialDatabase();
-    dbFuture.then((databse) {
-      Future<List<EmployersModel>> employersModelListFuture =
-          employersHelper.getEmployersList();
-      employersModelListFuture.then((employersModelList) {
-        setState(() {
-          this.employersModelList = employersModelList;
-          this.employersLenght = employersModelList.length;
-        });
-      });
-    });
-  }
-
-  //metoda tworzaca liste imion Pracodawcow z bazy danych
-  createNameList() {
-    nameList = [];
-    for (int i = 0; i < employersLenght; i++) {
-      nameList.add(this.employersModelList[i].name);
-    }
-  }
-
-  //pobranie wybranego numeru wg imion
-  int choosenNameNumber(String name) {
-    return nameList.indexOf(name);
-  }
-
   @override
   Widget build(BuildContext context) {
     updateListViewEmployers();
+    updateListViewWorkers();
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
@@ -223,7 +253,8 @@ class _CalendarState extends State<Calendar> {
               RaisedButton(
                 color: Theme.of(context).accentColor,
                 onPressed: () {
-                  dropdownValue = null;
+                  employerNameValue = null;
+                  choosenWorkers = [];
                   _showDialogAddEvent();
                   createNameList();
                 },
@@ -258,16 +289,16 @@ class _CalendarState extends State<Calendar> {
                     //Tutaj wybieramy z listy u kogo pracujemy
                     DropdownButton<String>(
                       hint: Text("Wybierz pracodawcę"),
-                      value: dropdownValue,
+                      value: employerNameValue,
                       isDense: true,
                       onChanged: (newValue) {
                         setState(() {
-                          dropdownValue = newValue;
-                          choosenEmployerName =
-                              nameList[choosenNameNumber(dropdownValue)];
+                          employerNameValue = newValue;
+                          choosenEmployerName = employersNameList[
+                              choosenNameNumberEmployer(employerNameValue)];
                         });
                       },
-                      items: nameList.map((var value) {
+                      items: employersNameList.map((var value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -314,13 +345,109 @@ class _CalendarState extends State<Calendar> {
                         ),
                       ],
                     ),
-                    //picker do wyboru timeu przerwy
+                    //picker do wyboru czusu przerwy
                     Container(child: BreakTime()),
-                    Text(timeStart.toString()),
-                    Text(timeStop.toString()),
-                    Text(timeBreak.toString()),
-                    Text(workTimeCounter(workStart, workStop,
-                        timeBreak)), //tak pobieram czas pracy do bazy danych
+                    //widget dodawania pracowników
+                    OutlineButton(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).accentColor,
+                        width: 3,
+                      ),
+                      shape: StadiumBorder(),
+                      child: Text(
+                        "Dodaj Pracownika",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          //wyswietlenie okienka z wyborem pracownikow
+                          showAddWorker();
+                        });
+                      },
+                    ),
+
+                    //Testowe texty do sprawdzania poprawnosci danych
+                    //tytul będzie zapisywany do sharedPreferenced jako nawigacja do sczegółów eventu
+                    Text(titleGenerator(
+                        dateGenerator(_controller.selectedDay),
+                        employerNameValue.toString(),
+                        choosenWorkers,
+                        timeStart.toString(),
+                        timeStop.toString())),
+                    Text("\nPracodawca: " + employerNameValue.toString()),
+                    Text("Data zdarzenia: " +
+                        dateGenerator(_controller.selectedDay)),
+                    Text("Czas rozpoczęcia: " + timeStart.toString()),
+                    Text("Czas zakończenia: " + timeStop.toString()),
+                    Text("Czas przerwy: " + timeBreak.toString()),
+                    Text("Przepracowano godzin: " +
+                        workTimeCounter(workStart, workStop, timeBreak)),
+                    Text("Pracowali: " + choosenWorkers.join("; ")),
+                    //Przyciski anulowania i akceptacji zapisu eventu
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        OutlineButton(
+                          borderSide: BorderSide(color: Colors.blue, width: 3),
+                          shape: StadiumBorder(),
+                          child: Text(
+                            "Zapisz",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                          onPressed: () {
+                            //zapisanie danych do shared Preference i do bazy danych
+                            //Sprawdenie poprawności danych
+                            if (employerNameValue != null &&
+                                !workTimeCounter(workStart, workStop, timeBreak)
+                                    .contains("błąd") &&
+                                choosenWorkers.length != 0) {
+                              if (_events[_controller.selectedDay] != null) {
+                                _events[_controller.selectedDay].add(
+                                    titleGenerator(
+                                        dateGenerator(_controller.selectedDay),
+                                        employerNameValue.toString(),
+                                        choosenWorkers,
+                                        timeStart.toString(),
+                                        timeStop.toString()));
+                              } else {
+                                _events[_controller.selectedDay] = [
+                                  titleGenerator(
+                                      dateGenerator(_controller.selectedDay),
+                                      employerNameValue.toString(),
+                                      choosenWorkers,
+                                      timeStart.toString(),
+                                      timeStop.toString())
+                                ];
+                              }
+                            } else {
+                              showMessageToUser("Błąd",
+                                  "Nie udało się zapisać dnia pracy\nNie pełne dane.");
+                            }
+                            Navigator.pop(context);
+                          },
+                        ),
+                        OutlineButton(
+                          borderSide: BorderSide(color: Colors.blue, width: 3),
+                          shape: StadiumBorder(),
+                          child: Text(
+                            "Anuluj",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -331,7 +458,35 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-//funkcja obliczajaca time pracy
+  //wyswietlenie listy pracownikow
+  showAddWorker() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          //Here we will build the content of the dialog
+          return AlertDialog(
+            backgroundColor: Theme.of(context).canvasColor,
+            title: Text("Wybierz kto pracował:"),
+            content: MultiSelectChip(
+              workersShortNameList,
+              onSelectionChanged: (selectedList) {
+                setState(() {
+                  choosenWorkers = selectedList;
+                });
+              },
+            ),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text("OK", style: TextStyle(fontSize: 18)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  })
+            ],
+          );
+        });
+  }
+
+//funkcja obliczajaca czas pracy
   String workTimeCounter(var startTime, var stopTime, var breakTime) {
     if (startTime == null) {
       return "0";
@@ -352,5 +507,50 @@ class _CalendarState extends State<Calendar> {
       timeWorkSum = time;
       return time.toStringAsFixed(2);
     }
+  }
+
+  //funkcja generująca napis z wybraną datą
+  String dateGenerator(var data) {
+    String dayy, month;
+    if (data.day < 10) {
+      dayy = "0" + data.day.toString();
+    } else {
+      dayy = data.day.toString();
+    }
+    if (data.month < 10) {
+      month = "0" + data.month.toString();
+    } else {
+      month = data.month.toString();
+    }
+    return dayy.toString() +
+        ":" +
+        month.toString() +
+        ":" +
+        data.year.toString();
+  }
+
+//funkcja generujaca tytul potrzebny do shared preferenced
+  String titleGenerator(String date, String employerName, List workerksList,
+      String timeStartLocal, String timeStopLocal) {
+    return "Data: " +
+        date +
+        "\nPraca u: " +
+        employerName +
+        "\nPracował/li: " +
+        workerksList.join("; ") +
+        "\nOd: " +
+        timeStartLocal +
+        " Do: " +
+        timeStopLocal +
+        "\n-----------------------------------";
+  }
+
+//Funkcja wyswietlajaca informacje dla użytkownika
+  void showMessageToUser(String title, String message) {
+    AlertDialog alertDialog = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+    );
+    showDialog(context: context, builder: (_) => alertDialog);
   }
 }

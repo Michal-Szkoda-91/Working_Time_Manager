@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.blue,
         cardColor: Colors.orange,
         selectedRowColor: Colors.blue[200],
+        canvasColor: Colors.blue[100],
       ),
       home: MyHomePage(title: 'Menadżer czasu pracy'),
     );

@@ -146,11 +146,4 @@ class EmployersHelper {
     WHERE shortName = ?
     ''', [textToWrite, shortName]);
   }
-
-  //pobieranie listy imion
-  Future<List> getEmployersNameList() async {
-    Database db = await this.database;
-    var queryResult = await db.rawQuery('SELECT $colname FROM $employersTable');
-    return queryResult;
-  }
 }
