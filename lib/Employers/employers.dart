@@ -70,7 +70,7 @@ class _EmployersState extends State<Employers> {
                   }),
               //po nacisnieciu elementu w liscie
               onTap: () {
-                navigateToWorkerDetail(this.employersModelList[position],
+                navigateToEmployerDetail(this.employersModelList[position],
                     'Dane Pracodawcy', position);
               },
             ),
@@ -161,11 +161,15 @@ class _EmployersState extends State<Employers> {
   }
 
   //nawigowanie do strony z wyswietleniem informacji o pracodawcy
-  void navigateToWorkerDetail(
+  void navigateToEmployerDetail(
       EmployersModel employersModel, String title, int position) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return EmployersDetail(employersModel, title, position);
     }));
+    if (result == true) {
+      updateListView();
+    }
   }
 
   //usuwanie pracownika

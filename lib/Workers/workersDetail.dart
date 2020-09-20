@@ -293,7 +293,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
               title: GestureDetector(
                 onLongPress: () {
                   //usuwanie danej listy
-                  _delete_wpis(additionsList[index]);
+                  deleteNote(additionsList[index]);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -317,7 +317,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
   }
 
 //metoda usuwajaca z listy wybrany element a nastepnie zapisujaca do bazy danych
-  _delete_wpis(String napisdousunieca) {
+  deleteNote(String stringToDelete) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -337,7 +337,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     color: Theme.of(context).accentColor,
                     onPressed: () {
                       //usuniecie wpisu z listy
-                      additionsList.remove(napisdousunieca);
+                      additionsList.remove(stringToDelete);
                       //zapisanie listy do bazy danych
                       String textList = additionsList.join("_;");
                       workersHelper.updateAdditions(
