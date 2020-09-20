@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:working_time_management/Calendar/eventDetail.dart';
 import 'package:working_time_management/Calendar/widgets.dart';
 import 'package:working_time_management/helpers/employersHelper.dart';
+import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/helpers/workersHelper.dart';
 import 'package:working_time_management/models/employersModel.dart';
+import 'package:working_time_management/models/eventsModel.dart';
 import 'package:working_time_management/models/workersModel.dart';
 
 import '../globals.dart';
@@ -24,6 +27,7 @@ class _CalendarState extends State<Calendar> {
   SharedPreferences prefs;
   String employerNameValue;
   String choosenEmployerName;
+  String titleCreated;
 
   //PRACODAWCY i PRACOWNICY
   //dane pracodawców
@@ -96,6 +100,12 @@ class _CalendarState extends State<Calendar> {
     _selectedEvents = [];
     initPrefs();
   }
+
+  //EVENTY - BAZA DANYCH
+
+  EventHelper eventHelper = EventHelper();
+  EventsModel eventsModel;
+
   //PREFERENCJE
 
   initPrefs() async {
@@ -236,7 +246,9 @@ class _CalendarState extends State<Calendar> {
           ),
           //event wyswietlany pod kalendarzem
           ..._selectedEvents.map((event) => GestureDetector(
-                onLongPress: () {},
+                onLongPress: () {
+                  navigateToEventDetail(event);
+                },
                 child: ListTile(
                   title: Text(
                     event,
@@ -379,7 +391,8 @@ class _CalendarState extends State<Calendar> {
                         timeStop.toString())),
                     Text("\nPracodawca: " + employerNameValue.toString()),
                     Text("Data zdarzenia: " +
-                        dateGenerator(_controller.selectedDay)),
+                        dateGenerator(_controller.selectedDay) +
+                        _controller.selectedDay.weekday.toString()),
                     Text("Czas rozpoczęcia: " + timeStart.toString()),
                     Text("Czas zakończenia: " + timeStop.toString()),
                     Text("Czas przerwy: " + timeBreak.toString()),
@@ -401,30 +414,42 @@ class _CalendarState extends State<Calendar> {
                             ),
                           ),
                           onPressed: () {
-                            //zapisanie danych do shared Preference i do bazy danych
-                            //Sprawdenie poprawności danych
+                            //Sprawdenie poprawności danych oraz dodanie nowego eventu do listy z danego dnia
                             if (employerNameValue != null &&
                                 !workTimeCounter(workStart, workStop, timeBreak)
                                     .contains("błąd") &&
                                 choosenWorkers.length != 0) {
+                              //utworzenie tytulu eventu
+                              titleCreated = titleGenerator(
+                                  dateGenerator(_controller.selectedDay),
+                                  employerNameValue.toString(),
+                                  choosenWorkers,
+                                  timeStart.toString(),
+                                  timeStop.toString());
                               if (_events[_controller.selectedDay] != null) {
-                                _events[_controller.selectedDay].add(
-                                    titleGenerator(
-                                        dateGenerator(_controller.selectedDay),
-                                        employerNameValue.toString(),
-                                        choosenWorkers,
-                                        timeStart.toString(),
-                                        timeStop.toString()));
+                                _events[_controller.selectedDay]
+                                    .add(titleCreated);
                               } else {
                                 _events[_controller.selectedDay] = [
-                                  titleGenerator(
-                                      dateGenerator(_controller.selectedDay),
-                                      employerNameValue.toString(),
-                                      choosenWorkers,
-                                      timeStart.toString(),
-                                      timeStop.toString())
+                                  titleCreated
                                 ];
                               }
+                              //zapisanie danych do shared Preference i do bazy danych
+                              prefs.setString(
+                                  "events", json.encode(encodeMap(_events)));
+                              //zapis eventu do bazy
+                              createEventDB(
+                                  titleCreated,
+                                  dateGenerator(_controller.selectedDay),
+                                  timeStart.toString() +
+                                      " - " +
+                                      timeStop.toString(),
+                                  employerNameValue.toString(),
+                                  choosenWorkers.join("; "),
+                                  _controller.selectedDay.weekday,
+                                  timeBreak,
+                                  double.tryParse(workTimeCounter(
+                                      workStart, workStop, timeBreak)));
                             } else {
                               showMessageToUser("Błąd",
                                   "Nie udało się zapisać dnia pracy\nNie pełne dane.");
@@ -552,5 +577,27 @@ class _CalendarState extends State<Calendar> {
       content: Text(message),
     );
     showDialog(context: context, builder: (_) => alertDialog);
+  }
+
+//funkcja tworząca event do bazy danych
+  Future<void> createEventDB(
+      String title,
+      String date,
+      String workTime,
+      String employers,
+      String workers,
+      int dayNumber,
+      int breakTime,
+      double hourSum) async {
+    eventsModel = EventsModel(title, date, workTime, employers, workers,
+        dayNumber, breakTime, hourSum, false);
+    await eventHelper.insertEvent(eventsModel);
+  }
+
+  //nawigowanie do strony z detalami Eventu
+  void navigateToEventDetail(String eventTitle) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return EventDetail(eventTitle);
+    }));
   }
 }
