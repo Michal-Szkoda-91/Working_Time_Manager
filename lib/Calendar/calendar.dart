@@ -243,6 +243,30 @@ class _CalendarState extends State<Calendar> {
               ),
             ),
             calendarController: _controller,
+          ), //przycisk odpowiedzialny za dodawanie nowego eventu
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                RaisedButton(
+                  color: Theme.of(context).accentColor,
+                  onPressed: () {
+                    employerNameValue = null;
+                    choosenWorkers = [];
+                    _showDialogAddEvent();
+                    createNameList();
+                  },
+                  child: Text(
+                    "Dodaj",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
           //event wyswietlany pod kalendarzem
           ..._selectedEvents.map((event) => GestureDetector(
@@ -258,28 +282,6 @@ class _CalendarState extends State<Calendar> {
                   ),
                 ),
               )),
-          //przycisk odpowiedzialny za dodawanie nowego eventu
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              RaisedButton(
-                color: Theme.of(context).accentColor,
-                onPressed: () {
-                  employerNameValue = null;
-                  choosenWorkers = [];
-                  _showDialogAddEvent();
-                  createNameList();
-                },
-                child: Text(
-                  "Dodaj",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                  ),
-                ),
-              )
-            ],
-          )
         ],
       )),
     );
@@ -590,8 +592,14 @@ class _CalendarState extends State<Calendar> {
       int breakTime,
       double hourSum) async {
     eventsModel = EventsModel(title, date, workTime, employers, workers,
-        dayNumber, breakTime, hourSum, false);
-    await eventHelper.insertEvent(eventsModel);
+        dayNumber, breakTime, hourSum, 0);
+    int result;
+    result = await eventHelper.insertEvent(eventsModel);
+    if (result != 0) {
+      _showDialog('Status', 'Dodano Event');
+    } else {
+      _showDialog('Status', 'Nie udało się dodać Eventu');
+    }
   }
 
   //nawigowanie do strony z detalami Eventu
@@ -599,5 +607,13 @@ class _CalendarState extends State<Calendar> {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return EventDetail(eventTitle);
     }));
+  }
+
+  void _showDialog(String title, String message) {
+    AlertDialog alertDialog = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+    );
+    showDialog(context: context, builder: (_) => alertDialog);
   }
 }
