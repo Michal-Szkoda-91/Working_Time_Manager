@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:working_time_management/models/eventsModel.dart';
+import 'package:working_time_management/models/workersModel.dart';
 
 class EventHelper {
   static EventHelper _databasehelper;
@@ -62,5 +63,16 @@ class EventHelper {
     var result =
         await db.rawDelete('DELETE FROM $eventsTable WHERE $colID = $id');
     return result;
+  }
+
+  //pobieranie modelu eventu
+  Future<EventsModel> getEventFromDB(String title) async {
+    Database db = await database;
+    var datas = await db
+        .query("eventsTable", where: '$colTitle = ?', whereArgs: [title]);
+    if (datas.length > 0) {
+      return EventsModel.fromMapObject(datas.first);
+    }
+    return null;
   }
 }

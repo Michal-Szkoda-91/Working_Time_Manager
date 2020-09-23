@@ -10,7 +10,7 @@ class EventsModel {
   int _dayNumber;
   int _breakTime;
   double _hourSum;
-  bool _isPayed;
+  int _isPayed;
 
   EventsModel(
       this._title,
@@ -30,9 +30,9 @@ class EventsModel {
   String get employer => _employer;
   String get workers => _workers;
   int get dayNumber => _dayNumber;
-  int get breaktTime => _breakTime;
+  int get breakTime => _breakTime;
   double get hourSum => _hourSum;
-  bool get isPayed => _isPayed;
+  int get isPayed => _isPayed;
 
   //tutaj mozesz ustawiac warunki wpisywania
   set title(String newtitle) {
@@ -67,7 +67,7 @@ class EventsModel {
     this._hourSum = newhourSum;
   }
 
-  set isPayed(bool newisPayed) {
+  set isPayed(int newisPayed) {
     this._isPayed = newisPayed;
   }
 
