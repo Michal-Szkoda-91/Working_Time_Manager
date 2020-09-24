@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/models/eventsModel.dart';
 

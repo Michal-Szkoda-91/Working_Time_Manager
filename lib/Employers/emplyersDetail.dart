@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:working_time_management/helpers/employersHelper.dart';
+import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/models/employersModel.dart';
 
 class EmployersDetail extends StatefulWidget {
@@ -26,8 +27,10 @@ class _EmployersDetailState extends State<EmployersDetail> {
   String title;
   int position;
   EmployersHelper employersHelper = EmployersHelper();
+  EventHelper eventHelper = EventHelper();
   List<EmployersModel> employersModelList;
   List<String> additionsList = [];
+  var hoursSum;
   String rate;
   String titleToCheck;
   String amount;
@@ -43,6 +46,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
   @override
   void initState() {
     rate = "0";
+    getHourSum(employersModel.name);
     receivable = 0;
     updateListView();
     if (employersModel.additions.toString() != "") {
@@ -101,7 +105,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
                     padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
                     child: Text(
                       "Łącznie przepracowano: " +
-                          employersModel.hoursSum.toString() +
+                          hoursSum.toString() +
                           " godzin/y.",
                       style: TextStyle(
                           fontSize: 18, color: Theme.of(context).accentColor),
@@ -195,8 +199,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
                         suma += double.parse(
                             additionsList[i].split("(")[1].split(")")[0]);
                       }
-                      receivable =
-                          employersModel.hoursSum * double.parse(rate) + suma;
+                      receivable = hoursSum * double.parse(rate) + suma;
                     } else {
                       _showDialog("Błąd", "Nie podano stawki za godzinę!");
                     }
@@ -219,7 +222,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -227,6 +230,21 @@ class _EmployersDetailState extends State<EmployersDetail> {
                       "Notatki:",
                       style: TextStyle(
                           fontSize: 18, color: Theme.of(context).accentColor),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+                    child: RaisedButton(
+                      color: Theme.of(context).accentColor,
+                      child: Text(
+                        "Zapisz",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      onPressed: () {
+                        employersHelper.updateNotes(
+                            _notesController.text, employersModel.shortName);
+                        _notesController.text = _notesController.text;
+                      },
                     ),
                   ),
                 ],
@@ -255,26 +273,6 @@ class _EmployersDetailState extends State<EmployersDetail> {
                     onChanged: (value) {},
                   ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 40, 0),
-                    child: RaisedButton(
-                      color: Theme.of(context).accentColor,
-                      child: Text(
-                        "Zapisz",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                      onPressed: () {
-                        employersHelper.updateNotes(
-                            _notesController.text, employersModel.shortName);
-                        _notesController.text = _notesController.text;
-                      },
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
@@ -514,6 +512,11 @@ class _EmployersDetailState extends State<EmployersDetail> {
             );
           });
         });
+  }
+
+  //Pobieranie sumy godzin z Eventow
+  void getHourSum(String name) async {
+    hoursSum = eventHelper.getHourEmployerSum(name);
   }
 
   //dodawanie rekordow do bazy

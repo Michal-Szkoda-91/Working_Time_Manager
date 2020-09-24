@@ -13,7 +13,6 @@ class EmployersHelper {
   String colID = 'id';
   String colname = 'name';
   String colshortName = 'shortName';
-  String colhoursSum = 'hoursSum';
   String coladditions = 'additions';
   String colnotes = 'notes';
 
@@ -44,7 +43,7 @@ class EmployersHelper {
 
   void _createDB(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $employersTable($colID INTEGER PRIMARY KEY AUTOINCREMENT, $colname TEXT, $colshortName TEXT, $colhoursSum REAL, $coladditions TEXT, $colnotes TEXT)');
+        'CREATE TABLE $employersTable($colID INTEGER PRIMARY KEY AUTOINCREMENT, $colname TEXT, $colshortName TEXT, $coladditions TEXT, $colnotes TEXT)');
   }
 
   //pobieranie pracownikow w postaci map
