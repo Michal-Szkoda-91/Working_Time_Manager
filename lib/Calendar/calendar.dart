@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -245,23 +246,31 @@ class _CalendarState extends State<Calendar> {
             calendarController: _controller,
           ), //przycisk odpowiedzialny za dodawanie nowego eventu
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                RaisedButton(
-                  color: Theme.of(context).accentColor,
-                  onPressed: () {
-                    employerNameValue = null;
-                    choosenWorkers = [];
-                    _showDialogAddEvent();
-                    createNameList();
-                  },
-                  child: Text(
-                    "Dodaj",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
+                Icon(
+                  Icons.arrow_right,
+                  color: Colors.black,
+                  size: 50,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+                  child: RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    onPressed: () {
+                      employerNameValue = null;
+                      choosenWorkers = [];
+                      _showDialogAddEvent();
+                      createNameList();
+                    },
+                    child: Text(
+                      "Dodaj",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 )
@@ -269,10 +278,12 @@ class _CalendarState extends State<Calendar> {
             ),
           ),
           //event wyswietlany pod kalendarzem
-          ..._selectedEvents.map((event) => GestureDetector(
-                onLongPress: () {
-                  navigateToEventDetail(event);
-                },
+          ..._selectedEvents.map(
+            (event) => Slidable(
+              actionPane: SlidableDrawerActionPane(),
+              actionExtentRatio: 0.25,
+              child: Container(
+                color: Theme.of(context).selectedRowColor,
                 child: ListTile(
                   title: Text(
                     event,
@@ -281,7 +292,25 @@ class _CalendarState extends State<Calendar> {
                     ),
                   ),
                 ),
-              )),
+              ),
+              actions: <Widget>[
+                IconSlideAction(
+                  caption: 'Usuń',
+                  color: Colors.red,
+                  icon: Icons.delete,
+                  onTap: () {
+                    deleteEvent(event);
+                  },
+                ),
+                IconSlideAction(
+                  caption: 'Szczeguły',
+                  color: Theme.of(context).accentColor,
+                  icon: Icons.assessment,
+                  onTap: () => navigateToEventDetail(event),
+                ),
+              ],
+            ),
+          ),
         ],
       )),
     );
@@ -289,6 +318,7 @@ class _CalendarState extends State<Calendar> {
 
 //okienko wyświetlające się przy dodawaniu nowego eventu
   void _showDialogAddEvent() async {
+    String summary = "";
     showDialog(
       context: context,
       builder: (context) {
@@ -382,25 +412,42 @@ class _CalendarState extends State<Calendar> {
                         });
                       },
                     ),
-
-                    //Testowe texty do sprawdzania poprawnosci danych
-                    //tytul będzie zapisywany do sharedPreferenced jako nawigacja do sczegółów eventu
-                    Text(titleGenerator(
-                        dateGenerator(_controller.selectedDay),
-                        employerNameValue.toString(),
-                        choosenWorkers,
-                        timeStart.toString(),
-                        timeStop.toString())),
-                    Text("\nPracodawca: " + employerNameValue.toString()),
-                    Text("Data zdarzenia: " +
-                        dateGenerator(_controller.selectedDay) +
-                        _controller.selectedDay.weekday.toString()),
-                    Text("Czas rozpoczęcia: " + timeStart.toString()),
-                    Text("Czas zakończenia: " + timeStop.toString()),
-                    Text("Czas przerwy: " + timeBreak.toString()),
-                    Text("Przepracowano godzin: " +
-                        workTimeCounter(workStart, workStop, timeBreak)),
-                    Text("Pracowali: " + choosenWorkers.join("; ")),
+                    //Przycisk wyświetlający podsumowanie danych w evencie
+                    OutlineButton(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).accentColor,
+                        width: 3,
+                      ),
+                      shape: StadiumBorder(),
+                      child: Text(
+                        "Podsumowanie",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          //wyświetlenie podsumowanie jako tekst z danymi
+                          summary = "Data zdarzenia: " +
+                              dateGenerator(_controller.selectedDay) +
+                              "\nPracodawca: " +
+                              employerNameValue.toString() +
+                              "\nPracowali: " +
+                              choosenWorkers.join("; ") +
+                              "\nCzas pracy: " +
+                              timeStart.toString() +
+                              " - " +
+                              timeStop.toString() +
+                              "\nPrzepracowano godzin: " +
+                              workTimeCounter(workStart, workStop, timeBreak) +
+                              "\nCzas przerwy: " +
+                              timeBreak.toString();
+                        });
+                      },
+                    ),
+                    //Wyświetlenie wprowadzanych danych
+                    Text(summary),
                     //Przyciski anulowania i akceptacji zapisu eventu
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -420,7 +467,8 @@ class _CalendarState extends State<Calendar> {
                             if (employerNameValue != null &&
                                 !workTimeCounter(workStart, workStop, timeBreak)
                                     .contains("błąd") &&
-                                choosenWorkers.length != 0) {
+                                choosenWorkers.length != 0 &&
+                                summary != "") {
                               //utworzenie tytulu eventu
                               titleCreated = titleGenerator(
                                   dateGenerator(_controller.selectedDay),
@@ -452,11 +500,11 @@ class _CalendarState extends State<Calendar> {
                                   timeBreak,
                                   double.tryParse(workTimeCounter(
                                       workStart, workStop, timeBreak)));
+                              Navigator.pop(context);
                             } else {
-                              showMessageToUser("Błąd",
-                                  "Nie udało się zapisać dnia pracy\nNie pełne dane.");
+                              _showDialog("Błąd",
+                                  "Nie udało się zapisać dnia pracy\nNie pełne dane\nLub nie użyto Podsumowania");
                             }
-                            Navigator.pop(context);
                           },
                         ),
                         OutlineButton(
@@ -572,15 +620,6 @@ class _CalendarState extends State<Calendar> {
         "\n-----------------------------------";
   }
 
-//Funkcja wyswietlajaca informacje dla użytkownika
-  void showMessageToUser(String title, String message) {
-    AlertDialog alertDialog = AlertDialog(
-      title: Text(title),
-      content: Text(message),
-    );
-    showDialog(context: context, builder: (_) => alertDialog);
-  }
-
 //funkcja tworząca event do bazy danych
   Future<void> createEventDB(
       String title,
@@ -600,6 +639,67 @@ class _CalendarState extends State<Calendar> {
     } else {
       _showDialog('Status', 'Nie udało się dodać Eventu');
     }
+  }
+
+  //usuwanie eventu z SP ora DB
+  void deleteEvent(var event) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.blue[100],
+        content: Container(
+          height: 100,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "Napewno usunąć zdarzenie?",
+                style: TextStyle(fontSize: 20),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  new RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    onPressed: () {
+                      //usunięcie danych z shared preferenced
+                      _events[_controller.selectedDay].remove(event);
+                      prefs.setString(
+                          "events", json.encode(encodeMap(_events)));
+                      //usuwanie danych z bazy
+                      eventHelper.deleteEvent(event);
+                      Navigator.pop(context);
+                      return;
+                    },
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      return;
+                    },
+                    child: Text(
+                      "Anuluj",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   //nawigowanie do strony z detalami Eventu

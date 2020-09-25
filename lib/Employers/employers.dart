@@ -29,7 +29,7 @@ class _EmployersState extends State<Employers> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           navigateToDetail(
-              EmployersModel('', '', 0.0, '', ''), "Dodaj Pracodawce", 0);
+              EmployersModel('', '', '', ''), "Dodaj Pracodawce", 0);
         },
         child: Icon(Icons.add),
         backgroundColor: Theme.of(context).primaryColor,

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:working_time_management/models/eventsModel.dart';
-import 'package:working_time_management/models/workersModel.dart';
 
 class EventHelper {
   static EventHelper _databasehelper;
@@ -58,10 +57,10 @@ class EventHelper {
   }
 
   //usuwanie eventu
-  Future<int> deleteEvent(int id) async {
+  Future<int> deleteEvent(String title) async {
     Database db = await this.database;
     var result =
-        await db.rawDelete('DELETE FROM $eventsTable WHERE $colID = $id');
+        await db.rawDelete('DELETE FROM $eventsTable WHERE $colTitle = $title');
     return result;
   }
 
@@ -74,5 +73,13 @@ class EventHelper {
       return EventsModel.fromMapObject(datas.first);
     }
     return null;
+  }
+
+  //pobieranie sumy godzin dla danego pracodawcy
+  Future<dynamic> getHourEmployerSum(String name) async {
+    Database db = await database;
+    var datas = await db.rawQuery(
+        "SELECT SUM($colHourSum) FROM $eventsTable WHERE $colEmployer = $name");
+    return datas;
   }
 }
