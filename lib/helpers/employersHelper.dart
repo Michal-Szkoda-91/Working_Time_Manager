@@ -108,7 +108,7 @@ class EmployersHelper {
     return list;
   }
 
-  //sprawdzanie czy jest juz pracownik o tym samym imieniu
+  //sprawdzanie czy jest juz pracodawca o tym samym imieniu
   Future<int> getEmployerName(String nameGet) async {
     Database db = await this.database;
     var queryResult = Sqflite.firstIntValue(await db.rawQuery(
@@ -116,14 +116,12 @@ class EmployersHelper {
     return queryResult;
   }
 
-  //uaktualnianie wartosci sumy godzin
-  Future<int> updateHoursSum(double sum, String shortName) async {
+  //sprawdzanie czy jest juz pracodawca o tym samym skrocie iminia
+  Future<int> getWorkerShortName(String nameGet) async {
     Database db = await this.database;
-    return await db.rawUpdate('''
-    UPDATE employersTable 
-    SET hoursSum = ?
-    WHERE shortName = ?
-    ''', [sum, shortName]);
+    var queryResult = Sqflite.firstIntValue(await db.rawQuery(
+        'SELECT COUNT(*) from $employersTable WHERE $colshortName ="$nameGet"'));
+    return queryResult;
   }
 
 //uaktualnianie listydodatkow

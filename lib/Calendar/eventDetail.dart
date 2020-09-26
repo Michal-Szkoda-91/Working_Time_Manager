@@ -79,6 +79,7 @@ class _EventDetailState extends State<EventDetail> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
+          Text(eventsModel.workersNumber.toString())
         ],
       ),
     );

@@ -117,6 +117,14 @@ class WorkersHelper {
     return queryResult;
   }
 
+  //sprawdzanie czy jest juz pracownik o tym samym skrocie iminia
+  Future<int> getWorkerShortName(String nameGet) async {
+    Database db = await this.database;
+    var queryResult = Sqflite.firstIntValue(await db.rawQuery(
+        'SELECT COUNT(*) from $workersTable WHERE $colshortName ="$nameGet"'));
+    return queryResult;
+  }
+
   //uaktualnianie wartosci sumy godzin
   Future<int> updateHoursSum(double sum, String shortName) async {
     Database db = await this.database;

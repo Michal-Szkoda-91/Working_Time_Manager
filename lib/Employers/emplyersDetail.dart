@@ -30,7 +30,8 @@ class _EmployersDetailState extends State<EmployersDetail> {
   EventHelper eventHelper = EventHelper();
   List<EmployersModel> employersModelList;
   List<String> additionsList = [];
-  var hoursSum;
+  double hoursSum = 0;
+  List listOfSum;
   String rate;
   String titleToCheck;
   String amount;
@@ -46,7 +47,6 @@ class _EmployersDetailState extends State<EmployersDetail> {
   @override
   void initState() {
     rate = "0";
-    getHourSum(employersModel.name);
     receivable = 0;
     updateListView();
     if (employersModel.additions.toString() != "") {
@@ -55,6 +55,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
       additionsList = [];
     }
     _notesController.text = employersModel.notes;
+    getHourSum(employersModel.name);
     super.initState();
   }
 
@@ -516,7 +517,11 @@ class _EmployersDetailState extends State<EmployersDetail> {
 
   //Pobieranie sumy godzin z Eventow
   void getHourSum(String name) async {
-    hoursSum = eventHelper.getHourEmployerSum(name);
+    this.listOfSum = await eventHelper.getHourEmployerSum(name);
+    this.listOfSum.forEach((element) {
+      this.hoursSum =
+          this.hoursSum + (element['hourSum'] * element['workersNumber']);
+    });
   }
 
   //dodawanie rekordow do bazy

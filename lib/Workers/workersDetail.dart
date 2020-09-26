@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqlite_api.dart';
+import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/helpers/workersHelper.dart';
 import 'package:working_time_management/models/workersModel.dart';
 
@@ -25,8 +26,11 @@ class _WorkersDetailState extends State<WorkersDetail> {
   String title;
   int position;
   WorkersHelper workersHelper = WorkersHelper();
+  EventHelper eventHelper = EventHelper();
   List<WorkersModel> workersModelList;
   List<String> additionsList = [];
+  double hoursSum = 0;
+  List listOfSum;
   String rate;
   String titleToCheck;
   String amount;
@@ -50,6 +54,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
       additionsList = [];
     }
     _notesController.text = workersModel.notes;
+    getHourSum(workersModel.shortName);
     super.initState();
   }
 
@@ -100,7 +105,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
                     child: Text(
                       "Łącznie przepracowano: " +
-                          workersModel.hoursSum.toString() +
+                          hoursSum.toString() +
                           " godzin/y.",
                       style: TextStyle(
                           fontSize: 18, color: Theme.of(context).accentColor),
@@ -194,8 +199,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                         suma += double.parse(
                             additionsList[i].split("(")[1].split(")")[0]);
                       }
-                      receivable =
-                          workersModel.hoursSum * double.parse(rate) + suma;
+                      receivable = hoursSum * double.parse(rate) + suma;
                     } else {
                       _showDialog("Błąd", "Nie podano stawki za godzinę!");
                     }
@@ -513,6 +517,14 @@ class _WorkersDetailState extends State<WorkersDetail> {
             );
           });
         });
+  }
+
+  //Pobieranie sumy godzin z Eventow
+  void getHourSum(String name) async {
+    this.listOfSum = await eventHelper.getHourWorkerSum(name);
+    this.listOfSum.forEach((element) {
+      this.hoursSum += element['hourSum'];
+    });
   }
 
   //dodawanie rekordow do bazy
