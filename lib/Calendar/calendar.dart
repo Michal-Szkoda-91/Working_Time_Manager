@@ -250,11 +250,13 @@ class _CalendarState extends State<Calendar> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Icon(
-                  Icons.arrow_right,
-                  color: Colors.black,
-                  size: 50,
-                ),
+                _selectedEvents.length > 0
+                    ? Icon(
+                        Icons.arrow_right,
+                        color: Colors.black,
+                        size: 40,
+                      )
+                    : Text(""),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
                   child: RaisedButton(
@@ -488,6 +490,7 @@ class _CalendarState extends State<Calendar> {
                               prefs.setString(
                                   "events", json.encode(encodeMap(_events)));
                               //zapis eventu do bazy
+                              int choosenWorkersLenght = choosenWorkers.length;
                               createEventDB(
                                   titleCreated,
                                   dateGenerator(_controller.selectedDay),
@@ -496,6 +499,7 @@ class _CalendarState extends State<Calendar> {
                                       timeStop.toString(),
                                   employerNameValue.toString(),
                                   choosenWorkers.join("; "),
+                                  choosenWorkersLenght,
                                   _controller.selectedDay.weekday,
                                   timeBreak,
                                   double.tryParse(workTimeCounter(
@@ -627,11 +631,12 @@ class _CalendarState extends State<Calendar> {
       String workTime,
       String employers,
       String workers,
+      int workersNumber,
       int dayNumber,
       int breakTime,
       double hourSum) async {
     eventsModel = EventsModel(title, date, workTime, employers, workers,
-        dayNumber, breakTime, hourSum, 0);
+        workersNumber, dayNumber, breakTime, hourSum, 0);
     int result;
     result = await eventHelper.insertEvent(eventsModel);
     if (result != 0) {

@@ -74,7 +74,7 @@ class _AddWorkersState extends State<AddWorkers> {
                       _showDialog("Błąd",
                           "wypełnij wszystkie pola! Nie używaj znaków specjalnych!");
                     } else {
-                      _saveData(namecontroller.text);
+                      _saveData(namecontroller.text, shortNameController.text);
                     }
                   },
                   child: Text(
@@ -123,10 +123,15 @@ class _AddWorkersState extends State<AddWorkers> {
   }
 
 //funkcja zatwierdzajaca dane
-  void _saveData(String nameGets) async {
+  void _saveData(String nameGets, String shortNameGets) async {
     Navigator.pop(context, true);
-    int checkResult = await workersHelper.getWorkerName(nameGets);
-    if (checkResult == 0 && nameGets.substring(nameGets.length - 1) != " ") {
+    int checkResultName = await workersHelper.getWorkerName(nameGets);
+    int checkResultShortName =
+        await workersHelper.getWorkerShortName(shortNameGets);
+    if (checkResultName == 0 &&
+        nameGets.substring(nameGets.length - 1) != " " &&
+        checkResultShortName == 0 &&
+        shortNameGets.substring(shortNameGets.length - 1) != " ") {
       int result;
       result = await workersHelper.insertWorker(workersModel);
       if (result != 0) {

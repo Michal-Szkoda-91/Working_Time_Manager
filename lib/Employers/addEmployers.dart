@@ -74,7 +74,7 @@ class _AddEmployersState extends State<AddEmployers> {
                       _showDialog("Błąd",
                           "wypełnij wszystkie pola! Nie używaj znaków specjalnych!");
                     } else {
-                      _saveData(namecontroller.text);
+                      _saveData(namecontroller.text, shortNameController.text);
                     }
                   },
                   child: Text(
@@ -123,10 +123,15 @@ class _AddEmployersState extends State<AddEmployers> {
   }
 
 //funkcja zatwierdzajaca dane
-  void _saveData(String nameGets) async {
+  void _saveData(String nameGets, String shortNameGets) async {
     Navigator.pop(context, true);
     int checkResult = await employersHelper.getEmployerName(nameGets);
-    if (checkResult == 0 && nameGets.substring(nameGets.length - 1) != " ") {
+    int checkResultShortName =
+        await employersHelper.getWorkerShortName(shortNameGets);
+    if (checkResult == 0 &&
+        nameGets.substring(nameGets.length - 1) != " " &&
+        checkResultShortName == 0 &&
+        shortNameGets.substring(shortNameGets.length - 1) != " ") {
       int result;
       result = await employersHelper.insertEmployer(employersModel);
       if (result != 0) {

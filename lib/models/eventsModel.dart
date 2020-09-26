@@ -7,6 +7,7 @@ class EventsModel {
   String _workTime;
   String _employer;
   String _workers;
+  int _workersNumber;
   int _dayNumber;
   int _breakTime;
   double _hourSum;
@@ -18,6 +19,7 @@ class EventsModel {
       this._workTime,
       this._employer,
       this._workers,
+      this._workersNumber,
       this._dayNumber,
       this._breakTime,
       this._hourSum,
@@ -29,6 +31,7 @@ class EventsModel {
   String get workTime => _workTime;
   String get employer => _employer;
   String get workers => _workers;
+  int get workersNumber => _workersNumber;
   int get dayNumber => _dayNumber;
   int get breakTime => _breakTime;
   double get hourSum => _hourSum;
@@ -53,6 +56,10 @@ class EventsModel {
 
   set workers(String newworkers) {
     this._workers = newworkers;
+  }
+
+  set workersNumber(int newworkersNumber) {
+    this._workersNumber = newworkersNumber;
   }
 
   set dayNumber(int newdayNumber) {
@@ -82,6 +89,7 @@ class EventsModel {
     map['workTime'] = _workTime;
     map['employer'] = _employer;
     map['workers'] = _workers;
+    map['workersNumber'] = _workersNumber;
     map['dayNumber'] = _dayNumber;
     map['breakTime'] = _breakTime;
     map['hourSum'] = _hourSum;
@@ -97,6 +105,7 @@ class EventsModel {
     this._workTime = map['workTime'];
     this._employer = map['employer'];
     this._workers = map['workers'];
+    this._workersNumber = map['workersNumber'];
     this._dayNumber = map['dayNumber'];
     this._breakTime = map['breakTime'];
     this._hourSum = map['hourSum'];

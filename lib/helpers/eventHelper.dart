@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
@@ -15,6 +16,7 @@ class EventHelper {
   String colWorkTime = 'workTime';
   String colEmployer = 'employer';
   String colWorkers = 'workers';
+  String colWorkersNumber = 'workersNumber';
   String colDayNumber = 'dayNumber';
   String colBreakTime = 'breakTime';
   String colHourSum = 'hourSum';
@@ -46,7 +48,7 @@ class EventHelper {
 
   void _createDB(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $eventsTable($colID INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colDate TEXT, $colWorkTime TEXT, $colEmployer TEXT, $colWorkers TEXT, $colDayNumber INTEGER, $colBreakTime INTEGER, $colHourSum REAL, $colIsPayed BOOLEAN)');
+        'CREATE TABLE $eventsTable($colID INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colDate TEXT, $colWorkTime TEXT, $colEmployer TEXT, $colWorkers TEXT, $colWorkersNumber INTEGER, $colDayNumber INTEGER, $colBreakTime INTEGER, $colHourSum REAL, $colIsPayed BOOLEAN)');
   }
 
   //wstawianie eventu
@@ -59,8 +61,8 @@ class EventHelper {
   //usuwanie eventu
   Future<int> deleteEvent(String title) async {
     Database db = await this.database;
-    var result =
-        await db.rawDelete('DELETE FROM $eventsTable WHERE $colTitle = $title');
+    var result = await db
+        .rawDelete('DELETE FROM $eventsTable WHERE $colTitle = "$title"');
     return result;
   }
 
@@ -76,10 +78,18 @@ class EventHelper {
   }
 
   //pobieranie sumy godzin dla danego pracodawcy
-  Future<dynamic> getHourEmployerSum(String name) async {
+  Future<List> getHourEmployerSum(String name) async {
+    Database db = await database;
+    var datas = await db
+        .rawQuery('SELECT * FROM $eventsTable WHERE $colEmployer="$name"');
+    return datas;
+  }
+
+  //pobieranie sumy godzin dla danego pracownika
+  Future<List> getHourWorkerSum(String name) async {
     Database db = await database;
     var datas = await db.rawQuery(
-        "SELECT SUM($colHourSum) FROM $eventsTable WHERE $colEmployer = $name");
+        'SELECT * FROM $eventsTable WHERE $colWorkers LIKE "%$name%"');
     return datas;
   }
 }
