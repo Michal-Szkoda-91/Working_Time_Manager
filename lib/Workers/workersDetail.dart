@@ -445,7 +445,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                                 },
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: Colors.blue,
+                                  color: Theme.of(context).accentColor,
                                 ),
                                 textAlign: TextAlign.center,
                                 controller: _amountController,
@@ -461,7 +461,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             RaisedButton(
-                              color: Colors.blue,
+                              color: Theme.of(context).accentColor,
                               onPressed: () {
                                 //dodawanie do bazy danych wpisu o dodatkach
                                 if (re.hasMatch(amount) &&
@@ -519,7 +519,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
         });
   }
 
-  //Pobieranie sumy godzin z Eventow
+  //Pobieranie sumy godzin z Eventow oraz zliczanie ich w sume
   void getHourSum(String name) async {
     this.listOfSum = await eventHelper.getHourWorkerSum(name);
     this.listOfSum.forEach((element) {

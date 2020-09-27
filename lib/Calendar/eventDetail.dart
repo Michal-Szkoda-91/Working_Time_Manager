@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/models/eventsModel.dart';
 
@@ -16,7 +17,7 @@ class EventDetail extends StatefulWidget {
 class _EventDetailState extends State<EventDetail> {
   String eventTitle;
   EventHelper eventHelper = EventHelper();
-  EventsModel eventsModel;
+  EventsModel eventsModel = EventsModel("", "", "", "", "", 0, 0, 0, 0.0, 0);
 
   _EventDetailState(this.eventTitle);
   @override
@@ -79,7 +80,33 @@ class _EventDetailState extends State<EventDetail> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
-          Text(eventsModel.workersNumber.toString())
+          //przycisk do ustawiania czy dany event jest juz oplacony
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 25, 0, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                LiteRollingSwitch(
+                  value: true
+                      ? eventsModel.isPayed == 1
+                      // ignore: dead_code
+                      : eventsModel.isPayed == 0,
+                  textOn: 'Zapłacono',
+                  textOff: 'Nie Zap.',
+                  colorOn: Theme.of(context).accentColor,
+                  colorOff: Colors.red,
+                  iconOn: Icons.attach_money,
+                  iconOff: Icons.money_off,
+                  onChanged: (bool state) {
+                    //zapisanie do bazy informacji o zapłaceniu eventu
+                    state ? eventsModel.isPayed = 1 : eventsModel.isPayed = 0;
+                    eventHelper.updateEvent(
+                        eventsModel.isPayed, eventsModel.id);
+                  },
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

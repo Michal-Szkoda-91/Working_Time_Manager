@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
@@ -58,6 +57,14 @@ class EventHelper {
     return result;
   }
 
+  //update eventu
+  Future<int> updateEvent(int isPayed, int id) async {
+    Database db = await this.database;
+    var result = await db.rawUpdate(
+        "UPDATE $eventsTable SET $colIsPayed = $isPayed WHERE $colID = $id");
+    return result;
+  }
+
   //usuwanie eventu
   Future<int> deleteEvent(String title) async {
     Database db = await this.database;
@@ -77,19 +84,27 @@ class EventHelper {
     return null;
   }
 
-  //pobieranie sumy godzin dla danego pracodawcy
+  //pobieranie listy eventów z wybranym imieniem  pracodawcy ze statusem niezapłacony
   Future<List> getHourEmployerSum(String name) async {
     Database db = await database;
-    var datas = await db
-        .rawQuery('SELECT * FROM $eventsTable WHERE $colEmployer="$name"');
+    var datas = await db.rawQuery(
+        'SELECT * FROM $eventsTable WHERE $colEmployer="$name" AND $colIsPayed=0');
     return datas;
   }
 
-  //pobieranie sumy godzin dla danego pracownika
+  //pobieranie listy eventów z wybranym imieniem  pracownika statusem niezapłacony
   Future<List> getHourWorkerSum(String name) async {
     Database db = await database;
     var datas = await db.rawQuery(
-        'SELECT * FROM $eventsTable WHERE $colWorkers LIKE "%$name%"');
+        'SELECT * FROM $eventsTable WHERE $colWorkers LIKE "%$name%" AND $colIsPayed=0');
+    return datas;
+  }
+
+  //pobieranie listy eventow z wybranym imieniem pracodawcy, bez rozróżnienia na to czy jest zapłacone
+  Future<List> getEmployersEventsList(String name) async {
+    Database db = await database;
+    var datas = await db
+        .rawQuery('SELECT * FROM $eventsTable WHERE $colEmployer="$name"');
     return datas;
   }
 }
