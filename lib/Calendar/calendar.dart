@@ -244,7 +244,8 @@ class _CalendarState extends State<Calendar> {
               ),
             ),
             calendarController: _controller,
-          ), //przycisk odpowiedzialny za dodawanie nowego eventu
+          ),
+          //przycisk odpowiedzialny za dodawanie nowego eventu
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Row(
@@ -279,7 +280,7 @@ class _CalendarState extends State<Calendar> {
               ],
             ),
           ),
-          //event wyswietlany pod kalendarzem
+          //event wyswietlany pod kalendarzem jako lista
           ..._selectedEvents.map(
             (event) => Slidable(
               actionPane: SlidableDrawerActionPane(),
@@ -287,11 +288,15 @@ class _CalendarState extends State<Calendar> {
               child: Container(
                 color: Theme.of(context).selectedRowColor,
                 child: ListTile(
-                  title: Text(
-                    event,
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
+                  title: Row(
+                    children: [
+                      Text(
+                        event,
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

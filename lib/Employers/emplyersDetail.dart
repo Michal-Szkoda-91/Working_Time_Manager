@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqlite_api.dart';
+import 'package:working_time_management/Employers/employersArchives.dart';
 import 'package:working_time_management/helpers/employersHelper.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/models/employersModel.dart';
@@ -88,13 +89,37 @@ class _EmployersDetailState extends State<EmployersDetail> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
+                  Text(
+                    employersModel.name,
+                    style: TextStyle(
+                        fontSize: 25, color: Theme.of(context).accentColor),
+                  ),
+                ],
+              ),
+              //przyciski kierujące na storny z archiwum i skrótu dla pracodawcy
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    child: Text(
-                      employersModel.name,
-                      style: TextStyle(
-                          fontSize: 25, color: Theme.of(context).accentColor),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                    child: RaisedButton(
+                      color: Theme.of(context).accentColor,
+                      child: Text(
+                        "Skrót",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      onPressed: () {},
                     ),
+                  ),
+                  RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    child: Text(
+                      "Archiwum",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    onPressed: () {
+                      navigateToEmployerArchives(employersModel.name);
+                    },
                   ),
                 ],
               ),
@@ -103,7 +128,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: Text(
                       "Łącznie przepracowano: " +
                           hoursSum.toString() +
@@ -441,7 +466,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
                                 },
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: Colors.blue,
+                                  color: Theme.of(context).accentColor,
                                 ),
                                 textAlign: TextAlign.center,
                                 controller: _amountController,
@@ -457,7 +482,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             RaisedButton(
-                              color: Colors.blue,
+                              color: Theme.of(context).accentColor,
                               onPressed: () {
                                 //dodawanie do bazy danych wpisu o dodatkach
                                 if (re.hasMatch(amount) &&
@@ -515,12 +540,14 @@ class _EmployersDetailState extends State<EmployersDetail> {
         });
   }
 
-  //Pobieranie sumy godzin z Eventow
+  //Pobieranie sumy godzin z Eventow oraz zliczanie w jedna sume
   void getHourSum(String name) async {
     this.listOfSum = await eventHelper.getHourEmployerSum(name);
     this.listOfSum.forEach((element) {
-      this.hoursSum =
-          this.hoursSum + (element['hourSum'] * element['workersNumber']);
+      this.hoursSum = this.hoursSum +
+          (element['hourSum'] *
+              element[
+                  'workersNumber']); //godziny sa mnozone przez ilosc pracownikow z danego dnia
     });
   }
 
@@ -536,5 +563,13 @@ class _EmployersDetailState extends State<EmployersDetail> {
         });
       });
     });
+  }
+
+  //funkcja przenosząca do nowej aktywności z
+  //archiwum w której wyświetlane są wszystkie eventy pracodawcy
+  void navigateToEmployerArchives(String name) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return EmployersArchive(name);
+    }));
   }
 }
