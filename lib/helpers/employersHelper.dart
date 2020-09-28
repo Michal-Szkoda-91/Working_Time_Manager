@@ -125,13 +125,13 @@ class EmployersHelper {
   }
 
 //uaktualnianie listydodatkow
-  Future<int> updateAdditions(String textToWrite, String shortName) async {
+  Future<int> updateAdditions(String textToWrite, String name) async {
     Database db = await this.database;
     return await db.rawUpdate('''
     UPDATE employersTable 
     SET additions = ?
-    WHERE shortName = ?
-    ''', [textToWrite, shortName]);
+    WHERE name = ?
+    ''', [textToWrite, name]);
   }
 
 //uaktualnianie listy dni przepracowanych

@@ -102,6 +102,11 @@ class _CalendarState extends State<Calendar> {
     initPrefs();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   //EVENTY - BAZA DANYCH
 
   EventHelper eventHelper = EventHelper();
@@ -607,9 +612,9 @@ class _CalendarState extends State<Calendar> {
       month = data.month.toString();
     }
     return dayy.toString() +
-        ":" +
+        "-" +
         month.toString() +
-        ":" +
+        "-" +
         data.year.toString();
   }
 

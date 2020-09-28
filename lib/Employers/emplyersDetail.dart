@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:working_time_management/Employers/employersArchives.dart';
+import 'package:working_time_management/Employers/employersShortcut.dart';
 import 'package:working_time_management/helpers/employersHelper.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/models/employersModel.dart';
+import 'package:working_time_management/models/eventsModel.dart';
 
 class EmployersDetail extends StatefulWidget {
   final String title;
@@ -27,11 +29,13 @@ class _EmployersDetailState extends State<EmployersDetail> {
   EmployersModel employersModel;
   String title;
   int position;
+  double additionsSum;
   EmployersHelper employersHelper = EmployersHelper();
   EventHelper eventHelper = EventHelper();
+  List<EventsModel> eventsModelList = new List();
   List<EmployersModel> employersModelList;
-  List<String> additionsList = [];
-  double hoursSum = 0;
+  List<String> additionsList;
+  double hoursSum;
   List listOfSum;
   String rate;
   String titleToCheck;
@@ -47,6 +51,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
 
   @override
   void initState() {
+    hoursSum = 0;
     rate = "0";
     receivable = 0;
     updateListView();
@@ -57,6 +62,13 @@ class _EmployersDetailState extends State<EmployersDetail> {
     }
     _notesController.text = employersModel.notes;
     getHourSum(employersModel.name);
+    eventHelper.getHourEmployerSum(employersModel.name).then((event) {
+      setState(() {
+        event.forEach((element) {
+          eventsModelList.add(EventsModel.fromMapObject(element));
+        });
+      });
+    });
     super.initState();
   }
 
@@ -77,7 +89,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
                 color: Theme.of(context).selectedRowColor),
             onPressed: () {
               updateListView();
-              Navigator.of(context).pop();
+              Navigator.pop(context, true);
             }),
         title: Text(title),
       ),
@@ -101,14 +113,25 @@ class _EmployersDetailState extends State<EmployersDetail> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                     child: RaisedButton(
                       color: Theme.of(context).accentColor,
                       child: Text(
                         "Skrót",
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        navigateToEmployerShortcut(
+                            employersModel.name,
+                            hoursSum.toString() +
+                                " * " +
+                                rate.toString() +
+                                " + " +
+                                additionsSum.toString() +
+                                " = " +
+                                receivable.toString(),
+                            additionsList);
+                      },
                     ),
                   ),
                   RaisedButton(
@@ -121,9 +144,18 @@ class _EmployersDetailState extends State<EmployersDetail> {
                       navigateToEmployerArchives(employersModel.name);
                     },
                   ),
+                  RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    child: Text(
+                      "Zapłacono",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    onPressed: () {
+                      payForAll();
+                    },
+                  ),
                 ],
               ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -220,12 +252,12 @@ class _EmployersDetailState extends State<EmployersDetail> {
                     //zsumowanie dodatkow za prace
                     if (double.parse(rate) > 0) {
                       //pobranie sumy wartosci z listy dodatkow
-                      double suma = 0;
+                      additionsSum = 0;
                       for (int i = 0; i < additionsList.length; i++) {
-                        suma += double.parse(
+                        additionsSum += double.parse(
                             additionsList[i].split("(")[1].split(")")[0]);
                       }
-                      receivable = hoursSum * double.parse(rate) + suma;
+                      receivable = hoursSum * double.parse(rate) + additionsSum;
                     } else {
                       _showDialog("Błąd", "Nie podano stawki za godzinę!");
                     }
@@ -342,7 +374,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
   }
 
 //metoda usuwajaca z listy wybrany element a nastepnie zapisujaca do bazy danych
-  deletewpis(String napisdousunieca) {
+  deletewpis(String stringToDelete) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -362,11 +394,11 @@ class _EmployersDetailState extends State<EmployersDetail> {
                     color: Theme.of(context).accentColor,
                     onPressed: () {
                       //usuniecie wpisu z listy
-                      additionsList.remove(napisdousunieca);
+                      additionsList.remove(stringToDelete);
                       //zapisanie listy do bazy danych
                       String textList = additionsList.join("_;");
                       employersHelper.updateAdditions(
-                          textList, employersModel.shortName);
+                          textList, employersModel.name);
                       updateListView();
                       Navigator.pop(context);
                       return;
@@ -496,7 +528,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
                                       additionsList.join("_;");
                                   updateListView();
                                   employersHelper.updateAdditions(
-                                      textaddition, employersModel.shortName);
+                                      textaddition, employersModel.name);
                                   _amountController.text = "";
                                   _titleToCheckController.text = "";
                                   Navigator.pop(context);
@@ -571,5 +603,80 @@ class _EmployersDetailState extends State<EmployersDetail> {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return EmployersArchive(name);
     }));
+  }
+
+  //funkcja przenosząca do nowej aktywności ze
+  //skrótem w której wyświetlane są wszystkie eventy pracodawcy nie zapłacone tak aby
+  //można je było wysłac jako np. screen
+  void navigateToEmployerShortcut(
+      String name, String sum, List addtions) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return EmployersShortcut(name, sum, addtions);
+    }));
+  }
+
+  //funkcja ustawiająca pole zapłacone we wszystkich wyświetlanych eventach
+  void payForAll() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.blue[100],
+        content: Container(
+          height: 300,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "Napewno ustawić status zapłacono dla wszystkich wydarzeń? Przeniesie to wszystkie eventy pracodawcy do archiwum oraz usunie wszystkie dodatki!!",
+                style: TextStyle(fontSize: 20),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  new RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    onPressed: () {
+                      //zmiana wszystkich statusow eventow na zaplacone
+                      setState(() {
+                        this.eventsModelList.forEach((element) {
+                          eventHelper.updateEvent(1, element.id);
+                        });
+                        hoursSum = 0;
+                        getHourSum(this.employersModel.name);
+                        this.additionsList = [];
+                        employersHelper.updateAdditions(
+                            "", this.employersModel.name);
+                      });
+                      Navigator.pop(context, true);
+                    },
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                      return;
+                    },
+                    child: Text(
+                      "Anuluj",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
