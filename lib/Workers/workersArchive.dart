@@ -4,30 +4,30 @@ import 'package:intl/intl.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/models/eventsModel.dart';
 
-class EmployersArchive extends StatefulWidget {
+class WorkersArchive extends StatefulWidget {
   final String name;
 
-  EmployersArchive(this.name);
+  WorkersArchive(this.name);
 
   @override
-  _EmployersArchiveState createState() {
-    return _EmployersArchiveState(this.name);
+  _WorkersArchiveState createState() {
+    return _WorkersArchiveState(this.name);
   }
 }
 
-class _EmployersArchiveState extends State<EmployersArchive> {
+class _WorkersArchiveState extends State<WorkersArchive> {
   String name;
   EventHelper eventHelper = EventHelper();
   List<EventsModel> eventsModelList = new List();
   int count = 0;
   DateFormat format = DateFormat("dd-MM-yyyy");
 
-  _EmployersArchiveState(this.name);
+  _WorkersArchiveState(this.name);
 
   @override
   void initState() {
     super.initState();
-    eventHelper.getEmployersEventsList(this.name).then((event) {
+    eventHelper.getWorkersEventsList(this.name).then((event) {
       setState(() {
         event.forEach((element) {
           eventsModelList.add(EventsModel.fromMapObject(element));
@@ -75,8 +75,8 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                     ),
                     //podtytul wyswietlany z informacjami o pracy
                     subtitle: Text(
-                      "Pracowali: " +
-                          eventsModelList[position].workers +
+                      "Pracował u: " +
+                          eventsModelList[position].employer +
                           "\n" +
                           "Czas : " +
                           eventsModelList[position].workTime +

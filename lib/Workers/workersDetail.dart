@@ -4,8 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqlite_api.dart';
+import 'package:working_time_management/Workers/workersArchive.dart';
+import 'package:working_time_management/Workers/workersShortcut.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/helpers/workersHelper.dart';
+import 'package:working_time_management/models/eventsModel.dart';
 import 'package:working_time_management/models/workersModel.dart';
 
 class WorkersDetail extends StatefulWidget {
@@ -25,11 +28,13 @@ class _WorkersDetailState extends State<WorkersDetail> {
   WorkersModel workersModel;
   String title;
   int position;
+  double additionsSum;
   WorkersHelper workersHelper = WorkersHelper();
   EventHelper eventHelper = EventHelper();
+  List<EventsModel> eventsModelList = new List();
   List<WorkersModel> workersModelList;
-  List<String> additionsList = [];
-  double hoursSum = 0;
+  List<String> additionsList;
+  double hoursSum;
   List listOfSum;
   String rate;
   String titleToCheck;
@@ -45,6 +50,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
 
   @override
   void initState() {
+    hoursSum = 0;
     rate = "0";
     receivable = 0;
     updateListView();
@@ -54,7 +60,14 @@ class _WorkersDetailState extends State<WorkersDetail> {
       additionsList = [];
     }
     _notesController.text = workersModel.notes;
-    getHourSum(workersModel.shortName);
+    getHourSum(workersModel.name);
+    eventHelper.getHourWorkerSum(workersModel.shortName).then((event) {
+      setState(() {
+        event.forEach((element) {
+          eventsModelList.add(EventsModel.fromMapObject(element));
+        });
+      });
+    });
     super.initState();
   }
 
@@ -75,7 +88,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                 color: Theme.of(context).selectedRowColor),
             onPressed: () {
               updateListView();
-              Navigator.of(context).pop();
+              Navigator.pop(context, true);
             }),
         title: Text(title),
       ),
@@ -94,6 +107,53 @@ class _WorkersDetailState extends State<WorkersDetail> {
                       style: TextStyle(
                           fontSize: 25, color: Theme.of(context).accentColor),
                     ),
+                  ),
+                ],
+              ), //przyciski kierujące na storny z archiwum i skrótu dla pracodawcy
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    child: RaisedButton(
+                      color: Theme.of(context).accentColor,
+                      child: Text(
+                        "Skrót",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      onPressed: () {
+                        navigateToEmployerShortcut(
+                            workersModel.shortName,
+                            hoursSum.toString() +
+                                " * " +
+                                rate.toString() +
+                                " + " +
+                                additionsSum.toString() +
+                                " = " +
+                                receivable.toString(),
+                            additionsList);
+                      },
+                    ),
+                  ),
+                  RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    child: Text(
+                      "Archiwum",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    onPressed: () {
+                      navigateToEmployerArchives(workersModel.name);
+                    },
+                  ),
+                  RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    child: Text(
+                      "Zapłacono",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    onPressed: () {
+                      payForAll();
+                    },
                   ),
                 ],
               ),
@@ -194,12 +254,12 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     //zsumowanie dodatkow za prace
                     if (double.parse(rate) > 0) {
                       //pobranie sumy wartosci z listy dodatkow
-                      double suma = 0;
+                      additionsSum = 0;
                       for (int i = 0; i < additionsList.length; i++) {
-                        suma += double.parse(
+                        additionsSum += double.parse(
                             additionsList[i].split("(")[1].split(")")[0]);
                       }
-                      receivable = hoursSum * double.parse(rate) + suma;
+                      receivable = hoursSum * double.parse(rate) + additionsSum;
                     } else {
                       _showDialog("Błąd", "Nie podano stawki za godzinę!");
                     }
@@ -539,5 +599,88 @@ class _WorkersDetailState extends State<WorkersDetail> {
         });
       });
     });
+  }
+
+  //funkcja przenosząca do nowej aktywności z
+  //archiwum w której wyświetlane są wszystkie eventy pracodawcy
+  void navigateToEmployerArchives(String name) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return WorkersArchive(workersModel.shortName);
+    }));
+  }
+
+  //funkcja przenosząca do nowej aktywności ze
+  //skrótem w której wyświetlane są wszystkie eventy pracodawcy nie zapłacone tak aby
+  //można je było wysłac jako np. screen
+  void navigateToEmployerShortcut(
+      String name, String sum, List addtions) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return WorkersShortcut(name, sum, addtions);
+    }));
+  }
+
+  //funkcja ustawiająca pole zapłacone we wszystkich wyświetlanych eventach
+  void payForAll() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.blue[100],
+        content: Container(
+          height: 300,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "Napewno ustawić status zapłacono dla wszystkich wydarzeń? Przeniesie to wszystkie eventy pracownika do archiwum oraz usunie wszystkie dodatki!!",
+                style: TextStyle(fontSize: 20),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  new RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    onPressed: () {
+                      //zmiana wszystkich statusow eventow na zaplacone
+                      setState(() {
+                        this.eventsModelList.forEach((element) {
+                          eventHelper.updateEvent(1, element.id);
+                        });
+                        hoursSum = 0;
+                        getHourSum(this.workersModel.name);
+                        this.additionsList = [];
+                        workersHelper.updateAdditions(
+                            "", this.workersModel.shortName);
+                      });
+                      Navigator.pop(context, true);
+                    },
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                      return;
+                    },
+                    child: Text(
+                      "Anuluj",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

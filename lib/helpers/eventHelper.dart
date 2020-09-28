@@ -107,4 +107,12 @@ class EventHelper {
         .rawQuery('SELECT * FROM $eventsTable WHERE $colEmployer="$name"');
     return datas;
   }
+
+  //pobieranie listy eventow z wybranym imieniem pracodawcy, bez rozróżnienia na to czy jest zapłacone
+  Future<List> getWorkersEventsList(String name) async {
+    Database db = await database;
+    var datas = await db.rawQuery(
+        'SELECT * FROM $eventsTable WHERE $colWorkers LIKE "%$name%" ');
+    return datas;
+  }
 }
