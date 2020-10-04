@@ -6,28 +6,30 @@ import 'package:working_time_management/models/eventsModel.dart';
 
 class WorkersArchive extends StatefulWidget {
   final String name;
+  final String shortname;
 
-  WorkersArchive(this.name);
+  WorkersArchive(this.name, this.shortname);
 
   @override
   _WorkersArchiveState createState() {
-    return _WorkersArchiveState(this.name);
+    return _WorkersArchiveState(this.name, this.shortname);
   }
 }
 
 class _WorkersArchiveState extends State<WorkersArchive> {
   String name;
+  String shortname;
   EventHelper eventHelper = EventHelper();
   List<EventsModel> eventsModelList = new List();
   int count = 0;
   DateFormat format = DateFormat("dd-MM-yyyy");
 
-  _WorkersArchiveState(this.name);
+  _WorkersArchiveState(this.name, this.shortname);
 
   @override
   void initState() {
     super.initState();
-    eventHelper.getWorkersEventsList(this.name).then((event) {
+    eventHelper.getWorkersEventsList(this.shortname).then((event) {
       setState(() {
         event.forEach((element) {
           eventsModelList.add(EventsModel.fromMapObject(element));
@@ -96,13 +98,17 @@ class _WorkersArchiveState extends State<WorkersArchive> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: CircleAvatar(
-                              backgroundColor:
-                                  eventsModelList[position].isPayed == 1
-                                      ? Theme.of(context).accentColor
-                                      : Colors.red,
+                              //sprawdanie czy pracownik jest na liscie oplaconych
+                              backgroundColor: eventsModelList[position]
+                                      .workersPaid
+                                      .contains(this.shortname)
+                                  ? Theme.of(context).accentColor
+                                  : Colors.red,
                               radius: 14.0,
                               child: Icon(
-                                eventsModelList[position].isPayed == 1
+                                eventsModelList[position]
+                                        .workersPaid
+                                        .contains(this.shortname)
                                     ? Icons.attach_money
                                     : Icons.money_off,
                                 color: Colors.black,

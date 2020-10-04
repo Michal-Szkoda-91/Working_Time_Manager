@@ -361,7 +361,7 @@ class _CalendarState extends State<Calendar> {
                         );
                       }).toList(),
                     ),
-                    //napisy rozpoczecia i zakonczenia timeu pracy oraz TimePickery do wyboru godzin
+                    //napisy rozpoczecia i zakonczenia czasu pracy oraz TimePickery do wyboru godzin
                     Column(
                       children: <Widget>[
                         Padding(
@@ -640,12 +640,12 @@ class _CalendarState extends State<Calendar> {
       String date,
       String workTime,
       String employers,
-      String workers,
+      String workersPaid,
       int workersNumber,
       int dayNumber,
       int breakTime,
       double hourSum) async {
-    eventsModel = EventsModel(title, date, workTime, employers, workers,
+    eventsModel = EventsModel(title, date, workTime, employers, workersPaid, "",
         workersNumber, dayNumber, breakTime, hourSum, 0);
     int result;
     result = await eventHelper.insertEvent(eventsModel);
@@ -717,10 +717,18 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-  //nawigowanie do strony z detalami Eventu
-  void navigateToEventDetail(String eventTitle) async {
+  //nawigowanie do strony z detalami Eventu, utworzenie nowego eventu z tytulem
+  void navigateToEventDetail(String title) async {
+    List<EventsModel> eventsModelList = new List();
+    eventHelper.getEventsList(title).then((event) {
+      setState(() {
+        event.forEach((element) {
+          eventsModelList.add(EventsModel.fromMapObject(element));
+        });
+      });
+    });
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return EventDetail(eventTitle);
+      return EventDetail(eventsModelList[0]);
     }));
   }
 

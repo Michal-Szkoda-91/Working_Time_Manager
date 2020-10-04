@@ -31,10 +31,11 @@ class _WorkersDetailState extends State<WorkersDetail> {
   double additionsSum;
   WorkersHelper workersHelper = WorkersHelper();
   EventHelper eventHelper = EventHelper();
-  List<EventsModel> eventsModelList = new List();
+  List<EventsModel> eventsModelListNotPaid = new List();
   List<WorkersModel> workersModelList;
   List<String> additionsList;
-  double hoursSum;
+  //Listy potrzebne do wyczyszczenia danych o platnosciach
+  double hoursSum = 0;
   List listOfSum;
   String rate;
   String titleToCheck;
@@ -60,11 +61,14 @@ class _WorkersDetailState extends State<WorkersDetail> {
       additionsList = [];
     }
     _notesController.text = workersModel.notes;
-    getHourSum(workersModel.name);
-    eventHelper.getHourWorkerSum(workersModel.shortName).then((event) {
+    getHourSum(workersModel.shortName);
+    //utworzenie listy eventow ze statusem pracownika "niezapłacony"
+    eventHelper
+        .getWorkersEventsListNotPaid(workersModel.shortName)
+        .then((event) {
       setState(() {
         event.forEach((element) {
-          eventsModelList.add(EventsModel.fromMapObject(element));
+          eventsModelListNotPaid.add(EventsModel.fromMapObject(element));
         });
       });
     });
@@ -122,16 +126,30 @@ class _WorkersDetailState extends State<WorkersDetail> {
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       onPressed: () {
-                        navigateToEmployerShortcut(
-                            workersModel.shortName,
-                            hoursSum.toString() +
-                                " * " +
-                                rate.toString() +
-                                " + " +
-                                additionsSum.toString() +
-                                " = " +
-                                receivable.toString(),
-                            additionsList);
+                        //zsumowanie dodatkow za prace
+                        if (double.parse(rate) > 0) {
+                          //pobranie sumy wartosci z listy dodatkow
+                          additionsSum = 0;
+                          for (int i = 0; i < additionsList.length; i++) {
+                            additionsSum += double.parse(
+                                additionsList[i].split("(")[1].split(")")[0]);
+                          }
+                          receivable =
+                              hoursSum * double.parse(rate) + additionsSum;
+                          //przejscie do okienka umozliwiajacego wyswietlenie skrotu dla podsumowania
+                          navigateToWorkersShortcut(
+                              workersModel.shortName,
+                              hoursSum.toString() +
+                                  " * " +
+                                  rate.toString() +
+                                  " + " +
+                                  additionsSum.toString() +
+                                  " = " +
+                                  receivable.toString(),
+                              additionsList);
+                        } else {
+                          _showDialog("Błąd", "Nie podano stawki za godzinę!");
+                        }
                       },
                     ),
                   ),
@@ -142,7 +160,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                     onPressed: () {
-                      navigateToEmployerArchives(workersModel.name);
+                      navigateToWorkersArchives(workersModel.name);
                     },
                   ),
                   RaisedButton(
@@ -580,8 +598,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
   }
 
   //Pobieranie sumy godzin z Eventow oraz zliczanie ich w sume
-  void getHourSum(String name) async {
-    this.listOfSum = await eventHelper.getHourWorkerSum(name);
+  void getHourSum(String shortName) async {
+    this.listOfSum = await eventHelper.getWorkersEventsListNotPaid(shortName);
     this.listOfSum.forEach((element) {
       this.hoursSum += element['hourSum'];
     });
@@ -603,17 +621,16 @@ class _WorkersDetailState extends State<WorkersDetail> {
 
   //funkcja przenosząca do nowej aktywności z
   //archiwum w której wyświetlane są wszystkie eventy pracodawcy
-  void navigateToEmployerArchives(String name) async {
+  void navigateToWorkersArchives(String name) async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return WorkersArchive(workersModel.shortName);
+      return WorkersArchive(workersModel.name, workersModel.shortName);
     }));
   }
 
   //funkcja przenosząca do nowej aktywności ze
   //skrótem w której wyświetlane są wszystkie eventy pracodawcy nie zapłacone tak aby
   //można je było wysłac jako np. screen
-  void navigateToEmployerShortcut(
-      String name, String sum, List addtions) async {
+  void navigateToWorkersShortcut(String name, String sum, List addtions) async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return WorkersShortcut(name, sum, addtions);
     }));
@@ -640,13 +657,31 @@ class _WorkersDetailState extends State<WorkersDetail> {
                   new RaisedButton(
                     color: Theme.of(context).accentColor,
                     onPressed: () {
-                      //zmiana wszystkich statusow eventow na zaplacone
+                      //zmiana wszystkich statusow eventow na zaplacone dla wybranego pracownika
                       setState(() {
-                        this.eventsModelList.forEach((element) {
-                          eventHelper.updateEvent(1, element.id);
+                        this.eventsModelListNotPaid.forEach((element) {
+                          //utworzenie list z zaplaconymi i nie zaplaconymi pracowniakami w evencie
+                          List workersNotPaidList =
+                              element.workersNotPaid.split("; ");
+                          List workersPaidList;
+                          if (element.workersPaid != "") {
+                            workersPaidList = element.workersPaid.split("; ");
+                          } else {
+                            workersPaidList = [];
+                          }
+                          //dodanie pracownika do listy zaplacone
+                          workersPaidList.add(this.workersModel.shortName);
+                          //usuniecie pracownika z listy zaplacone
+                          workersNotPaidList
+                              .remove(this.workersModel.shortName);
+                          //sklejenie list ponownie i zapisanie wynikow w bazie
+                          eventHelper.updateWorkersNotPaid(
+                              element.id, workersNotPaidList.join("; "));
+                          eventHelper.updateWorkersPaid(
+                              element.id, workersPaidList.join("; "));
                         });
-                        hoursSum = 0;
-                        getHourSum(this.workersModel.name);
+                        this.hoursSum = 0;
+                        getHourSum(this.workersModel.shortName);
                         this.additionsList = [];
                         workersHelper.updateAdditions(
                             "", this.workersModel.shortName);

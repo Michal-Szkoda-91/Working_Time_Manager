@@ -76,7 +76,7 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                     //podtytul wyswietlany z informacjami o pracy
                     subtitle: Text(
                       "Pracowali: " +
-                          eventsModelList[position].workers +
+                          eventsModelList[position].workersNotPaid +
                           "\n" +
                           "Czas : " +
                           eventsModelList[position].workTime +
@@ -97,12 +97,12 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                           padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: CircleAvatar(
                               backgroundColor:
-                                  eventsModelList[position].isPayed == 1
+                                  eventsModelList[position].isPaid == 1
                                       ? Theme.of(context).accentColor
                                       : Colors.red,
                               radius: 14.0,
                               child: Icon(
-                                eventsModelList[position].isPayed == 1
+                                eventsModelList[position].isPaid == 1
                                     ? Icons.attach_money
                                     : Icons.money_off,
                                 color: Colors.black,

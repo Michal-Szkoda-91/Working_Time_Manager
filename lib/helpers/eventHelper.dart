@@ -14,12 +14,13 @@ class EventHelper {
   String colDate = 'date';
   String colWorkTime = 'workTime';
   String colEmployer = 'employer';
-  String colWorkers = 'workers';
+  String colWorkersNotPaid = 'workersNotPaid';
+  String colWorkersPaid = 'workersPaid';
   String colWorkersNumber = 'workersNumber';
   String colDayNumber = 'dayNumber';
   String colBreakTime = 'breakTime';
   String colHourSum = 'hourSum';
-  String colIsPayed = 'isPayed';
+  String colIsPaid = 'isPaid';
 
   EventHelper._createInstance();
 
@@ -47,7 +48,7 @@ class EventHelper {
 
   void _createDB(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $eventsTable($colID INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colDate TEXT, $colWorkTime TEXT, $colEmployer TEXT, $colWorkers TEXT, $colWorkersNumber INTEGER, $colDayNumber INTEGER, $colBreakTime INTEGER, $colHourSum REAL, $colIsPayed BOOLEAN)');
+        'CREATE TABLE $eventsTable($colID INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colDate TEXT, $colWorkTime TEXT, $colEmployer TEXT, $colWorkersNotPaid TEXT, $colWorkersPaid TEXT, $colWorkersNumber INTEGER, $colDayNumber INTEGER, $colBreakTime INTEGER, $colHourSum REAL, $colIsPaid BOOLEAN)');
   }
 
   //wstawianie eventu
@@ -57,11 +58,11 @@ class EventHelper {
     return result;
   }
 
-  //update eventu
-  Future<int> updateEvent(int isPayed, int id) async {
+  //update eventu, zmiana stanu zaplacony
+  Future<int> updateEvent(int isPaid, int id) async {
     Database db = await this.database;
     var result = await db.rawUpdate(
-        "UPDATE $eventsTable SET $colIsPayed = $isPayed WHERE $colID = $id");
+        "UPDATE $eventsTable SET $colIsPaid = $isPaid WHERE $colID = $id");
     return result;
   }
 
@@ -88,15 +89,15 @@ class EventHelper {
   Future<List> getHourEmployerSum(String name) async {
     Database db = await database;
     var datas = await db.rawQuery(
-        'SELECT * FROM $eventsTable WHERE $colEmployer="$name" AND $colIsPayed=0');
+        'SELECT * FROM $eventsTable WHERE $colEmployer="$name" AND $colIsPaid=0');
     return datas;
   }
 
-  //pobieranie listy eventów z wybranym imieniem  pracownika statusem niezapłacony
-  Future<List> getHourWorkerSum(String name) async {
+  //pobieranie listy eventow z wybranym tytulem
+  Future<List> getEventsList(String title) async {
     Database db = await database;
-    var datas = await db.rawQuery(
-        'SELECT * FROM $eventsTable WHERE $colWorkers LIKE "%$name%" AND $colIsPayed=0');
+    var datas = await db
+        .rawQuery('SELECT * FROM $eventsTable WHERE $colTitle="$title"');
     return datas;
   }
 
@@ -108,11 +109,43 @@ class EventHelper {
     return datas;
   }
 
-  //pobieranie listy eventow z wybranym imieniem pracodawcy, bez rozróżnienia na to czy jest zapłacone
-  Future<List> getWorkersEventsList(String name) async {
+  //pobieranie listy eventow z wybranym imieniem pracownika, bez rozróżnienia na to czy jest zapłacone
+  Future<List> getWorkersEventsList(String shortname) async {
     Database db = await database;
     var datas = await db.rawQuery(
-        'SELECT * FROM $eventsTable WHERE $colWorkers LIKE "%$name%" ');
+        'SELECT * FROM $eventsTable WHERE $colWorkersNotPaid LIKE "%$shortname%" OR $colWorkersPaid LIKE "%$shortname%" ');
     return datas;
+  }
+
+  //pobieranie listy eventow z wybranym imieniem pracownika, jeśli jest na liście 'niezapłacone'
+  Future<List> getWorkersEventsListNotPaid(String shortname) async {
+    Database db = await database;
+    var datas = await db.rawQuery(
+        'SELECT * FROM $eventsTable WHERE $colWorkersNotPaid LIKE "%$shortname%" ');
+    return datas;
+  }
+
+  //pobieranie listy eventow z wybranym imieniem pracownika, jeśli jest na liście 'zapłacone'
+  Future<List> getWorkersEventsListPaid(String shortname) async {
+    Database db = await database;
+    var datas = await db.rawQuery(
+        'SELECT * FROM $eventsTable WHERE $colWorkersPaid LIKE "%$shortname%" ');
+    return datas;
+  }
+
+//zapisanie do eventu listy pracownikow nie zaplaconych
+  Future<int> updateWorkersNotPaid(int id, String list) async {
+    Database db = await this.database;
+    var result = await db.rawUpdate(
+        "UPDATE $eventsTable SET $colWorkersNotPaid = '$list' WHERE $colID = $id");
+    return result;
+  }
+
+  //zapisanie do eventu listy pracownikow nie zaplaconyc
+  Future<int> updateWorkersPaid(int id, String list) async {
+    Database db = await this.database;
+    var result = await db.rawUpdate(
+        "UPDATE $eventsTable SET $colWorkersPaid = '$list' WHERE $colID = $id");
+    return result;
   }
 }
