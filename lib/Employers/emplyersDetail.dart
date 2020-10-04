@@ -35,7 +35,7 @@ class _EmployersDetailState extends State<EmployersDetail> {
   List<EventsModel> eventsModelList = new List();
   List<EmployersModel> employersModelList;
   List<String> additionsList;
-  double hoursSum;
+  double hoursSum = 0;
   List listOfSum;
   String rate;
   String titleToCheck;
@@ -121,16 +121,33 @@ class _EmployersDetailState extends State<EmployersDetail> {
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       onPressed: () {
-                        navigateToEmployerShortcut(
-                            employersModel.name,
-                            hoursSum.toString() +
-                                " * " +
-                                rate.toString() +
-                                " + " +
-                                additionsSum.toString() +
-                                " = " +
-                                receivable.toString(),
-                            additionsList);
+                        setState(() {
+                          //zsumowanie dodatkow za prace
+                          if (double.parse(rate) > 0) {
+                            //pobranie sumy wartosci z listy dodatkow
+                            additionsSum = 0;
+                            for (int i = 0; i < additionsList.length; i++) {
+                              additionsSum += double.parse(
+                                  additionsList[i].split("(")[1].split(")")[0]);
+                            }
+                            receivable =
+                                hoursSum * double.parse(rate) + additionsSum;
+                            //przejscie do strony ze skrotami do wyswietlenia dla inwestora
+                            navigateToEmployerShortcut(
+                                employersModel.name,
+                                hoursSum.toString() +
+                                    " * " +
+                                    rate.toString() +
+                                    " + " +
+                                    additionsSum.toString() +
+                                    " = " +
+                                    receivable.toString(),
+                                additionsList);
+                          } else {
+                            _showDialog(
+                                "Błąd", "Nie podano stawki za godzinę!");
+                          }
+                        });
                       },
                     ),
                   ),

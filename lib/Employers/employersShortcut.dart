@@ -110,27 +110,30 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
                   decoration: BoxDecoration(
                       border: Border(
                           left: BorderSide(color: Colors.blue, width: 4.0))),
-                  child: Text(
-                    getDayFromNumber(eventsModelList[position].dayNumber) +
-                        " - " +
-                        eventsModelList[position].date +
-                        ", " +
-                        eventsModelList[position].workTime +
-                        ". (-" +
-                        eventsModelList[position].breakTime.toString() +
-                        " min)" +
-                        "\nPrzepracowano: " +
-                        eventsModelList[position].workersNumber.toString() +
-                        " * " +
-                        eventsModelList[position].hourSum.toString() +
-                        " = " +
-                        (eventsModelList[position].workersNumber *
-                                eventsModelList[position].hourSum)
-                            .toString() +
-                        " godz.",
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Text(
+                      getDayFromNumber(eventsModelList[position].dayNumber) +
+                          " - " +
+                          eventsModelList[position].date +
+                          ", " +
+                          eventsModelList[position].workTime +
+                          ". (-" +
+                          eventsModelList[position].breakTime.toString() +
+                          " min)" +
+                          "\nPrzepracowano: " +
+                          eventsModelList[position].workersNumber.toString() +
+                          " * " +
+                          eventsModelList[position].hourSum.toString() +
+                          " = " +
+                          (eventsModelList[position].workersNumber *
+                                  eventsModelList[position].hourSum)
+                              .toString() +
+                          " godz.",
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
@@ -155,11 +158,14 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
                   decoration: BoxDecoration(
                       border: Border(
                           left: BorderSide(color: Colors.blue, width: 4.0))),
-                  child: Text(
-                    addtions[position],
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Text(
+                      addtions[position],
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),

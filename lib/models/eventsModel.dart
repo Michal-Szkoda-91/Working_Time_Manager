@@ -6,36 +6,39 @@ class EventsModel {
   String _date;
   String _workTime;
   String _employer;
-  String _workers;
+  String _workersNotPaid;
+  String _workersPaid;
   int _workersNumber;
   int _dayNumber;
   int _breakTime;
   double _hourSum;
-  int _isPayed;
+  int _isPaid;
 
   EventsModel(
       this._title,
       this._date,
       this._workTime,
       this._employer,
-      this._workers,
+      this._workersNotPaid,
+      this._workersPaid,
       this._workersNumber,
       this._dayNumber,
       this._breakTime,
       this._hourSum,
-      this._isPayed);
+      this._isPaid);
 
   int get id => _id;
   String get title => _title;
   String get date => _date;
   String get workTime => _workTime;
   String get employer => _employer;
-  String get workers => _workers;
+  String get workersNotPaid => _workersNotPaid;
+  String get workersPaid => _workersPaid;
   int get workersNumber => _workersNumber;
   int get dayNumber => _dayNumber;
   int get breakTime => _breakTime;
   double get hourSum => _hourSum;
-  int get isPayed => _isPayed;
+  int get isPaid => _isPaid;
 
   //tutaj mozesz ustawiac warunki wpisywania
   set title(String newtitle) {
@@ -54,8 +57,12 @@ class EventsModel {
     this._employer = newemployer;
   }
 
-  set workers(String newworkers) {
-    this._workers = newworkers;
+  set workersNotPaid(String newworkersNotPaid) {
+    this._workersNotPaid = newworkersNotPaid;
+  }
+
+  set workersPaid(String newworkersPaid) {
+    this._workersPaid = newworkersPaid;
   }
 
   set workersNumber(int newworkersNumber) {
@@ -74,8 +81,8 @@ class EventsModel {
     this._hourSum = newhourSum;
   }
 
-  set isPayed(int newisPayed) {
-    this._isPayed = newisPayed;
+  set isPaid(int newisPaid) {
+    this._isPaid = newisPaid;
   }
 
   //konwertowanie objektu w mape
@@ -88,12 +95,13 @@ class EventsModel {
     map['date'] = _date;
     map['workTime'] = _workTime;
     map['employer'] = _employer;
-    map['workers'] = _workers;
+    map['workersNotPaid'] = _workersNotPaid;
+    map['workersPaid'] = _workersPaid;
     map['workersNumber'] = _workersNumber;
     map['dayNumber'] = _dayNumber;
     map['breakTime'] = _breakTime;
     map['hourSum'] = _hourSum;
-    map['isPayed'] = _isPayed;
+    map['isPaid'] = _isPaid;
     return map;
   }
 
@@ -104,11 +112,12 @@ class EventsModel {
     this._date = map['date'];
     this._workTime = map['workTime'];
     this._employer = map['employer'];
-    this._workers = map['workers'];
+    this._workersNotPaid = map['workersNotPaid'];
+    this._workersPaid = map['workersPaid'];
     this._workersNumber = map['workersNumber'];
     this._dayNumber = map['dayNumber'];
     this._breakTime = map['breakTime'];
     this._hourSum = map['hourSum'];
-    this._isPayed = map['isPayed'];
+    this._isPaid = map['isPaid'];
   }
 }

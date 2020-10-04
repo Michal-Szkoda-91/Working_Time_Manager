@@ -34,7 +34,7 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
   @override
   void initState() {
     super.initState();
-    eventHelper.getHourWorkerSum(this.name).then((event) {
+    eventHelper.getWorkersEventsListNotPaid(this.name).then((event) {
       setState(() {
         event.forEach((element) {
           eventsModelList.add(EventsModel.fromMapObject(element));
@@ -110,27 +110,26 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
                   decoration: BoxDecoration(
                       border: Border(
                           left: BorderSide(color: Colors.blue, width: 4.0))),
-                  child: Text(
-                    getDayFromNumber(eventsModelList[position].dayNumber) +
-                        " - " +
-                        eventsModelList[position].date +
-                        ", " +
-                        eventsModelList[position].workTime +
-                        ". (-" +
-                        eventsModelList[position].breakTime.toString() +
-                        " min)" +
-                        "\nPrzepracowano: " +
-                        eventsModelList[position].workersNumber.toString() +
-                        " * " +
-                        eventsModelList[position].hourSum.toString() +
-                        " = " +
-                        (eventsModelList[position].workersNumber *
-                                eventsModelList[position].hourSum)
-                            .toString() +
-                        " godz.",
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Text(
+                      getDayFromNumber(eventsModelList[position].dayNumber) +
+                          " - " +
+                          eventsModelList[position].date +
+                          ", " +
+                          eventsModelList[position].workTime +
+                          ". (-" +
+                          eventsModelList[position].breakTime.toString() +
+                          " min)" +
+                          "\nPrzepracowano: " +
+                          eventsModelList[position].hourSum.toString() +
+                          " godz." +
+                          " - U : " +
+                          eventsModelList[position].employer,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
@@ -155,11 +154,14 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
                   decoration: BoxDecoration(
                       border: Border(
                           left: BorderSide(color: Colors.blue, width: 4.0))),
-                  child: Text(
-                    addtions[position],
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Text(
+                      addtions[position],
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
