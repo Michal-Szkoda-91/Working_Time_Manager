@@ -65,7 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: new Icon(Icons.calendar_today),
               title: new Text("Kalendarz")),
           new BottomNavigationBarItem(
-              icon: new Icon(Icons.work), title: new Text("Pracodawcy")),
+              icon: new Icon(Icons.business_center),
+              title: new Text("Pracodawcy")),
           new BottomNavigationBarItem(
               icon: new Icon(Icons.people), title: new Text("Pracownicy")),
           new BottomNavigationBarItem(

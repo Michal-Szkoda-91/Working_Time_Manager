@@ -19,20 +19,25 @@ class _EventDetailState extends State<EventDetail> {
   EventHelper eventHelper = EventHelper();
 
   List workersList = [];
+  List workersNotPaidList = [];
+  List workersPaidList = [];
 
   _EventDetailState(this.eventsModel);
 
   @override
   Widget build(BuildContext context) {
-    //utworzenie listy pracownikow, sprawdzenie czy sa puste
     if (this.eventsModel.workersPaid != "" &&
         this.eventsModel.workersNotPaid != "") {
       workersList = this.eventsModel.workersNotPaid.split("; ") +
           this.eventsModel.workersPaid.split("; ");
+      workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
+      workersPaidList = this.eventsModel.workersPaid.split("; ");
     } else if (this.eventsModel.workersPaid == "") {
       workersList = this.eventsModel.workersNotPaid.split("; ");
+      workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
     } else if (this.eventsModel.workersNotPaid == "") {
       workersList = this.eventsModel.workersPaid.split("; ");
+      workersPaidList = this.eventsModel.workersPaid.split("; ");
     }
     return Scaffold(
       appBar: AppBar(
@@ -62,15 +67,7 @@ class _EventDetailState extends State<EventDetail> {
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
               child: Text(
-                "Pracownicy \nnie opłaceni:   " +
-                    this.eventsModel.workersNotPaid,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-              child: Text(
-                "Pracownicy \nopłaceni:        " + this.eventsModel.workersPaid,
+                "Pracownicy :   " + workersList.join("; "),
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
@@ -162,12 +159,8 @@ class _EventDetailState extends State<EventDetail> {
 
   //budowanie listy pracownikow
   ListView getList() {
-    List workersNotPaidList = [];
-    List workersPaidList = [];
-    workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
-    workersPaidList = this.eventsModel.workersPaid.split("; ");
     return ListView.builder(
-        itemCount: workersList.length,
+        itemCount: eventsModel.workersNumber,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.fromLTRB(50, 3, 50, 3),
@@ -198,18 +191,35 @@ class _EventDetailState extends State<EventDetail> {
                       colorOff: Colors.red,
                       iconOn: Icons.attach_money,
                       iconOff: Icons.money_off,
-                      onChanged: (bool state) {
-                        //zapisanie do bazy informacji o zapłaceniu pracownikowi za event
+                      onChanged: (state) {
+                        //inicjowanie poprawnych wartosci list
                         if (state) {
-                          workersNotPaidList.remove(workersList[index]);
-                          workersPaidList.add(workersList[index]);
-                          print("nie" + workersNotPaidList.toString());
-                          print("tak" + workersPaidList.toString());
+                          //utworzenie listy na podstawie statusu przyciskow
+                          if (!workersPaidList.contains(workersList[index])) {
+                            workersPaidList.add(workersList[index]);
+                            workersNotPaidList.remove(workersList[index]);
+                          }
                         } else {
-                          workersNotPaidList.add(workersList[index]);
-                          workersPaidList.remove(workersList[index]);
-                          print("nie" + workersNotPaidList.toString());
-                          print("tak" + workersPaidList.toString());
+                          if (!workersNotPaidList
+                              .contains(workersList[index])) {
+                            workersPaidList.remove(workersList[index]);
+                            workersNotPaidList.add(workersList[index]);
+                          }
+                        }
+                        //zapis danych do bazy
+                        if (workersNotPaidList.isNotEmpty) {
+                          eventHelper.updateWorkersNotPaid(this.eventsModel.id,
+                              workersNotPaidList.join("; "));
+                        } else {
+                          eventHelper.updateWorkersNotPaid(
+                              this.eventsModel.id, "");
+                        }
+                        if (workersPaidList.isNotEmpty) {
+                          eventHelper.updateWorkersPaid(
+                              this.eventsModel.id, workersPaidList.join("; "));
+                        } else {
+                          eventHelper.updateWorkersPaid(
+                              this.eventsModel.id, "");
                         }
                       })
                 ],

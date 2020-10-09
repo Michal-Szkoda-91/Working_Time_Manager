@@ -36,6 +36,8 @@ dependencies:
   path_provider: any
   flutter_slidable: any
   lite_rolling_switch: ^0.1.1
+  
+  
 
 
 dev_dependencies:

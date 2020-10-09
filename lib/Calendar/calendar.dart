@@ -30,6 +30,13 @@ class _CalendarState extends State<Calendar> {
   String choosenEmployerName;
   String titleCreated;
 
+  //EVENTY - BAZA DANYCH
+
+  EventHelper eventHelper = EventHelper();
+  EventsModel eventsModel;
+  List<EventsModel> eventsModelList;
+  int eventsLenght = 0;
+
   //PRACODAWCY i PRACOWNICY
   //dane pracodawców
   EmployersHelper employersHelper = EmployersHelper();
@@ -40,6 +47,21 @@ class _CalendarState extends State<Calendar> {
   WorkersHelper workersHelper = WorkersHelper();
   List<WorkersModel> workersModelList;
   int workersLenght = 0;
+
+  //pobieranie listy modeli eventow
+  void updateListViewEvents() {
+    final Future<Database> dbFuture = eventHelper.initialDatabase();
+    dbFuture.then((databse) {
+      Future<List<EventsModel>> eventModelListFuture =
+          eventHelper.getEventAllList();
+      eventModelListFuture.then((eventsModelList) {
+        setState(() {
+          this.eventsModelList = eventsModelList;
+          this.eventsLenght = eventsModelList.length;
+        });
+      });
+    });
+  }
 
   //pobieranie listy modeli pracodawców
   void updateListViewEmployers() {
@@ -107,11 +129,6 @@ class _CalendarState extends State<Calendar> {
     super.dispose();
   }
 
-  //EVENTY - BAZA DANYCH
-
-  EventHelper eventHelper = EventHelper();
-  EventsModel eventsModel;
-
   //PREFERENCJE
 
   initPrefs() async {
@@ -144,6 +161,7 @@ class _CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     updateListViewEmployers();
     updateListViewWorkers();
+    updateListViewEvents();
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
@@ -188,19 +206,93 @@ class _CalendarState extends State<Calendar> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      height: 15,
-                      alignment: Alignment.center,
-                      width: 20,
-                      child: Text(
-                        date.day.toString(),
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold),
+                    //*********************************** */
+                    //Warunki sprawdzajace czy dany event jest oplacony calkowicie czy nie
+                    //jesli nie ma eventow buduje normalny dzien
+                    if (_events[date] == null)
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).selectedRowColor,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    //jesli sa eventy i wszystkie sa zaplacone u pracodawcow buduje dzien z kolorem zielonym
+                    if (_events[date] != null &&
+                        checkIfEventIsPaidEmployerList(
+                            _events[date], eventsModelList))
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                          Text(
+                            getEmployerShortName(
+                                _events[date][0], eventsModelList),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
+                          ),
+                        ],
+                      ),
+                    //jesli eventy sa i chociaz jeden jest nie oplacony buduje dzien czerwony
+                    if (_events[date] != null &&
+                        !checkIfEventIsPaidEmployerList(
+                            _events[date], eventsModelList))
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                          Text(
+                            getEmployerShortName(
+                                _events[date][0], eventsModelList),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
+
+              //Dzien wybrany
               selectedDayBuilder: (context, date, events) => Container(
                 margin: const EdgeInsets.all(0.5),
                 alignment: Alignment.topCenter,
@@ -211,19 +303,92 @@ class _CalendarState extends State<Calendar> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      height: 15,
-                      alignment: Alignment.center,
-                      width: 20,
-                      child: Text(
-                        date.day.toString(),
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold),
+                    //*********************************** */
+                    //Warunki sprawdzajace czy dany event jest oplacony calkowicie czy nie
+                    //jesli nie ma eventow buduje normalny dzien
+                    if (_events[date] == null)
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).selectedRowColor,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    //jesli sa eventy i wszystkie sa zaplacone u pracodawcow buduje dzien z kolorem zielonym
+                    if (_events[date] != null &&
+                        checkIfEventIsPaidEmployerList(
+                            _events[date], eventsModelList))
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                          Text(
+                            getEmployerShortName(
+                                _events[date][0], eventsModelList),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
+                          ),
+                        ],
+                      ),
+                    //jesli eventy sa i chociaz jeden jest nie oplacony buduje dzien czerwony
+                    if (_events[date] != null &&
+                        !checkIfEventIsPaidEmployerList(
+                            _events[date], eventsModelList))
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                          Text(
+                            getEmployerShortName(
+                                _events[date][0], eventsModelList),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
+              //dzien dzisiejszy
               todayDayBuilder: (context, date, events) => Container(
                 margin: const EdgeInsets.all(0.5),
                 alignment: Alignment.topCenter,
@@ -234,16 +399,88 @@ class _CalendarState extends State<Calendar> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      height: 15,
-                      alignment: Alignment.center,
-                      width: 20,
-                      child: Text(
-                        date.day.toString(),
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold),
+                    //*********************************** */
+                    //Warunki sprawdzajace czy dany event jest oplacony calkowicie czy nie
+                    //jesli nie ma eventow buduje normalny dzien
+                    if (_events[date] == null)
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).selectedRowColor,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    //jesli sa eventy i wszystkie sa zaplacone u pracodawcow buduje dzien z kolorem zielonym
+                    if (_events[date] != null &&
+                        checkIfEventIsPaidEmployerList(
+                            _events[date], eventsModelList))
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                          Text(
+                            getEmployerShortName(
+                                _events[date][0], eventsModelList),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
+                          ),
+                        ],
+                      ),
+                    //jesli eventy sa i chociaz jeden jest nie oplacony buduje dzien czerwony
+                    if (_events[date] != null &&
+                        !checkIfEventIsPaidEmployerList(
+                            _events[date], eventsModelList))
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                          Text(
+                            getEmployerShortName(
+                                _events[date][0], eventsModelList),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -290,35 +527,77 @@ class _CalendarState extends State<Calendar> {
             (event) => Slidable(
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.25,
-              child: Container(
-                color: Theme.of(context).selectedRowColor,
-                child: ListTile(
-                  title: Row(
-                    children: [
-                      Text(
-                        event,
-                        style: TextStyle(
-                          fontSize: 20,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                child: Container(
+                  color: Theme.of(context).selectedRowColor,
+                  child: ListTile(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          event,
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
                         ),
-                      ),
-                    ],
+                        //icona zmienia kolor w zaleznosci od statusu eventu
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Rozliczenie:",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.business_center,
+                                    color: checkIfEventIsPaidEmployer(
+                                            event, this.eventsModelList)
+                                        ? Colors.green
+                                        : Colors.red,
+                                    size: 50,
+                                  ),
+                                  Icon(
+                                    Icons.people,
+                                    color: checkIfEventIsPaidWorker(
+                                            event, this.eventsModelList)
+                                        ? Colors.green
+                                        : Colors.red,
+                                    size: 50,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
               actions: <Widget>[
-                IconSlideAction(
-                  caption: 'Usuń',
-                  color: Colors.red,
-                  icon: Icons.delete,
-                  onTap: () {
-                    deleteEvent(event);
-                  },
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                  child: IconSlideAction(
+                    caption: 'Usuń',
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () {
+                      deleteEvent(event);
+                    },
+                  ),
                 ),
-                IconSlideAction(
-                  caption: 'Szczeguły',
-                  color: Theme.of(context).accentColor,
-                  icon: Icons.assessment,
-                  onTap: () => navigateToEventDetail(event),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
+                  child: IconSlideAction(
+                    caption: 'Szczeguły',
+                    color: Theme.of(context).accentColor,
+                    icon: Icons.assessment,
+                    onTap: () => navigateToEventDetail(event),
+                  ),
                 ),
               ],
             ),
@@ -483,6 +762,7 @@ class _CalendarState extends State<Calendar> {
                                 summary != "") {
                               //utworzenie tytulu eventu
                               titleCreated = titleGenerator(
+                                  _selectedEvents.length + 1,
                                   dateGenerator(_controller.selectedDay),
                                   employerNameValue.toString(),
                                   choosenWorkers,
@@ -514,6 +794,7 @@ class _CalendarState extends State<Calendar> {
                                   timeBreak,
                                   double.tryParse(workTimeCounter(
                                       workStart, workStop, timeBreak)));
+                              updateListViewEvents();
                               Navigator.pop(context);
                             } else {
                               _showDialog("Błąd",
@@ -619,9 +900,10 @@ class _CalendarState extends State<Calendar> {
   }
 
 //funkcja generujaca tytul potrzebny do shared preferenced
-  String titleGenerator(String date, String employerName, List workerksList,
-      String timeStartLocal, String timeStopLocal) {
-    return "Data: " +
+  String titleGenerator(int number, String date, String employerName,
+      List workerksList, String timeStartLocal, String timeStopLocal) {
+    return number.toString() +
+        ". Data: " +
         date +
         "\nPraca u: " +
         employerName +
@@ -683,6 +965,7 @@ class _CalendarState extends State<Calendar> {
                           "events", json.encode(encodeMap(_events)));
                       //usuwanie danych z bazy
                       eventHelper.deleteEvent(event);
+                      updateListViewEvents();
                       Navigator.pop(context);
                       return;
                     },
@@ -719,16 +1002,12 @@ class _CalendarState extends State<Calendar> {
 
   //nawigowanie do strony z detalami Eventu, utworzenie nowego eventu z tytulem
   void navigateToEventDetail(String title) async {
-    List<EventsModel> eventsModelList = new List();
-    eventHelper.getEventsList(title).then((event) {
-      setState(() {
-        event.forEach((element) {
-          eventsModelList.add(EventsModel.fromMapObject(element));
-        });
-      });
+    EventsModel modelTaked;
+    eventsModelList.forEach((element) {
+      if (element.title == title) modelTaked = element;
     });
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return EventDetail(eventsModelList[0]);
+      return EventDetail(modelTaked);
     }));
   }
 
@@ -738,5 +1017,57 @@ class _CalendarState extends State<Calendar> {
       content: Text(message),
     );
     showDialog(context: context, builder: (_) => alertDialog);
+  }
+
+  //Kolorowanie eventow
+  //****************************************/
+
+//funkcja sprawdzajaca czy w dany event jest oplacony
+  bool checkIfEventIsPaidEmployer(String title, List<EventsModel> eventList) {
+    bool check = false;
+    eventList.forEach((element) {
+      if (element.title == title && element.isPaid == 1) check = true;
+    });
+    return check;
+  }
+
+  //funkcja zwracajaca krotka nazwe pracodawcy
+  String getEmployerShortName(String title, List<EventsModel> eventList) {
+    String name = "";
+    String shortname = "";
+    eventList.forEach((element) {
+      if (element.title == title) name = element.employer;
+    });
+    //pobranie z listy pracodawcow krotkiego imienia
+    employersModelList.forEach((element) {
+      if (element.name == name) shortname = element.shortName;
+    });
+    return shortname;
+  }
+
+  //funkcja sprawdzajaca czy w dany event jest oplacony
+  bool checkIfEventIsPaidWorker(String title, List<EventsModel> eventList) {
+    bool check = false;
+    eventList.forEach((element) {
+      if (element.title == title && element.workersNotPaid.isEmpty)
+        check = true;
+    });
+    return check;
+  }
+
+//sprawdzenie dla listy eventow
+  bool checkIfEventIsPaidEmployerList(
+      List<dynamic> list, List<EventsModel> eventList) {
+    bool check = true;
+    eventList.forEach((element) {
+      list.forEach((elementList) {
+        if (element.title == elementList &&
+            (element.isPaid == 0 ||
+                element.workersNotPaid !=
+                    "")) //sprawdzanie czy event jest oplacony
+          check = false;
+      });
+    });
+    return check;
   }
 }
