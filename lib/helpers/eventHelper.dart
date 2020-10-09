@@ -101,6 +101,25 @@ class EventHelper {
     return datas;
   }
 
+  //pobieranie pracownikow w postaci map
+  Future<List<Map<String, dynamic>>> getEventsMapList() async {
+    Database db = await this.database;
+    var result = await db.query(eventsTable, orderBy: '$colID ASC');
+    return result;
+  }
+
+  //pobieranie listy eventow
+  Future<List<EventsModel>> getEventAllList() async {
+    var eventListMap = await getEventsMapList();
+    int count = eventListMap.length;
+
+    List<EventsModel> eventsList = List<EventsModel>();
+    for (int i = 0; i < count; i++) {
+      eventsList.add(EventsModel.fromMapObject((eventListMap[i])));
+    }
+    return eventsList;
+  }
+
   //pobieranie listy eventow z wybranym imieniem pracodawcy, bez rozróżnienia na to czy jest zapłacone
   Future<List> getEmployersEventsList(String name) async {
     Database db = await database;

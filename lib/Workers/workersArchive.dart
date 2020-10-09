@@ -38,7 +38,7 @@ class _WorkersArchiveState extends State<WorkersArchive> {
         eventsModelList.sort((a, b) {
           var adate = format.parse(a.date);
           var bdate = format.parse(b.date);
-          return adate.compareTo(bdate);
+          return bdate.compareTo(adate);
         });
       });
     });

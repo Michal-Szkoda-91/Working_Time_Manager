@@ -36,7 +36,7 @@ class _EmployersArchiveState extends State<EmployersArchive> {
         eventsModelList.sort((a, b) {
           var adate = format.parse(a.date);
           var bdate = format.parse(b.date);
-          return adate.compareTo(bdate);
+          return bdate.compareTo(adate);
         });
       });
     });
@@ -77,6 +77,7 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                     subtitle: Text(
                       "Pracowali: " +
                           eventsModelList[position].workersNotPaid +
+                          eventsModelList[position].workersPaid +
                           "\n" +
                           "Czas : " +
                           eventsModelList[position].workTime +
