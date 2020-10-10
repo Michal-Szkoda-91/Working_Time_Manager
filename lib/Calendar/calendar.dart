@@ -552,7 +552,7 @@ class _CalendarState extends State<Calendar> {
                         Text(
                           event,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                           ),
                         ),
                         //icona zmienia kolor w zaleznosci od statusu eventu
@@ -562,7 +562,8 @@ class _CalendarState extends State<Calendar> {
                             children: [
                               Text(
                                 "Rozliczenie:",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                               Row(
                                 children: [
@@ -983,6 +984,7 @@ class _CalendarState extends State<Calendar> {
                       eventHelper.deleteEvent(event);
                       initPrefs();
                       updateListViewEvents();
+                      _selectedEvents = _events[_controller.selectedDay];
                       Navigator.pop(context);
                       return;
                     },
