@@ -146,7 +146,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                                   additionsSum.toString() +
                                   " = " +
                                   receivable.toString(),
-                              additionsList);
+                              this.additionsList);
                         } else {
                           _showDialog("Błąd", "Nie podano stawki za godzinę!");
                         }

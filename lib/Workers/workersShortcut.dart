@@ -8,20 +8,20 @@ import 'package:working_time_management/models/eventsModel.dart';
 class WorkersShortcut extends StatefulWidget {
   final String name;
   final String sum;
-  final List addtions;
+  final List additions;
 
-  WorkersShortcut(this.name, this.sum, this.addtions);
+  WorkersShortcut(this.name, this.sum, this.additions);
 
   @override
   _WorkersShortcutState createState() {
-    return _WorkersShortcutState(this.name, this.sum, this.addtions);
+    return _WorkersShortcutState(this.name, this.sum, this.additions);
   }
 }
 
 class _WorkersShortcutState extends State<WorkersShortcut> {
   String name;
   String sum;
-  List addtions;
+  List additions;
 
   EventHelper eventHelper = EventHelper();
   WorkersHelper employersHelper = WorkersHelper();
@@ -29,7 +29,7 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
   int count = 0;
   DateFormat format = DateFormat("dd-MM-yyyy");
 
-  _WorkersShortcutState(this.name, this.sum, this.addtions);
+  _WorkersShortcutState(this.name, this.sum, this.additions);
 
   @override
   void initState() {
@@ -61,8 +61,8 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
             }),
         title: Text("Podsumowanie"),
       ),
-      body: SingleChildScrollView(
-          child: Column(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
@@ -73,10 +73,21 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
           ),
           Container(
             decoration: BoxDecoration(
-                border:
-                    Border(left: BorderSide(color: Colors.blue, width: 3.0))),
+                border: Border(
+                    left: BorderSide(
+                        color: Theme.of(context).accentColor, width: 3.0))),
             height: 100,
-            child: listViewAdditions(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(21, 10, 0, 0),
+              child: Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                          left: BorderSide(
+                              color: Theme.of(context).accentColor,
+                              width: 4.0))),
+                  child:
+                      SingleChildScrollView(child: Text(additions.join("\n")))),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -91,7 +102,7 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
             ],
           ),
         ],
-      )),
+      ),
     );
   }
 
@@ -126,38 +137,6 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
                           " godz." +
                           " - U : " +
                           eventsModelList[position].employer,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              onTap: () {},
-            ),
-          );
-        });
-  }
-
-  //metoda budująca liste dodatków
-  ListView listViewAdditions() {
-    return ListView.builder(
-        itemCount: addtions.length,
-        itemBuilder: (context, position) {
-          return Container(
-            height: 20,
-            child: ListTile(
-              title: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 0, 0, 6),
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border(
-                          left: BorderSide(color: Colors.blue, width: 4.0))),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                    child: Text(
-                      addtions[position],
                       style: TextStyle(
                         fontSize: 14.0,
                         color: Colors.black,

@@ -8,20 +8,20 @@ import 'package:working_time_management/models/eventsModel.dart';
 class EmployersShortcut extends StatefulWidget {
   final String name;
   final String sum;
-  final List addtions;
+  final List additions;
 
-  EmployersShortcut(this.name, this.sum, this.addtions);
+  EmployersShortcut(this.name, this.sum, this.additions);
 
   @override
   _EmployersShortcutState createState() {
-    return _EmployersShortcutState(this.name, this.sum, this.addtions);
+    return _EmployersShortcutState(this.name, this.sum, this.additions);
   }
 }
 
 class _EmployersShortcutState extends State<EmployersShortcut> {
   String name;
   String sum;
-  List addtions;
+  List additions;
 
   EventHelper eventHelper = EventHelper();
   EmployersHelper employersHelper = EmployersHelper();
@@ -29,11 +29,12 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
   int count = 0;
   DateFormat format = DateFormat("dd-MM-yyyy");
 
-  _EmployersShortcutState(this.name, this.sum, this.addtions);
+  _EmployersShortcutState(this.name, this.sum, this.additions);
 
   @override
   void initState() {
     super.initState();
+
     eventHelper.getHourEmployerSum(this.name).then((event) {
       setState(() {
         event.forEach((element) {
@@ -47,6 +48,7 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
         });
       });
     });
+    print(additions);
   }
 
   @override
@@ -61,22 +63,34 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
             }),
         title: Text("Podsumowanie"),
       ),
-      body: SingleChildScrollView(
-          child: Column(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-                border:
-                    Border(left: BorderSide(color: Colors.blue, width: 3.0))),
+                border: Border(
+                    left: BorderSide(
+                        color: Theme.of(context).accentColor, width: 3.0))),
             height: 350,
             child: listViewEvents(),
           ),
           Container(
             decoration: BoxDecoration(
-                border:
-                    Border(left: BorderSide(color: Colors.blue, width: 3.0))),
+                border: Border(
+                    left: BorderSide(
+                        color: Theme.of(context).accentColor, width: 3.0))),
             height: 100,
-            child: listViewAdditions(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(21, 10, 0, 0),
+              child: Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                          left: BorderSide(
+                              color: Theme.of(context).accentColor,
+                              width: 4.0))),
+                  child:
+                      SingleChildScrollView(child: Text(additions.join("\n")))),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -91,7 +105,7 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
             ],
           ),
         ],
-      )),
+      ),
     );
   }
 
@@ -109,7 +123,9 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
                 child: Container(
                   decoration: BoxDecoration(
                       border: Border(
-                          left: BorderSide(color: Colors.blue, width: 4.0))),
+                          left: BorderSide(
+                              color: Theme.of(context).accentColor,
+                              width: 4.0))),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Text(
@@ -138,39 +154,6 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
                   ),
                 ),
               ),
-              onTap: () {},
-            ),
-          );
-        });
-  }
-
-  //metoda budująca liste dodatków
-  ListView listViewAdditions() {
-    return ListView.builder(
-        itemCount: addtions.length,
-        itemBuilder: (context, position) {
-          return Container(
-            height: 20,
-            child: ListTile(
-              title: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 0, 0, 6),
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border(
-                          left: BorderSide(color: Colors.blue, width: 4.0))),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                    child: Text(
-                      addtions[position],
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              onTap: () {},
             ),
           );
         });

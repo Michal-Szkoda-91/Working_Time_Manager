@@ -122,6 +122,9 @@ class _CalendarState extends State<Calendar> {
     _events = {};
     _selectedEvents = [];
     initPrefs();
+    updateListViewEmployers();
+    updateListViewWorkers();
+    updateListViewEvents();
   }
 
   //PREFERENCJE
@@ -154,9 +157,6 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    updateListViewEmployers();
-    updateListViewWorkers();
-    updateListViewEvents();
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
@@ -1044,7 +1044,7 @@ class _CalendarState extends State<Calendar> {
 //funkcja sprawdzajaca czy w dany event jest oplacony
   bool checkIfEventIsPaidEmployer(String title, List<EventsModel> eventList) {
     bool check = false;
-    if (eventList != []) {
+    if (eventList != null) {
       eventList.forEach((element) {
         if (element.title == title && element.isPaid == 1) check = true;
       });
@@ -1056,7 +1056,7 @@ class _CalendarState extends State<Calendar> {
   String getEmployerShortName(String title, List<EventsModel> eventList) {
     String name = "";
     String shortname = "";
-    if (eventList != []) {
+    if (eventList != null) {
       eventList.forEach((element) {
         if (element.title == title) name = element.employer;
       });
@@ -1071,7 +1071,7 @@ class _CalendarState extends State<Calendar> {
   //funkcja sprawdzajaca czy w dany event jest oplacony
   bool checkIfEventIsPaidWorker(String title, List<EventsModel> eventList) {
     bool check = false;
-    if (eventList != []) {
+    if (eventList != null) {
       eventList.forEach((element) {
         if (element.title == title && element.workersNotPaid.isEmpty)
           check = true;
@@ -1084,7 +1084,7 @@ class _CalendarState extends State<Calendar> {
   bool checkIfEventIsPaidEmployerList(
       List<dynamic> list, List<EventsModel> eventList) {
     bool check = true;
-    if (list != [] && eventList != []) {
+    if (list != null && eventList != null) {
       eventList.forEach((element) {
         list.forEach((elementList) {
           if (element.title == elementList &&
