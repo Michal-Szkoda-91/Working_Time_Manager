@@ -29,11 +29,10 @@ class _EmployersState extends State<Employers> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           navigateToDetail(
-              EmployersModel('', '', '', ''), "Dodaj Pracodawce", 0);
+              EmployersModel('', '', '', ''), "Dodaj Pracodawcę", 0);
         },
         child: Icon(Icons.add),
-        backgroundColor: Theme.of(context).primaryColor,
-        tooltip: "Dodaj uzytkownika",
+        backgroundColor: Theme.of(context).accentColor,
       ),
     );
   }
@@ -47,23 +46,25 @@ class _EmployersState extends State<Employers> {
             elevation: 2.0,
             child: ListTile(
               leading: CircleAvatar(
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: Theme.of(context).accentColor,
                 child: Icon(Icons.arrow_forward_ios),
               ),
               //wyswietlenie imienia i tytulu
               title: Text(
                 this.employersModelList[position].name,
-                style: new TextStyle(fontSize: 22),
+                style: new TextStyle(
+                    fontSize: 22, color: Theme.of(context).textSelectionColor),
               ),
               subtitle: Text(
                 this.employersModelList[position].shortName,
-                style: new TextStyle(fontSize: 14),
+                style: new TextStyle(
+                    fontSize: 16, color: Theme.of(context).textSelectionColor),
               ),
               //ikona usowania oraz dodana do niej metoda
               trailing: GestureDetector(
                   child: Icon(
                     Icons.delete,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).accentColor,
                   ),
                   onTap: () {
                     deleteEmployers(position);
@@ -85,10 +86,12 @@ class _EmployersState extends State<Employers> {
       Future<List<EmployersModel>> employersModelListFuture =
           databasehelper.getEmployersList();
       employersModelListFuture.then((employersModelList) {
-        setState(() {
-          this.employersModelList = employersModelList;
-          this.count = employersModelList.length;
-        });
+        if (this.mounted) {
+          setState(() {
+            this.employersModelList = employersModelList;
+            this.count = employersModelList.length;
+          });
+        }
       });
     });
   }
@@ -110,6 +113,7 @@ class _EmployersState extends State<Employers> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).selectedRowColor,
         content: Container(
           height: 100,
           child: Column(
@@ -117,7 +121,8 @@ class _EmployersState extends State<Employers> {
             children: <Widget>[
               Text(
                 "Napewno usunąć pracodawcę?",
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(
+                    fontSize: 20, color: Theme.of(context).textSelectionColor),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,7 +137,7 @@ class _EmployersState extends State<Employers> {
                     child: Text(
                       "OK",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).hoverColor,
                         fontSize: 16,
                       ),
                     ),
@@ -146,7 +151,7 @@ class _EmployersState extends State<Employers> {
                     child: Text(
                       "Anuluj",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).hoverColor,
                         fontSize: 16,
                       ),
                     ),

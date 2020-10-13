@@ -29,7 +29,7 @@ class _TimeWorkStart extends State<TimeWorkStart> {
         highlightedTextStyle: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w500,
-            color: Theme.of(context).primaryColor),
+            color: Theme.of(context).textSelectionColor),
         spacing: 1,
         itemHeight: 25,
         isForce2Digits: true,
@@ -69,7 +69,7 @@ class _TimeWorkStop extends State<TimeWorkStop> {
         highlightedTextStyle: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w500,
-            color: Theme.of(context).primaryColor),
+            color: Theme.of(context).textSelectionColor),
         spacing: 1,
         itemHeight: 25,
         isForce2Digits: true,
@@ -118,13 +118,15 @@ class _BreakTime extends State<BreakTime> {
           children: <Widget>[
             Text(
               'Przerwa: ${(breakValue * 90).round()} minut.',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(
+                  fontSize: 16, color: Theme.of(context).textSelectionColor),
             ),
             ClipRRect(
                 borderRadius: BorderRadius.circular(5.0),
                 child: Slider(
                   value: breakValue,
                   onChanged: _setvalue,
+                  activeColor: Theme.of(context).accentColor,
                   divisions: 18,
                 ))
           ],
@@ -169,9 +171,10 @@ class _MultiSelectChipState extends State<MultiSelectChip> {
       choices.add(Container(
         padding: const EdgeInsets.all(2.0),
         child: ChoiceChip(
+          backgroundColor: Theme.of(context).accentColor,
           label: Text(
             item,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            style: TextStyle(fontSize: 18, color: Theme.of(context).hoverColor),
           ),
           selected: selectedChoices.contains(item),
           onSelected: (selected) {

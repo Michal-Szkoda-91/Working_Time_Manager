@@ -59,34 +59,56 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
             onPressed: () {
               Navigator.pop(context, true);
             }),
-        title: Text("Podsumowanie"),
+        title: Text(
+          "Podsumowanie",
+          style: TextStyle(
+            color: Theme.of(context).hoverColor,
+          ),
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-                border:
-                    Border(left: BorderSide(color: Colors.blue, width: 3.0))),
-            height: 350,
-            child: listViewEvents(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      left: BorderSide(
+                          color: Theme.of(context).textSelectionColor,
+                          width: 4.0))),
+              height: 350,
+              child: listViewEvents(),
+            ),
           ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    left: BorderSide(
-                        color: Theme.of(context).accentColor, width: 3.0))),
-            height: 100,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(21, 10, 0, 0),
-              child: Container(
-                  decoration: BoxDecoration(
-                      border: Border(
-                          left: BorderSide(
-                              color: Theme.of(context).accentColor,
-                              width: 4.0))),
-                  child:
-                      SingleChildScrollView(child: Text(additions.join("\n")))),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      left: BorderSide(
+                          color: Theme.of(context).textSelectionColor,
+                          width: 4.0))),
+              height: 100,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(21, 10, 0, 0),
+                child: Container(
+                    decoration: BoxDecoration(
+                        border: Border(
+                            left: BorderSide(
+                                color: Theme.of(context).textSelectionColor,
+                                width: 4.0))),
+                    child: SingleChildScrollView(
+                        child: Padding(
+                      padding: const EdgeInsets.fromLTRB(3, 0, 0, 0),
+                      child: Text(
+                        additions.join("\n"),
+                        style: TextStyle(
+                          color: Theme.of(context).textSelectionColor,
+                        ),
+                      ),
+                    ))),
+              ),
             ),
           ),
           Row(
@@ -96,7 +118,9 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
                 padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
                 child: Text(
                   "Suma: " + sum.toString(),
-                  style: TextStyle(fontSize: 20, color: Colors.black),
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Theme.of(context).textSelectionColor),
                 ),
               ),
             ],
@@ -120,9 +144,11 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
                 child: Container(
                   decoration: BoxDecoration(
                       border: Border(
-                          left: BorderSide(color: Colors.blue, width: 4.0))),
+                          left: BorderSide(
+                              color: Theme.of(context).textSelectionColor,
+                              width: 4.0))),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(3, 0, 0, 0),
                     child: Text(
                       getDayFromNumber(eventsModelList[position].dayNumber) +
                           " - " +
@@ -139,13 +165,12 @@ class _WorkersShortcutState extends State<WorkersShortcut> {
                           eventsModelList[position].employer,
                       style: TextStyle(
                         fontSize: 14.0,
-                        color: Colors.black,
+                        color: Theme.of(context).textSelectionColor,
                       ),
                     ),
                   ),
                 ),
               ),
-              onTap: () {},
             ),
           );
         });

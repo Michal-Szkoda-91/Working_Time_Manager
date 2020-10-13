@@ -54,7 +54,12 @@ class _WorkersArchiveState extends State<WorkersArchive> {
             onPressed: () {
               Navigator.pop(context, true);
             }),
-        title: Text("Archiwum" + " - " + name),
+        title: Text(
+          "Archiwum" + " - " + name,
+          style: TextStyle(
+            color: Theme.of(context).hoverColor,
+          ),
+        ),
       ),
       body: Center(
         child: ListView.builder(
@@ -71,9 +76,9 @@ class _WorkersArchiveState extends State<WorkersArchive> {
                           " - " +
                           eventsModelList[position].date,
                       style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black,
-                      ),
+                          fontSize: 18.0,
+                          color: Theme.of(context).textSelectionColor,
+                          fontWeight: FontWeight.bold),
                     ),
                     //podtytul wyswietlany z informacjami o pracy
                     subtitle: Text(
@@ -89,9 +94,9 @@ class _WorkersArchiveState extends State<WorkersArchive> {
                           eventsModelList[position].hourSum.toString() +
                           " godz.",
                       style: new TextStyle(
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic,
-                      ),
+                          fontSize: 16.0,
+                          fontStyle: FontStyle.italic,
+                          color: Theme.of(context).textSelectionColor),
                     ),
                     leading: Column(
                       children: <Widget>[
@@ -102,8 +107,8 @@ class _WorkersArchiveState extends State<WorkersArchive> {
                               backgroundColor: eventsModelList[position]
                                       .workersPaid
                                       .contains(this.shortname)
-                                  ? Theme.of(context).accentColor
-                                  : Colors.red,
+                                  ? Theme.of(context).indicatorColor
+                                  : Theme.of(context).errorColor,
                               radius: 14.0,
                               child: Icon(
                                 eventsModelList[position]
@@ -111,7 +116,7 @@ class _WorkersArchiveState extends State<WorkersArchive> {
                                         .contains(this.shortname)
                                     ? Icons.attach_money
                                     : Icons.money_off,
-                                color: Colors.black,
+                                color: Theme.of(context).textSelectionColor,
                               )),
                         ),
                       ],

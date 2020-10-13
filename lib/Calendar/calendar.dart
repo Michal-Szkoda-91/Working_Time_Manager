@@ -167,23 +167,29 @@ class _CalendarState extends State<Calendar> {
             events: _events,
             initialCalendarFormat: CalendarFormat.month,
             calendarStyle: CalendarStyle(
-                canEventMarkersOverflow: true,
-                todayColor: Theme.of(context).cardColor,
-                selectedColor: Theme.of(context).accentColor,
-                todayStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0,
-                    color: Colors.white)),
+              markersColor: Theme.of(context).textSelectionColor,
+              canEventMarkersOverflow: true,
+              outsideDaysVisible: false,
+            ),
             headerStyle: HeaderStyle(
               centerHeaderTitle: false,
+              titleTextStyle: TextStyle(
+                  color: Theme.of(context).textSelectionColor, fontSize: 20),
               formatButtonDecoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
+                color: Theme.of(context).accentColor,
                 borderRadius: BorderRadius.circular(20.0),
               ),
-              formatButtonTextStyle: TextStyle(color: Colors.white),
+              formatButtonTextStyle:
+                  TextStyle(color: Theme.of(context).hoverColor),
               formatButtonShowsNext: false,
             ),
             startingDayOfWeek: StartingDayOfWeek.monday,
+            daysOfWeekStyle: DaysOfWeekStyle(
+              weekdayStyle: TextStyle(
+                  color: Theme.of(context).textSelectionColor, fontSize: 14),
+              weekendStyle:
+                  TextStyle(color: Theme.of(context).accentColor, fontSize: 14),
+            ),
             onDaySelected: (date, events) {
               //zdarzenie po kliknieciu w dzien
               setState(() {
@@ -192,12 +198,12 @@ class _CalendarState extends State<Calendar> {
             },
             //budowanie dni kalendarza
             builders: CalendarBuilders(
-              //********************************************************************************* */
-              dayBuilder: (context, date, events) => Container(
+              //************************************************ */
+              weekendDayBuilder: (context, date, events) => Container(
                 margin: const EdgeInsets.all(0.5),
                 alignment: Alignment.topCenter,
                 decoration: BoxDecoration(
-                    border: Border.all(width: 0.1),
+                    border: Border.all(width: 1),
                     borderRadius: BorderRadius.circular(10.0)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -218,7 +224,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).accentColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -236,12 +242,12 @@ class _CalendarState extends State<Calendar> {
                             height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: Colors.green,
+                                color: Theme.of(context).indicatorColor,
                                 borderRadius: BorderRadius.circular(10.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -251,7 +257,7 @@ class _CalendarState extends State<Calendar> {
                               getEmployerShortName(
                                   _events[date][0], eventsModelList),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -268,12 +274,12 @@ class _CalendarState extends State<Calendar> {
                             height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: Colors.red,
+                                color: Theme.of(context).errorColor,
                                 borderRadius: BorderRadius.circular(10.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -283,7 +289,107 @@ class _CalendarState extends State<Calendar> {
                               getEmployerShortName(
                                   _events[date][0], eventsModelList),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13),
+                            ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+              //********************************************************************************* */
+              dayBuilder: (context, date, events) => Container(
+                margin: const EdgeInsets.all(0.5),
+                alignment: Alignment.topCenter,
+                decoration: BoxDecoration(
+                    border: Border.all(width: 1),
+                    borderRadius: BorderRadius.circular(10.0)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    //*********************************** */
+                    //Warunki sprawdzajace czy dany event jest oplacony calkowicie czy nie
+                    //jesli nie ma eventow buduje normalny dzien
+                    if (_events[date] == null ||
+                        _events[date].toString() == "[]")
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).selectedRowColor,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Theme.of(context).textSelectionColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                        ],
+                      ),
+                    //jesli sa eventy i wszystkie sa zaplacone u pracodawcow buduje dzien z kolorem zielonym
+                    if (_events[date] != null &&
+                        _events[date].toString() != "[]" &&
+                        checkIfEventIsPaidEmployerList(
+                            _events[date], eventsModelList))
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).indicatorColor,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Theme.of(context).textSelectionColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                          if (_events[date].length > 0)
+                            Text(
+                              getEmployerShortName(
+                                  _events[date][0], eventsModelList),
+                              style: TextStyle(
+                                  color: Theme.of(context).textSelectionColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13),
+                            ),
+                        ],
+                      ),
+                    //jesli eventy sa i chociaz jeden jest nie oplacony buduje dzien czerwony
+                    if (_events[date] != null &&
+                        _events[date].toString() != "[]" &&
+                        !checkIfEventIsPaidEmployerList(
+                            _events[date], eventsModelList))
+                      Column(
+                        children: [
+                          Container(
+                            height: 20,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).errorColor,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                  color: Theme.of(context).textSelectionColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15),
+                            ),
+                          ),
+                          if (_events[date].length > 0)
+                            Text(
+                              getEmployerShortName(
+                                  _events[date][0], eventsModelList),
+                              style: TextStyle(
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -299,7 +405,7 @@ class _CalendarState extends State<Calendar> {
                 alignment: Alignment.topCenter,
                 decoration: BoxDecoration(
                     border: Border.all(
-                        width: 3, color: Theme.of(context).cardColor),
+                        width: 2, color: Theme.of(context).cardColor),
                     borderRadius: BorderRadius.circular(13.0)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -320,7 +426,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -338,12 +444,12 @@ class _CalendarState extends State<Calendar> {
                             height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: Colors.green,
+                                color: Theme.of(context).indicatorColor,
                                 borderRadius: BorderRadius.circular(10.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -353,7 +459,7 @@ class _CalendarState extends State<Calendar> {
                               getEmployerShortName(
                                   _events[date][0], eventsModelList),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -370,12 +476,12 @@ class _CalendarState extends State<Calendar> {
                             height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: Colors.red,
+                                color: Theme.of(context).errorColor,
                                 borderRadius: BorderRadius.circular(10.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -385,7 +491,7 @@ class _CalendarState extends State<Calendar> {
                               getEmployerShortName(
                                   _events[date][0], eventsModelList),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -401,7 +507,7 @@ class _CalendarState extends State<Calendar> {
                 alignment: Alignment.topCenter,
                 decoration: BoxDecoration(
                     border: Border.all(
-                        width: 3, color: Theme.of(context).primaryColor),
+                        width: 2, color: Theme.of(context).accentColor),
                     borderRadius: BorderRadius.circular(13.0)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -423,7 +529,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -442,12 +548,12 @@ class _CalendarState extends State<Calendar> {
                             height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: Colors.green,
+                                color: Theme.of(context).indicatorColor,
                                 borderRadius: BorderRadius.circular(10.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -457,7 +563,7 @@ class _CalendarState extends State<Calendar> {
                               getEmployerShortName(
                                   _events[date][0], eventsModelList),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -474,12 +580,12 @@ class _CalendarState extends State<Calendar> {
                             height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                                color: Colors.red,
+                                color: Theme.of(context).errorColor,
                                 borderRadius: BorderRadius.circular(10.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -489,7 +595,7 @@ class _CalendarState extends State<Calendar> {
                               getEmployerShortName(
                                   _events[date][0], eventsModelList),
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -510,7 +616,7 @@ class _CalendarState extends State<Calendar> {
                 _selectedEvents.length > 0
                     ? Icon(
                         Icons.arrow_right,
-                        color: Colors.black,
+                        color: Theme.of(context).textSelectionColor,
                         size: 40,
                       )
                     : Text(""),
@@ -527,7 +633,7 @@ class _CalendarState extends State<Calendar> {
                     child: Text(
                       "Dodaj",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).hoverColor,
                         fontSize: 16,
                       ),
                     ),
@@ -552,6 +658,7 @@ class _CalendarState extends State<Calendar> {
                         Text(
                           event,
                           style: TextStyle(
+                            color: Theme.of(context).textSelectionColor,
                             fontSize: 16,
                           ),
                         ),
@@ -563,7 +670,10 @@ class _CalendarState extends State<Calendar> {
                               Text(
                                 "Rozliczenie:",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Theme.of(context).textSelectionColor,
+                                ),
                               ),
                               Row(
                                 children: [
@@ -571,16 +681,16 @@ class _CalendarState extends State<Calendar> {
                                     Icons.business_center,
                                     color: checkIfEventIsPaidEmployer(
                                             event, this.eventsModelList)
-                                        ? Colors.green
-                                        : Colors.red,
+                                        ? Theme.of(context).indicatorColor
+                                        : Theme.of(context).errorColor,
                                     size: 50,
                                   ),
                                   Icon(
                                     Icons.people,
                                     color: checkIfEventIsPaidWorker(
                                             event, this.eventsModelList)
-                                        ? Colors.green
-                                        : Colors.red,
+                                        ? Theme.of(context).indicatorColor
+                                        : Theme.of(context).errorColor,
                                     size: 50,
                                   ),
                                 ],
@@ -598,7 +708,7 @@ class _CalendarState extends State<Calendar> {
                   padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
                   child: IconSlideAction(
                     caption: 'Usuń',
-                    color: Colors.red,
+                    color: Theme.of(context).errorColor,
                     icon: Icons.delete,
                     onTap: () {
                       deleteEvent(event);
@@ -638,7 +748,12 @@ class _CalendarState extends State<Calendar> {
                   children: <Widget>[
                     //Tutaj wybieramy z listy u kogo pracujemy
                     DropdownButton<String>(
-                      hint: Text("Wybierz pracodawcę"),
+                      hint: Text(
+                        "Wybierz pracodawcę",
+                        style: TextStyle(
+                          color: Theme.of(context).textSelectionColor,
+                        ),
+                      ),
                       value: employerNameValue,
                       isDense: true,
                       onChanged: (newValue) {
@@ -651,7 +766,12 @@ class _CalendarState extends State<Calendar> {
                       items: employersNameList.map((var value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(
+                            value,
+                            style: TextStyle(
+                              color: Theme.of(context).textSelectionColor,
+                            ),
+                          ),
                         );
                       }).toList(),
                     ),
@@ -665,11 +785,17 @@ class _CalendarState extends State<Calendar> {
                             children: <Widget>[
                               Text(
                                 "Godz. rozp.",
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color:
+                                        Theme.of(context).textSelectionColor),
                               ),
                               Text(
                                 "Godz. zak.",
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color:
+                                        Theme.of(context).textSelectionColor),
                               ),
                             ],
                           ),
@@ -681,14 +807,18 @@ class _CalendarState extends State<Calendar> {
                                 decoration: BoxDecoration(
                                     border: Border(
                                   left: BorderSide(
-                                      width: 1.0, color: Colors.black),
+                                      width: 1.0,
+                                      color:
+                                          Theme.of(context).textSelectionColor),
                                 )),
                                 child: TimeWorkStart()),
                             Container(
                                 decoration: BoxDecoration(
                                     border: Border(
                                   left: BorderSide(
-                                      width: 1.0, color: Colors.black),
+                                      width: 1.0,
+                                      color:
+                                          Theme.of(context).textSelectionColor),
                                 )),
                                 child: TimeWorkStop()),
                           ],
@@ -698,40 +828,26 @@ class _CalendarState extends State<Calendar> {
                     //picker do wyboru czusu przerwy
                     Container(child: BreakTime()),
                     //widget dodawania pracowników
-                    OutlineButton(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).accentColor,
-                        width: 3,
-                      ),
-                      shape: StadiumBorder(),
-                      child: Text(
-                        "Dodaj Pracownika",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                      ),
+                    RaisedButton(
+                      color: Theme.of(context).accentColor,
                       onPressed: () {
                         setState(() {
                           //wyswietlenie okienka z wyborem pracownikow
                           showAddWorker();
                         });
                       },
-                    ),
-                    //Przycisk wyświetlający podsumowanie danych w evencie
-                    OutlineButton(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).accentColor,
-                        width: 3,
-                      ),
-                      shape: StadiumBorder(),
                       child: Text(
-                        "Podsumowanie",
+                        "Dodaj Pracownika",
                         style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
+                          color: Theme.of(context).hoverColor,
+                          fontSize: 16,
                         ),
                       ),
+                    ),
+
+                    //Przycisk wyświetlający podsumowanie danych w evencie
+                    RaisedButton(
+                      color: Theme.of(context).accentColor,
                       onPressed: () {
                         setState(() {
                           //wyświetlenie podsumowanie jako tekst z danymi
@@ -751,6 +867,13 @@ class _CalendarState extends State<Calendar> {
                               timeBreak.toString();
                         });
                       },
+                      child: Text(
+                        "Podsumowanie",
+                        style: TextStyle(
+                          color: Theme.of(context).hoverColor,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                     //Wyświetlenie wprowadzanych danych
                     Text(summary),
@@ -758,16 +881,8 @@ class _CalendarState extends State<Calendar> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        OutlineButton(
-                          borderSide: BorderSide(color: Colors.blue, width: 3),
-                          shape: StadiumBorder(),
-                          child: Text(
-                            "Zapisz",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
-                            ),
-                          ),
+                        RaisedButton(
+                          color: Theme.of(context).accentColor,
                           onPressed: () {
                             //Sprawdzenie poprawności danych oraz dodanie nowego eventu do listy z danego dnia
                             if (employerNameValue != null &&
@@ -818,20 +933,26 @@ class _CalendarState extends State<Calendar> {
                                   "Nie udało się zapisać dnia pracy\nNie pełne dane\nLub nie użyto Podsumowania");
                             }
                           },
-                        ),
-                        OutlineButton(
-                          borderSide: BorderSide(color: Colors.blue, width: 3),
-                          shape: StadiumBorder(),
                           child: Text(
-                            "Anuluj",
+                            "Zapisz",
                             style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
+                              color: Theme.of(context).hoverColor,
+                              fontSize: 16,
                             ),
                           ),
+                        ),
+                        RaisedButton(
+                          color: Theme.of(context).accentColor,
                           onPressed: () {
                             Navigator.pop(context);
                           },
+                          child: Text(
+                            "Anuluj",
+                            style: TextStyle(
+                              color: Theme.of(context).hoverColor,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -852,8 +973,11 @@ class _CalendarState extends State<Calendar> {
         builder: (BuildContext context) {
           //Here we will build the content of the dialog
           return AlertDialog(
-            backgroundColor: Theme.of(context).canvasColor,
-            title: Text("Wybierz kto pracował:"),
+            backgroundColor: Theme.of(context).selectedRowColor,
+            title: Text(
+              "Wybierz kto pracował:",
+              style: TextStyle(color: Theme.of(context).textSelectionColor),
+            ),
             content: MultiSelectChip(
               workersShortNameList,
               onSelectionChanged: (selectedList) {
@@ -864,7 +988,10 @@ class _CalendarState extends State<Calendar> {
             ),
             actions: <Widget>[
               FlatButton(
-                  child: Text("OK", style: TextStyle(fontSize: 18)),
+                  child: Text("OK",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Theme.of(context).textSelectionColor)),
                   onPressed: () {
                     Navigator.of(context).pop();
                   })
@@ -960,7 +1087,7 @@ class _CalendarState extends State<Calendar> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.blue[100],
+        backgroundColor: Theme.of(context).selectedRowColor,
         content: Container(
           height: 100,
           child: Column(
@@ -968,7 +1095,8 @@ class _CalendarState extends State<Calendar> {
             children: <Widget>[
               Text(
                 "Napewno usunąć zdarzenie?",
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(
+                    fontSize: 20, color: Theme.of(context).textSelectionColor),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -991,7 +1119,7 @@ class _CalendarState extends State<Calendar> {
                     child: Text(
                       "OK",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).hoverColor,
                         fontSize: 16,
                       ),
                     ),
@@ -1005,7 +1133,7 @@ class _CalendarState extends State<Calendar> {
                     child: Text(
                       "Anuluj",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).hoverColor,
                         fontSize: 16,
                       ),
                     ),
@@ -1032,6 +1160,7 @@ class _CalendarState extends State<Calendar> {
 
   void _showDialog(String title, String message) {
     AlertDialog alertDialog = AlertDialog(
+      backgroundColor: Theme.of(context).selectedRowColor,
       title: Text(title),
       content: Text(message),
     );

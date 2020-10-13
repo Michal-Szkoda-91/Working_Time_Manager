@@ -79,8 +79,19 @@ class _WorkersDetailState extends State<WorkersDetail> {
   Widget build(BuildContext context) {
     _showDialog(String title, String message) {
       AlertDialog alertDialog = AlertDialog(
-        title: Text(title),
-        content: Text(message),
+        backgroundColor: Theme.of(context).selectedRowColor,
+        title: Text(
+          title,
+          style: TextStyle(
+            color: Theme.of(context).hoverColor,
+          ),
+        ),
+        content: Text(
+          message,
+          style: TextStyle(
+            color: Theme.of(context).hoverColor,
+          ),
+        ),
       );
       showDialog(context: context, builder: (_) => alertDialog);
     }
@@ -94,7 +105,12 @@ class _WorkersDetailState extends State<WorkersDetail> {
               updateListView();
               Navigator.pop(context, true);
             }),
-        title: Text(title),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: Theme.of(context).hoverColor,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -109,7 +125,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     child: Text(
                       workersModel.name,
                       style: TextStyle(
-                          fontSize: 25, color: Theme.of(context).accentColor),
+                          fontSize: 25,
+                          color: Theme.of(context).textSelectionColor),
                     ),
                   ),
                 ],
@@ -123,7 +140,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
                       color: Theme.of(context).accentColor,
                       child: Text(
                         "Skrót",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        style: TextStyle(
+                            color: Theme.of(context).hoverColor, fontSize: 18),
                       ),
                       onPressed: () {
                         //zsumowanie dodatkow za prace
@@ -157,7 +175,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     color: Theme.of(context).accentColor,
                     child: Text(
                       "Archiwum",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(
+                          color: Theme.of(context).hoverColor, fontSize: 18),
                     ),
                     onPressed: () {
                       navigateToWorkersArchives(workersModel.name);
@@ -167,7 +186,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     color: Theme.of(context).accentColor,
                     child: Text(
                       "Zapłacono",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(
+                          color: Theme.of(context).hoverColor, fontSize: 18),
                     ),
                     onPressed: () {
                       payForAll();
@@ -186,7 +206,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
                           hoursSum.toString() +
                           " godzin/y.",
                       style: TextStyle(
-                          fontSize: 18, color: Theme.of(context).accentColor),
+                          fontSize: 18,
+                          color: Theme.of(context).textSelectionColor),
                     ),
                   ),
                 ],
@@ -198,7 +219,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
                   Text(
                     "Stawka za godzine:",
                     style: TextStyle(
-                        fontSize: 18, color: Theme.of(context).accentColor),
+                        fontSize: 18,
+                        color: Theme.of(context).textSelectionColor),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 30, 12),
@@ -206,12 +228,13 @@ class _WorkersDetailState extends State<WorkersDetail> {
                       width: 88,
                       height: 40,
                       child: TextField(
+                        cursorColor: Theme.of(context).textSelectionColor,
                         onChanged: (value) {
                           rate = value;
                         },
                         style: TextStyle(
                           fontSize: 18,
-                          color: Theme.of(context).accentColor,
+                          color: Theme.of(context).textSelectionColor,
                         ),
                         textAlign: TextAlign.center,
                         controller: _hoursRateController,
@@ -228,7 +251,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
                   Text(
                     "Dodatki finansowe:",
                     style: TextStyle(
-                        fontSize: 18, color: Theme.of(context).accentColor),
+                        fontSize: 18,
+                        color: Theme.of(context).textSelectionColor),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
@@ -236,7 +260,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
                       color: Theme.of(context).accentColor,
                       child: Text(
                         "Dodaj",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        style: TextStyle(
+                            color: Theme.of(context).hoverColor, fontSize: 18),
                       ),
                       onPressed: () {
                         _showAdditionAdd();
@@ -253,7 +278,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                   decoration: BoxDecoration(
                       border: Border(
                           left: BorderSide(
-                              color: Theme.of(context).accentColor,
+                              color: Theme.of(context).textSelectionColor,
                               width: 2.0))),
                   height: 150,
                   child: getList(),
@@ -265,7 +290,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
                 color: Theme.of(context).accentColor,
                 child: Text(
                   "Podsumowanie",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  style: TextStyle(
+                      color: Theme.of(context).hoverColor, fontSize: 18),
                 ),
                 onPressed: () {
                   setState(() {
@@ -294,59 +320,32 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     child: Text(
                       "Suma wypłaty: " + receivable.toString(),
                       style: TextStyle(
-                          fontSize: 22, color: Theme.of(context).accentColor),
+                          fontSize: 22,
+                          color: Theme.of(context).textSelectionColor),
                     ),
                   ),
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
                     child: Text(
                       "Notatki:",
                       style: TextStyle(
-                          fontSize: 18, color: Theme.of(context).accentColor),
+                          fontSize: 18,
+                          color: Theme.of(context).textSelectionColor),
                     ),
                   ),
-                ],
-              ),
-//kontener na notatki
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: TextField(
-                    controller: _notesController,
-                    minLines: 2,
-                    maxLines: 30,
-                    autocorrect: false,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Theme.of(context).selectedRowColor,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                    ),
-                    onChanged: (value) {},
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 40, 0),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
                     child: RaisedButton(
                       color: Theme.of(context).accentColor,
                       child: Text(
                         "Zapisz",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        style: TextStyle(
+                            color: Theme.of(context).hoverColor, fontSize: 18),
                       ),
                       onPressed: () {
                         workersHelper.updateNotes(
@@ -356,6 +355,34 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     ),
                   ),
                 ],
+              ),
+//kontener na notatki
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: TextField(
+                    cursorColor: Theme.of(context).textSelectionColor,
+                    controller: _notesController,
+                    minLines: 2,
+                    maxLines: 30,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Theme.of(context).selectedRowColor,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide:
+                            BorderSide(color: Theme.of(context).cursorColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        borderSide:
+                            BorderSide(color: Theme.of(context).cursorColor),
+                      ),
+                    ),
+                    onChanged: (value) {},
+                  ),
+                ),
               ),
             ],
           ),
@@ -381,14 +408,15 @@ class _WorkersDetailState extends State<WorkersDetail> {
                   decoration: BoxDecoration(
                       border: Border(
                           left: BorderSide(
-                              color: Theme.of(context).accentColor,
+                              color: Theme.of(context).textSelectionColor,
                               width: 2.0))),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                     child: Text(
                       additionsList[index],
                       style: TextStyle(
-                          fontSize: 18, color: Theme.of(context).accentColor),
+                          fontSize: 18,
+                          color: Theme.of(context).textSelectionColor),
                     ),
                   ),
                 ),
@@ -403,6 +431,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).selectedRowColor,
         content: Container(
           height: 100,
           child: Column(
@@ -410,7 +439,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
             children: <Widget>[
               Text(
                 "Napewno usunąć wpis?",
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(
+                    fontSize: 20, color: Theme.of(context).textSelectionColor),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -431,7 +461,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     child: Text(
                       "OK",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).hoverColor,
                         fontSize: 16,
                       ),
                     ),
@@ -445,7 +475,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     child: Text(
                       "Anuluj",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).hoverColor,
                         fontSize: 16,
                       ),
                     ),
@@ -464,8 +494,15 @@ class _WorkersDetailState extends State<WorkersDetail> {
     //wyswietlanie dialogu dla uzytkownika
     _showDialog(String title, String message) {
       AlertDialog alertDialog = AlertDialog(
-        title: Text(title),
-        content: Text(message),
+        backgroundColor: Theme.of(context).selectedRowColor,
+        title: Text(
+          title,
+          style: TextStyle(color: Theme.of(context).textSelectionColor),
+        ),
+        content: Text(
+          message,
+          style: TextStyle(color: Theme.of(context).textSelectionColor),
+        ),
       );
       showDialog(context: context, builder: (_) => alertDialog);
     }
@@ -475,7 +512,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).selectedRowColor,
               content: Container(
                 child: SingleChildScrollView(
                   child: Column(
@@ -488,17 +525,18 @@ class _WorkersDetailState extends State<WorkersDetail> {
                             "Tytuł dodatku:",
                             style: TextStyle(
                                 fontSize: 18,
-                                color: Theme.of(context).accentColor),
+                                color: Theme.of(context).textSelectionColor),
                           ),
                         ],
                       ),
                       TextField(
+                        cursorColor: Theme.of(context).textSelectionColor,
                         onChanged: (value) {
                           titleToCheck = value;
                         },
                         style: TextStyle(
                           fontSize: 18,
-                          color: Theme.of(context).accentColor,
+                          color: Theme.of(context).textSelectionColor,
                         ),
                         textAlign: TextAlign.center,
                         controller: _titleToCheckController,
@@ -511,19 +549,21 @@ class _WorkersDetailState extends State<WorkersDetail> {
                             "Kwota:",
                             style: TextStyle(
                                 fontSize: 18,
-                                color: Theme.of(context).accentColor),
+                                color: Theme.of(context).textSelectionColor),
                           ),
                           Container(
                             width: 120,
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(50, 0, 0, 0),
                               child: TextField(
+                                cursorColor:
+                                    Theme.of(context).textSelectionColor,
                                 onChanged: (value) {
                                   amount = value;
                                 },
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: Theme.of(context).accentColor,
+                                  color: Theme.of(context).textSelectionColor,
                                 ),
                                 textAlign: TextAlign.center,
                                 controller: _amountController,
@@ -566,7 +606,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                               child: Text(
                                 "OK",
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).hoverColor,
                                   fontSize: 16,
                                 ),
                               ),
@@ -580,7 +620,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                               child: Text(
                                 "Anuluj",
                                 style: TextStyle(
-                                  color: Colors.black,
+                                  color: Theme.of(context).hoverColor,
                                   fontSize: 16,
                                 ),
                               ),
@@ -641,7 +681,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.blue[100],
+        backgroundColor: Theme.of(context).selectedRowColor,
         content: Container(
           height: 300,
           child: Column(
@@ -649,7 +689,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
             children: <Widget>[
               Text(
                 "Napewno ustawić status zapłacono dla wszystkich wydarzeń? Przeniesie to wszystkie eventy pracownika do archiwum oraz usunie wszystkie dodatki!!",
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(
+                    fontSize: 20, color: Theme.of(context).textSelectionColor),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -691,7 +732,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     child: Text(
                       "OK",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).hoverColor,
                         fontSize: 16,
                       ),
                     ),
@@ -705,7 +746,7 @@ class _WorkersDetailState extends State<WorkersDetail> {
                     child: Text(
                       "Anuluj",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).hoverColor,
                         fontSize: 16,
                       ),
                     ),
