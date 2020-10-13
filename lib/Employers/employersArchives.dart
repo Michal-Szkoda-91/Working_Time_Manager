@@ -52,7 +52,12 @@ class _EmployersArchiveState extends State<EmployersArchive> {
             onPressed: () {
               Navigator.pop(context, true);
             }),
-        title: Text("Archiwum" + " - " + name),
+        title: Text(
+          "Archiwum" + " - " + name,
+          style: TextStyle(
+            color: Theme.of(context).hoverColor,
+          ),
+        ),
       ),
       body: Center(
         child: ListView.builder(
@@ -69,9 +74,9 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                           " - " +
                           eventsModelList[position].date,
                       style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black,
-                      ),
+                          fontSize: 18.0,
+                          color: Theme.of(context).textSelectionColor,
+                          fontWeight: FontWeight.bold),
                     ),
                     //podtytul wyswietlany z informacjami o pracy
                     subtitle: Text(
@@ -88,9 +93,9 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                           eventsModelList[position].hourSum.toString() +
                           " godz.",
                       style: new TextStyle(
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic,
-                      ),
+                          fontSize: 16.0,
+                          fontStyle: FontStyle.italic,
+                          color: Theme.of(context).textSelectionColor),
                     ),
                     leading: Column(
                       children: <Widget>[
@@ -99,19 +104,18 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                           child: CircleAvatar(
                               backgroundColor:
                                   eventsModelList[position].isPaid == 1
-                                      ? Theme.of(context).accentColor
-                                      : Colors.red,
+                                      ? Theme.of(context).indicatorColor
+                                      : Theme.of(context).errorColor,
                               radius: 14.0,
                               child: Icon(
                                 eventsModelList[position].isPaid == 1
                                     ? Icons.attach_money
                                     : Icons.money_off,
-                                color: Colors.black,
+                                color: Theme.of(context).textSelectionColor,
                               )),
                         ),
                       ],
                     ),
-                    onTap: () {},
                   ),
                 ],
               );

@@ -33,32 +33,44 @@ class _AddWorkersState extends State<AddWorkers> {
     shortNameController.text = workersModel.shortName;
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(
+          title,
+          style: TextStyle(color: Theme.of(context).hoverColor),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: ListView(
           children: <Widget>[
             TextField(
-              style: new TextStyle(fontWeight: FontWeight.bold),
+              cursorColor: Theme.of(context).textSelectionColor,
+              style: new TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textSelectionColor),
               onChanged: (value) {
                 updateName();
               },
               decoration: InputDecoration(
-                hintText: 'Imie pracownika',
-              ),
+                  hintText: 'Imie pracownika',
+                  fillColor: Theme.of(context).textSelectionColor),
               controller: namecontroller,
             ),
             TextField(
-                style: new TextStyle(fontWeight: FontWeight.bold),
+                style: new TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textSelectionColor),
                 onChanged: (value) {
                   updateShortname();
                 },
                 maxLength: 5,
+                cursorColor: Theme.of(context).textSelectionColor,
                 decoration: InputDecoration(
                   hintText: 'Skrót imienia (max 5 liter)',
-                  counterStyle:
-                      new TextStyle(fontWeight: FontWeight.w900, fontSize: 14),
+                  fillColor: Theme.of(context).textSelectionColor,
+                  counterStyle: new TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 14,
+                      color: Theme.of(context).textSelectionColor),
                 ),
                 controller: shortNameController),
             Row(
@@ -80,7 +92,7 @@ class _AddWorkersState extends State<AddWorkers> {
                   child: Text(
                     "OK",
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Theme.of(context).hoverColor,
                       fontSize: 16,
                     ),
                   ),
@@ -100,8 +112,7 @@ class _AddWorkersState extends State<AddWorkers> {
                     child: Text(
                       "Anuluj",
                       style: TextStyle(
-                        fontSize: 16,
-                      ),
+                          fontSize: 16, color: Theme.of(context).hoverColor),
                     ),
                   ),
                 ),
@@ -146,8 +157,11 @@ class _AddWorkersState extends State<AddWorkers> {
 
   void _showDialog(String title, String message) {
     AlertDialog alertDialog = AlertDialog(
-      title: Text(title),
-      content: Text(message),
+      backgroundColor: Theme.of(context).selectedRowColor,
+      title: Text(title,
+          style: (TextStyle(color: Theme.of(context).textSelectionColor))),
+      content: Text(message,
+          style: (TextStyle(color: Theme.of(context).textSelectionColor))),
     );
     showDialog(context: context, builder: (_) => alertDialog);
   }

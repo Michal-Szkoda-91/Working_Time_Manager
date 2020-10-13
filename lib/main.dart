@@ -13,11 +13,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Colors.blue[900],
-        accentColor: Colors.blue,
-        cardColor: Colors.orange,
-        selectedRowColor: Colors.blue[200],
-        canvasColor: Colors.blue[100],
+        primaryColor: Colors.grey[900],
+        accentColor: Colors.blue[600],
+        cardColor: Colors.lightGreenAccent[200],
+        selectedRowColor: Colors.grey[800],
+        canvasColor: Colors.grey[700],
+        textSelectionColor: Colors.lightGreenAccent[400],
+        hoverColor: Colors.white,
+        errorColor: Colors.red[700],
+        indicatorColor: Colors.green[800],
+        cursorColor: Colors.grey,
       ),
       home: MyHomePage(title: 'Menadżer czasu pracy'),
     );
@@ -49,7 +54,12 @@ class _MyHomePageState extends State<MyHomePage> {
         preferredSize: Size.fromHeight(25),
         child: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
-          title: Text(widget.title),
+          title: Text(
+            widget.title,
+            style: TextStyle(
+              color: Theme.of(context).hoverColor,
+            ),
+          ),
         ),
       ),
       bottomNavigationBar: new BottomNavigationBar(

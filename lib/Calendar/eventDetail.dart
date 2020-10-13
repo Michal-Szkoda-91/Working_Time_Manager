@@ -54,28 +54,40 @@ class _EventDetailState extends State<EventDetail> {
                     getDayFromNumber(this.eventsModel.dayNumber) +
                     ", " +
                     this.eventsModel.date,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textSelectionColor),
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
               child: Text(
                 "Praca u:           " + this.eventsModel.employer,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textSelectionColor),
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
               child: Text(
                 "Pracownicy :   " + workersList.join("; "),
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textSelectionColor),
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
               child: Text(
                 "Czas:               " + this.eventsModel.workTime,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textSelectionColor),
               ),
             ),
             Padding(
@@ -84,16 +96,22 @@ class _EventDetailState extends State<EventDetail> {
                 "Przerwa:         " +
                     this.eventsModel.breakTime.toString() +
                     " min",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textSelectionColor),
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
               child: Text(
-                "Łącny czas:    " +
+                "Łączny czas:    " +
                     this.eventsModel.hourSum.toString() +
                     " godz.",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textSelectionColor),
               ),
             ),
             //przycisk do ustawiania czy dany event jest juz oplacony
@@ -102,8 +120,10 @@ class _EventDetailState extends State<EventDetail> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
                   child: Text("Rozliczenie z inwestorem",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).textSelectionColor)),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -115,9 +135,9 @@ class _EventDetailState extends State<EventDetail> {
                           : this.eventsModel.isPaid == 0,
                       textOn: 'Zapłacono',
                       textOff: 'Nie Zap.',
-                      colorOn: Theme.of(context).accentColor,
-                      colorOff: Colors.red,
-                      iconOn: Icons.attach_money,
+                      colorOn: Theme.of(context).indicatorColor,
+                      colorOff: Theme.of(context).errorColor,
+                      iconOn: (Icons.attach_money),
                       iconOff: Icons.money_off,
                       onChanged: (bool state) {
                         //zapisanie do bazy informacji o zapłaceniu eventu
@@ -139,8 +159,10 @@ class _EventDetailState extends State<EventDetail> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                   child: Text("Rozliczenie z pracownikami",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).textSelectionColor)),
                 ),
               ],
             ),
@@ -170,10 +192,11 @@ class _EventDetailState extends State<EventDetail> {
                   title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    workersList[index],
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  Text(workersList[index],
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).textSelectionColor)),
                   LiteRollingSwitch(
                       value: true
                           ? this
@@ -187,8 +210,8 @@ class _EventDetailState extends State<EventDetail> {
                               .contains(workersList[index]),
                       textOn: 'Zapłacono',
                       textOff: 'Nie Zap.',
-                      colorOn: Theme.of(context).accentColor,
-                      colorOff: Colors.red,
+                      colorOn: Theme.of(context).indicatorColor,
+                      colorOff: Theme.of(context).errorColor,
                       iconOn: Icons.attach_money,
                       iconOff: Icons.money_off,
                       onChanged: (state) {

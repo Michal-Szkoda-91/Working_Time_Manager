@@ -33,7 +33,7 @@ class _WorkersState extends State<Workers> {
               WorkersModel('', '', 0.0, '', ''), "Dodaj Pracownika", 0);
         },
         child: Icon(Icons.add),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).accentColor,
         tooltip: "Dodaj uzytkownika",
       ),
     );
@@ -48,7 +48,7 @@ class _WorkersState extends State<Workers> {
             elevation: 2.0,
             child: ListTile(
               leading: CircleAvatar(
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: Theme.of(context).accentColor,
                 child: Icon(Icons.arrow_forward_ios),
               ),
               //wyswietlenie imienia i tytulu
@@ -64,7 +64,7 @@ class _WorkersState extends State<Workers> {
               trailing: GestureDetector(
                   child: Icon(
                     Icons.delete,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).accentColor,
                   ),
                   onTap: () {
                     deleteWorkers(position);
@@ -86,10 +86,12 @@ class _WorkersState extends State<Workers> {
       Future<List<WorkersModel>> workersModelListFuture =
           databasehelper.getWorkersList();
       workersModelListFuture.then((workersModelList) {
-        setState(() {
-          this.workersModelList = workersModelList;
-          this.count = workersModelList.length;
-        });
+        if (this.mounted) {
+          setState(() {
+            this.workersModelList = workersModelList;
+            this.count = workersModelList.length;
+          });
+        }
       });
     });
   }
@@ -111,6 +113,7 @@ class _WorkersState extends State<Workers> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).selectedRowColor,
         content: Container(
           height: 100,
           child: Column(
@@ -118,7 +121,8 @@ class _WorkersState extends State<Workers> {
             children: <Widget>[
               Text(
                 "Napewno usunąć pracownika?",
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(
+                    fontSize: 20, color: Theme.of(context).textSelectionColor),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -133,7 +137,7 @@ class _WorkersState extends State<Workers> {
                     child: Text(
                       "OK",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).hoverColor,
                         fontSize: 16,
                       ),
                     ),
@@ -147,7 +151,7 @@ class _WorkersState extends State<Workers> {
                     child: Text(
                       "Anuluj",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).hoverColor,
                         fontSize: 16,
                       ),
                     ),
