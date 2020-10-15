@@ -51,7 +51,7 @@ class _AddWorkersState extends State<AddWorkers> {
                 updateName();
               },
               decoration: InputDecoration(
-                  hintText: 'Imie pracownika',
+                  hintText: 'Imię pracownika',
                   fillColor: Theme.of(context).textSelectionColor),
               controller: namecontroller,
             ),
@@ -84,7 +84,7 @@ class _AddWorkersState extends State<AddWorkers> {
                         re.hasMatch(shortNameController.text) ||
                         re.hasMatch(namecontroller.text)) {
                       _showDialog("Błąd",
-                          "wypełnij wszystkie pola! Nie używaj znaków specjalnych!");
+                          "Wypełnij wszystkie pola! Nie używaj znaków specjalnych!");
                     } else {
                       _saveData(namecontroller.text, shortNameController.text);
                     }
@@ -159,8 +159,10 @@ class _AddWorkersState extends State<AddWorkers> {
     AlertDialog alertDialog = AlertDialog(
       backgroundColor: Theme.of(context).selectedRowColor,
       title: Text(title,
+          textAlign: TextAlign.center,
           style: (TextStyle(color: Theme.of(context).textSelectionColor))),
       content: Text(message,
+          textAlign: TextAlign.center,
           style: (TextStyle(color: Theme.of(context).textSelectionColor))),
     );
     showDialog(context: context, builder: (_) => alertDialog);

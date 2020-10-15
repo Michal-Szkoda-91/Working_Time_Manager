@@ -14,15 +14,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.grey[900],
-        accentColor: Colors.blue[600],
-        cardColor: Colors.lightGreenAccent[200],
-        selectedRowColor: Colors.grey[800],
-        canvasColor: Colors.grey[700],
-        textSelectionColor: Colors.lightGreenAccent[400],
-        hoverColor: Colors.white,
-        errorColor: Colors.red[700],
-        indicatorColor: Colors.green[800],
-        cursorColor: Colors.grey,
+        canvasColor: Colors.grey[300], //tło apki
+        accentColor: Colors.grey[800], //przyciski
+        cardColor: Colors.blue[400], //drobiazki
+        selectedRowColor: Colors.blueGrey[200], //karty, tlo okien
+        textSelectionColor: Colors.black, //napsiy
+        hoverColor: Colors.grey[100], //napis przyc.
+        errorColor: Colors.red, //negatywne oznacz
+        indicatorColor: Colors.green, //pozytywne oznaczenie
+        cursorColor: Colors.black,
       ),
       home: MyHomePage(title: 'Menadżer czasu pracy'),
     );

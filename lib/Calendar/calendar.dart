@@ -55,10 +55,11 @@ class _CalendarState extends State<Calendar> {
       Future<List<EventsModel>> eventModelListFuture =
           eventHelper.getEventAllList();
       eventModelListFuture.then((eventsModelList) {
-        setState(() {
-          this.eventsModelList = eventsModelList;
-          this.eventsLenght = eventsModelList.length;
-        });
+        if (this.mounted)
+          setState(() {
+            this.eventsModelList = eventsModelList;
+            this.eventsLenght = eventsModelList.length;
+          });
       });
     });
   }
@@ -70,10 +71,11 @@ class _CalendarState extends State<Calendar> {
       Future<List<EmployersModel>> employersModelListFuture =
           employersHelper.getEmployersList();
       employersModelListFuture.then((employersModelList) {
-        setState(() {
-          this.employersModelList = employersModelList;
-          this.employersLenght = employersModelList.length;
-        });
+        if (this.mounted)
+          setState(() {
+            this.employersModelList = employersModelList;
+            this.employersLenght = employersModelList.length;
+          });
       });
     });
   }
@@ -85,10 +87,11 @@ class _CalendarState extends State<Calendar> {
       Future<List<WorkersModel>> workersModelListFuture =
           workersHelper.getWorkersList();
       workersModelListFuture.then((workersModelList) {
-        setState(() {
-          this.workersModelList = workersModelList;
-          this.workersLenght = workersModelList.length;
-        });
+        if (this.mounted)
+          setState(() {
+            this.workersModelList = workersModelList;
+            this.workersLenght = workersModelList.length;
+          });
       });
     });
   }
@@ -157,6 +160,9 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
+    updateListViewEmployers();
+    updateListViewWorkers();
+    updateListViewEvents();
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
@@ -168,6 +174,8 @@ class _CalendarState extends State<Calendar> {
             initialCalendarFormat: CalendarFormat.month,
             calendarStyle: CalendarStyle(
               markersColor: Theme.of(context).textSelectionColor,
+              todayColor: Theme.of(context).cardColor,
+              selectedColor: Theme.of(context).accentColor,
               canEventMarkersOverflow: true,
               outsideDaysVisible: false,
             ),
@@ -176,9 +184,8 @@ class _CalendarState extends State<Calendar> {
               titleTextStyle: TextStyle(
                   color: Theme.of(context).textSelectionColor, fontSize: 20),
               formatButtonDecoration: BoxDecoration(
-                color: Theme.of(context).accentColor,
-                borderRadius: BorderRadius.circular(20.0),
-              ),
+                  color: Theme.of(context).accentColor,
+                  borderRadius: BorderRadius.circular(2.0)),
               formatButtonTextStyle:
                   TextStyle(color: Theme.of(context).hoverColor),
               formatButtonShowsNext: false,
@@ -188,7 +195,7 @@ class _CalendarState extends State<Calendar> {
               weekdayStyle: TextStyle(
                   color: Theme.of(context).textSelectionColor, fontSize: 14),
               weekendStyle:
-                  TextStyle(color: Theme.of(context).accentColor, fontSize: 14),
+                  TextStyle(color: Theme.of(context).cardColor, fontSize: 14),
             ),
             onDaySelected: (date, events) {
               //zdarzenie po kliknieciu w dzien
@@ -203,33 +210,35 @@ class _CalendarState extends State<Calendar> {
                 margin: const EdgeInsets.all(0.5),
                 alignment: Alignment.topCenter,
                 decoration: BoxDecoration(
-                    border: Border.all(width: 1),
-                    borderRadius: BorderRadius.circular(10.0)),
+                    border: Border.all(
+                        width: 1, color: Theme.of(context).textSelectionColor),
+                    borderRadius: BorderRadius.circular(2.0)),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  //mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     //*********************************** */
                     //Warunki sprawdzajace czy dany event jest oplacony calkowicie czy nie
                     //jesli nie ma eventow buduje normalny dzien
                     if (_events[date] == null ||
                         _events[date].toString() == "[]")
-                      Column(
-                        children: [
-                          Container(
-                            height: 20,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).selectedRowColor,
-                                borderRadius: BorderRadius.circular(10.0)),
-                            child: Text(
-                              date.day.toString(),
-                              style: TextStyle(
-                                  color: Theme.of(context).accentColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15),
+                      Container(
+                        child: Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).cardColor,
+                                  borderRadius: BorderRadius.circular(1.0)),
+                              child: Text(
+                                date.day.toString(),
+                                style: TextStyle(
+                                    color: Theme.of(context).textSelectionColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     //jesli sa eventy i wszystkie sa zaplacone u pracodawcow buduje dzien z kolorem zielonym
                     if (_events[date] != null &&
@@ -239,11 +248,10 @@ class _CalendarState extends State<Calendar> {
                       Column(
                         children: [
                           Container(
-                            height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).indicatorColor,
-                                borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(1.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
@@ -271,11 +279,10 @@ class _CalendarState extends State<Calendar> {
                       Column(
                         children: [
                           Container(
-                            height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).errorColor,
-                                borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(1.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
@@ -303,8 +310,9 @@ class _CalendarState extends State<Calendar> {
                 margin: const EdgeInsets.all(0.5),
                 alignment: Alignment.topCenter,
                 decoration: BoxDecoration(
-                    border: Border.all(width: 1),
-                    borderRadius: BorderRadius.circular(10.0)),
+                    border: Border.all(
+                        width: 1, color: Theme.of(context).textSelectionColor),
+                    borderRadius: BorderRadius.circular(2.0)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -316,11 +324,10 @@ class _CalendarState extends State<Calendar> {
                       Column(
                         children: [
                           Container(
-                            height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).selectedRowColor,
-                                borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(1.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
@@ -339,11 +346,10 @@ class _CalendarState extends State<Calendar> {
                       Column(
                         children: [
                           Container(
-                            height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).indicatorColor,
-                                borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(1.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
@@ -371,11 +377,10 @@ class _CalendarState extends State<Calendar> {
                       Column(
                         children: [
                           Container(
-                            height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).errorColor,
-                                borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(1.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
@@ -406,7 +411,7 @@ class _CalendarState extends State<Calendar> {
                 decoration: BoxDecoration(
                     border: Border.all(
                         width: 2, color: Theme.of(context).cardColor),
-                    borderRadius: BorderRadius.circular(13.0)),
+                    borderRadius: BorderRadius.circular(2.0)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -418,11 +423,10 @@ class _CalendarState extends State<Calendar> {
                       Column(
                         children: [
                           Container(
-                            height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).selectedRowColor,
-                                borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(1.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
@@ -441,11 +445,10 @@ class _CalendarState extends State<Calendar> {
                       Column(
                         children: [
                           Container(
-                            height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).indicatorColor,
-                                borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(1.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
@@ -473,11 +476,10 @@ class _CalendarState extends State<Calendar> {
                       Column(
                         children: [
                           Container(
-                            height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).errorColor,
-                                borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(1.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
@@ -508,7 +510,7 @@ class _CalendarState extends State<Calendar> {
                 decoration: BoxDecoration(
                     border: Border.all(
                         width: 2, color: Theme.of(context).accentColor),
-                    borderRadius: BorderRadius.circular(13.0)),
+                    borderRadius: BorderRadius.circular(2.0)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -521,11 +523,10 @@ class _CalendarState extends State<Calendar> {
                       Column(
                         children: [
                           Container(
-                            height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).selectedRowColor,
-                                borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(1.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
@@ -545,11 +546,10 @@ class _CalendarState extends State<Calendar> {
                       Column(
                         children: [
                           Container(
-                            height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).indicatorColor,
-                                borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(1.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
@@ -577,11 +577,10 @@ class _CalendarState extends State<Calendar> {
                       Column(
                         children: [
                           Container(
-                            height: 20,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: Theme.of(context).errorColor,
-                                borderRadius: BorderRadius.circular(10.0)),
+                                borderRadius: BorderRadius.circular(1.0)),
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
@@ -876,7 +875,11 @@ class _CalendarState extends State<Calendar> {
                       ),
                     ),
                     //Wyświetlenie wprowadzanych danych
-                    Text(summary),
+                    Text(
+                      summary,
+                      style: TextStyle(
+                          color: Theme.of(context).textSelectionColor),
+                    ),
                     //Przyciski anulowania i akceptacji zapisu eventu
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -1147,22 +1150,39 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-  //nawigowanie do strony z detalami Eventu, utworzenie nowego eventu z tytulem
+  //nawigowanie do strony z detalami Eventu, utworzenie nowego eventu z tytulem, przekazanie modelu eventu oraz listy pracownikow
   void navigateToEventDetail(String title) async {
     EventsModel modelTaked;
     eventsModelList.forEach((element) {
       if (element.title == title) modelTaked = element;
     });
+    List workersList = [];
+    if (modelTaked.workersPaid != "" && modelTaked.workersNotPaid != "") {
+      workersList = modelTaked.workersNotPaid.split("; ") +
+          modelTaked.workersPaid.split("; ");
+    } else if (modelTaked.workersPaid == "") {
+      workersList = modelTaked.workersNotPaid.split("; ");
+    } else if (modelTaked.workersNotPaid == "") {
+      workersList = modelTaked.workersPaid.split("; ");
+    }
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return EventDetail(modelTaked);
+      return EventDetail(modelTaked, workersList);
     }));
   }
 
   void _showDialog(String title, String message) {
     AlertDialog alertDialog = AlertDialog(
       backgroundColor: Theme.of(context).selectedRowColor,
-      title: Text(title),
-      content: Text(message),
+      title: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Theme.of(context).textSelectionColor),
+      ),
+      content: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Theme.of(context).textSelectionColor),
+      ),
     );
     showDialog(context: context, builder: (_) => alertDialog);
   }
@@ -1190,9 +1210,11 @@ class _CalendarState extends State<Calendar> {
         if (element.title == title) name = element.employer;
       });
       //pobranie z listy pracodawcow krotkiego imienia
-      employersModelList.forEach((element) {
-        if (element.name == name) shortname = element.shortName;
-      });
+      if (employersModelList != null) {
+        employersModelList.forEach((element) {
+          if (element.name == name) shortname = element.shortName;
+        });
+      }
     }
     return shortname;
   }

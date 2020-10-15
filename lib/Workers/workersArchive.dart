@@ -116,7 +116,7 @@ class _WorkersArchiveState extends State<WorkersArchive> {
                                         .contains(this.shortname)
                                     ? Icons.attach_money
                                     : Icons.money_off,
-                                color: Theme.of(context).textSelectionColor,
+                                color: Theme.of(context).hoverColor,
                               )),
                         ),
                       ],

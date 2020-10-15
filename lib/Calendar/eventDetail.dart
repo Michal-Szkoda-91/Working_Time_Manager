@@ -6,37 +6,33 @@ import 'package:working_time_management/models/eventsModel.dart';
 
 class EventDetail extends StatefulWidget {
   final EventsModel eventsModel;
+  final List workersList;
 
-  EventDetail(this.eventsModel);
+  EventDetail(this.eventsModel, this.workersList);
   @override
   _EventDetailState createState() {
-    return _EventDetailState(this.eventsModel);
+    return _EventDetailState(this.eventsModel, this.workersList);
   }
 }
 
 class _EventDetailState extends State<EventDetail> {
   EventsModel eventsModel;
   EventHelper eventHelper = EventHelper();
-
-  List workersList = [];
+  List workersList;
   List workersNotPaidList = [];
   List workersPaidList = [];
 
-  _EventDetailState(this.eventsModel);
+  _EventDetailState(this.eventsModel, this.workersList);
 
   @override
   Widget build(BuildContext context) {
     if (this.eventsModel.workersPaid != "" &&
         this.eventsModel.workersNotPaid != "") {
-      workersList = this.eventsModel.workersNotPaid.split("; ") +
-          this.eventsModel.workersPaid.split("; ");
       workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
       workersPaidList = this.eventsModel.workersPaid.split("; ");
     } else if (this.eventsModel.workersPaid == "") {
-      workersList = this.eventsModel.workersNotPaid.split("; ");
       workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
     } else if (this.eventsModel.workersNotPaid == "") {
-      workersList = this.eventsModel.workersPaid.split("; ");
       workersPaidList = this.eventsModel.workersPaid.split("; ");
     }
     return Scaffold(
@@ -137,7 +133,7 @@ class _EventDetailState extends State<EventDetail> {
                       textOff: 'Nie Zap.',
                       colorOn: Theme.of(context).indicatorColor,
                       colorOff: Theme.of(context).errorColor,
-                      iconOn: (Icons.attach_money),
+                      iconOn: Icons.attach_money,
                       iconOff: Icons.money_off,
                       onChanged: (bool state) {
                         //zapisanie do bazy informacji o zapłaceniu eventu

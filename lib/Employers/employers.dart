@@ -120,7 +120,8 @@ class _EmployersState extends State<Employers> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                "Napewno usunąć pracodawcę?",
+                "Na pewno usunąć pracodawcę?",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 20, color: Theme.of(context).textSelectionColor),
               ),
