@@ -54,11 +54,13 @@ class _WorkersState extends State<Workers> {
               //wyswietlenie imienia i tytulu
               title: Text(
                 this.workersModelList[position].name,
-                style: new TextStyle(fontSize: 22),
+                style: new TextStyle(
+                    fontSize: 22, color: Theme.of(context).textSelectionColor),
               ),
               subtitle: Text(
                 this.workersModelList[position].shortName,
-                style: new TextStyle(fontSize: 14),
+                style: new TextStyle(
+                    fontSize: 14, color: Theme.of(context).textSelectionColor),
               ),
               //ikona usowania oraz dodana do niej metoda
               trailing: GestureDetector(
@@ -120,7 +122,8 @@ class _WorkersState extends State<Workers> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                "Napewno usunąć pracownika?",
+                "Na pewno usunąć pracownika?",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 20, color: Theme.of(context).textSelectionColor),
               ),

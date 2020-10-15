@@ -82,6 +82,7 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                     subtitle: Text(
                       "Pracowali: " +
                           eventsModelList[position].workersNotPaid +
+                          " ;" +
                           eventsModelList[position].workersPaid +
                           "\n" +
                           "Czas : " +
@@ -111,7 +112,7 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                                 eventsModelList[position].isPaid == 1
                                     ? Icons.attach_money
                                     : Icons.money_off,
-                                color: Theme.of(context).textSelectionColor,
+                                color: Theme.of(context).hoverColor,
                               )),
                         ),
                       ],

@@ -82,14 +82,16 @@ class _WorkersDetailState extends State<WorkersDetail> {
         backgroundColor: Theme.of(context).selectedRowColor,
         title: Text(
           title,
+          textAlign: TextAlign.center,
           style: TextStyle(
-            color: Theme.of(context).hoverColor,
+            color: Theme.of(context).textSelectionColor,
           ),
         ),
         content: Text(
           message,
+          textAlign: TextAlign.center,
           style: TextStyle(
-            color: Theme.of(context).hoverColor,
+            color: Theme.of(context).textSelectionColor,
           ),
         ),
       );
@@ -361,6 +363,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: TextField(
+                    style:
+                        TextStyle(color: Theme.of(context).textSelectionColor),
                     cursorColor: Theme.of(context).textSelectionColor,
                     controller: _notesController,
                     minLines: 2,
@@ -497,10 +501,12 @@ class _WorkersDetailState extends State<WorkersDetail> {
         backgroundColor: Theme.of(context).selectedRowColor,
         title: Text(
           title,
+          textAlign: TextAlign.center,
           style: TextStyle(color: Theme.of(context).textSelectionColor),
         ),
         content: Text(
           message,
+          textAlign: TextAlign.center,
           style: TextStyle(color: Theme.of(context).textSelectionColor),
         ),
       );
@@ -688,7 +694,8 @@ class _WorkersDetailState extends State<WorkersDetail> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                "Napewno ustawić status zapłacono dla wszystkich wydarzeń? Przeniesie to wszystkie eventy pracownika do archiwum oraz usunie wszystkie dodatki!!",
+                "Na pewno ustawić status zapłacono dla wszystkich wydarzeń? Przeniesie to wszystkie eventy pracownika do archiwum oraz usunie wszystkie dodatki!!",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 20, color: Theme.of(context).textSelectionColor),
               ),
