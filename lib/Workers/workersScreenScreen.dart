@@ -1,35 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:working_time_management/Workers/workersDetail.dart';
+import 'package:working_time_management/Workers/workersDetailScreen.dart';
 import 'package:working_time_management/helpers/workersHelper.dart';
 import 'package:working_time_management/models/workersModel.dart';
 
-import 'addWorkers.dart';
+import 'addWorkersScreen.dart';
 
-class Workers extends StatefulWidget {
+class WorkersScreen extends StatefulWidget {
   @override
   _WorkersState createState() => _WorkersState();
 }
 
-class _WorkersState extends State<Workers> {
+class _WorkersState extends State<WorkersScreen> {
   WorkersHelper databasehelper = WorkersHelper();
-  List<WorkersModel> workersModelList;
-  int count = 0;
+  List<WorkersModel> _workersModelList;
+  int _count = 0;
 
   @override
   Widget build(BuildContext context) {
     //sprawdzanie czy lista nie jest pusta
-    if (workersModelList == null) {
-      workersModelList = List<WorkersModel>();
+    if (_workersModelList == null) {
+      _workersModelList = List<WorkersModel>();
     }
-    updateListView();
+    _updateListView();
 
     return Scaffold(
-      body: getlist(),
+      body: _getlist(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          navigateToDetail(
+          _navigateToDetail(
               WorkersModel('', '', 0.0, '', ''), "Dodaj Pracownika", 0);
         },
         child: Icon(Icons.add),
@@ -39,9 +39,9 @@ class _WorkersState extends State<Workers> {
     );
   }
 
-  ListView getlist() {
+  ListView _getlist() {
     return ListView.builder(
-        itemCount: count,
+        itemCount: _count,
         itemBuilder: (BuildContext context, int position) {
           return Card(
             color: Theme.of(context).selectedRowColor,
@@ -53,12 +53,12 @@ class _WorkersState extends State<Workers> {
               ),
               //wyswietlenie imienia i tytulu
               title: Text(
-                this.workersModelList[position].name,
+                this._workersModelList[position].name,
                 style: new TextStyle(
                     fontSize: 22, color: Theme.of(context).textSelectionColor),
               ),
               subtitle: Text(
-                this.workersModelList[position].shortName,
+                this._workersModelList[position].shortName,
                 style: new TextStyle(
                     fontSize: 14, color: Theme.of(context).textSelectionColor),
               ),
@@ -69,11 +69,11 @@ class _WorkersState extends State<Workers> {
                     color: Theme.of(context).accentColor,
                   ),
                   onTap: () {
-                    deleteWorkers(position);
+                    _deleteWorkers(position);
                   }),
               //po nacisnieciu elementu w liscie
               onTap: () {
-                navigateToWorkerDetail(this.workersModelList[position],
+                _navigateToWorkerDetail(this._workersModelList[position],
                     'Dane Pracownika', position);
               },
             ),
@@ -82,16 +82,16 @@ class _WorkersState extends State<Workers> {
   }
 
   //pobieranie listy modeli
-  void updateListView() {
+  void _updateListView() {
     final Future<Database> dbFuture = databasehelper.initialDatabase();
     dbFuture.then((databse) {
       Future<List<WorkersModel>> workersModelListFuture =
           databasehelper.getWorkersList();
-      workersModelListFuture.then((workersModelList) {
+      workersModelListFuture.then((_workersModelList) {
         if (this.mounted) {
           setState(() {
-            this.workersModelList = workersModelList;
-            this.count = workersModelList.length;
+            this._workersModelList = _workersModelList;
+            this._count = _workersModelList.length;
           });
         }
       });
@@ -99,19 +99,19 @@ class _WorkersState extends State<Workers> {
   }
 
   //nawigowanie do strony
-  void navigateToDetail(
+  void _navigateToDetail(
       WorkersModel workersObject, String title, int position) async {
     bool result =
         await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return AddWorkers(workersObject, title, position);
+      return AddWorkersScreen(workersObject, title, position);
     }));
     if (result == true) {
-      updateListView();
+      _updateListView();
     }
   }
 
   //usuwanie Pracownicy
-  deleteWorkers(int position) {
+  _deleteWorkers(int position) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -133,7 +133,7 @@ class _WorkersState extends State<Workers> {
                   new RaisedButton(
                     color: Theme.of(context).accentColor,
                     onPressed: () {
-                      _delete(context, workersModelList[position]);
+                      _delete(context, _workersModelList[position]);
                       Navigator.pop(context);
                       return;
                     },
@@ -169,10 +169,10 @@ class _WorkersState extends State<Workers> {
   }
 
   //nawigowanie do strony z wyswietleniem informacji o pracowniku
-  void navigateToWorkerDetail(
+  void _navigateToWorkerDetail(
       WorkersModel workersModel, String title, int position) async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return WorkersDetail(workersModel, title, position);
+      return WorkersDetailScreen(workersModel, title, position);
     }));
   }
 
@@ -180,7 +180,7 @@ class _WorkersState extends State<Workers> {
   void _delete(BuildContext context, WorkersModel workersModel) async {
     int result = await databasehelper.deleteWorker(workersModel.id);
     if (result != 0) {
-      updateListView();
+      _updateListView();
     }
   }
 }

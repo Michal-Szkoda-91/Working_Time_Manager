@@ -9,13 +9,13 @@ class WorkersHelper {
   static WorkersHelper _databasehelper;
   static Database _database;
 
-  String workersTable = 'workersTable';
-  String colID = 'id';
-  String colname = 'name';
-  String colshortName = 'shortName';
-  String colhoursSum = 'hoursSum';
-  String coladditions = 'additions';
-  String colnotes = 'notes';
+  String _workersTable = '_workersTable';
+  String _colID = 'id';
+  String _colname = 'name';
+  String _colshortName = 'shortName';
+  String _colhoursSum = 'hoursSum';
+  String _coladditions = 'additions';
+  String _colnotes = 'notes';
 
   WorkersHelper._createInstance();
 
@@ -44,30 +44,30 @@ class WorkersHelper {
 
   void _createDB(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $workersTable($colID INTEGER PRIMARY KEY AUTOINCREMENT, $colname TEXT, $colshortName TEXT, $colhoursSum REAL, $coladditions TEXT, $colnotes TEXT)');
+        'CREATE TABLE $_workersTable($_colID INTEGER PRIMARY KEY AUTOINCREMENT, $_colname TEXT, $_colshortName TEXT, $_colhoursSum REAL, $_coladditions TEXT, $_colnotes TEXT)');
   }
 
   //pobieranie pracownikow w postaci map
   Future<List<Map<String, dynamic>>> getWorkersMapList() async {
     Database db = await this.database;
-    var result = await db.query(workersTable,
+    var result = await db.query(_workersTable,
         orderBy:
-            '$colname ASC'); //sortowanie pracownikow alfabetycznie po nazwie
+            '$_colname ASC'); //sortowanie pracownikow alfabetycznie po nazwie
     return result;
   }
 
   //wstawianie pracownika
   Future<int> insertWorker(WorkersModel workersModel) async {
     Database db = await this.database;
-    var result = await db.insert(workersTable, workersModel.toMap());
+    var result = await db.insert(_workersTable, workersModel.toMap());
     return result;
   }
 
   //update pracownika
   Future<int> updateWorkers(WorkersModel workersModel) async {
     Database db = await this.database;
-    var result = await db.update(workersTable, workersModel.toMap(),
-        where: '$colID = ?', whereArgs: [workersModel.id]);
+    var result = await db.update(_workersTable, workersModel.toMap(),
+        where: '$_colID = ?', whereArgs: [workersModel.id]);
     return result;
   }
 
@@ -75,7 +75,7 @@ class WorkersHelper {
   Future<int> deleteWorker(int id) async {
     Database db = await this.database;
     var result =
-        await db.rawDelete('DELETE FROM $workersTable WHERE $colID = $id');
+        await db.rawDelete('DELETE FROM $_workersTable WHERE $_colID = $id');
     return result;
   }
 
@@ -83,7 +83,7 @@ class WorkersHelper {
   Future<int> getWorkersCount() async {
     Database db = await this.database;
     List<Map<String, dynamic>> x =
-        await db.rawQuery('SELECT COUNT (*) from $workersTable');
+        await db.rawQuery('SELECT COUNT (*) from $_workersTable');
     int result = Sqflite.firstIntValue(x);
     return result;
   }
@@ -103,7 +103,8 @@ class WorkersHelper {
   //POBIERANIE pojedynczej kolumny do listy
   Future<List<WorkersModel>> getShortNameList() async {
     Database db = await this.database;
-    var response = await db.rawQuery('SELECT $colshortName from $workersTable');
+    var response =
+        await db.rawQuery('SELECT $_colshortName from $_workersTable');
     List<WorkersModel> list =
         response.map((c) => WorkersModel.fromMapObject(c)).toList();
     return list;
@@ -113,7 +114,7 @@ class WorkersHelper {
   Future<int> getWorkerName(String nameGet) async {
     Database db = await this.database;
     var queryResult = Sqflite.firstIntValue(await db.rawQuery(
-        'SELECT COUNT(*) from $workersTable WHERE $colname="$nameGet"'));
+        'SELECT COUNT(*) from $_workersTable WHERE $_colname="$nameGet"'));
     return queryResult;
   }
 
@@ -121,7 +122,7 @@ class WorkersHelper {
   Future<int> getWorkerShortName(String nameGet) async {
     Database db = await this.database;
     var queryResult = Sqflite.firstIntValue(await db.rawQuery(
-        'SELECT COUNT(*) from $workersTable WHERE $colshortName ="$nameGet"'));
+        'SELECT COUNT(*) from $_workersTable WHERE $_colshortName ="$nameGet"'));
     return queryResult;
   }
 
@@ -129,7 +130,7 @@ class WorkersHelper {
   Future<int> updateHoursSum(double sum, String shortName) async {
     Database db = await this.database;
     return await db.rawUpdate('''
-    UPDATE workersTable 
+    UPDATE _workersTable 
     SET hoursSum = ?
     WHERE shortName = ?
     ''', [sum, shortName]);
@@ -139,7 +140,7 @@ class WorkersHelper {
   Future<int> updateAdditions(String textToWrite, String shortName) async {
     Database db = await this.database;
     return await db.rawUpdate('''
-    UPDATE workersTable 
+    UPDATE _workersTable 
     SET additions = ?
     WHERE shortName = ?
     ''', [textToWrite, shortName]);
@@ -149,7 +150,7 @@ class WorkersHelper {
   Future<int> updateNotes(String textToWrite, String shortName) async {
     Database db = await this.database;
     return await db.rawUpdate('''
-    UPDATE workersTable 
+    UPDATE _workersTable 
     SET notes = ?
     WHERE shortName = ?
     ''', [textToWrite, shortName]);

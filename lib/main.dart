@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:working_time_management/Calendar/calendar.dart';
-import 'package:working_time_management/Employers/employers.dart';
-import 'package:working_time_management/Workers/workers.dart';
+import 'package:working_time_management/Employers/employersScreen.dart';
+import 'package:working_time_management/Workers/workersScreenScreen.dart';
 
 void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
@@ -14,12 +14,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primaryColor: Colors.grey[900],
-        canvasColor: Colors.grey[300], //tło apki
+        canvasColor: Colors.grey[300], //tło aplikacji
         accentColor: Colors.grey[800], //przyciski
-        cardColor: Colors.blue[400], //drobiazki
+        cardColor: Colors.blue[400], //drobiazgi
         selectedRowColor: Colors.blueGrey[200], //karty, tlo okien
-        textSelectionColor: Colors.black, //napsiy
-        hoverColor: Colors.grey[100], //napis przyc.
+        textSelectionColor: Colors.black, //napisy
+        hoverColor: Colors.grey[100], //napis przyciski
         errorColor: Colors.red, //negatywne oznacz
         indicatorColor: Colors.green, //pozytywne oznaczenie
         cursorColor: Colors.black,
@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
           new BottomNavigationBarItem(
               icon: new Icon(Icons.people), title: new Text("Pracownicy")),
           new BottomNavigationBarItem(
-              icon: new Icon(Icons.search), title: new Text("Wyszukaj")),
+              icon: new Icon(Icons.search), title: new Text("Autor")),
         ],
         unselectedItemColor: Theme.of(context).accentColor,
         selectedItemColor: Theme.of(context).cardColor,
@@ -97,13 +97,29 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Calendar(),
           ),
           new Center(
-            child: Employers(),
+            child: EmployersScreen(),
           ),
           new Center(
-            child: Workers(),
+            child: WorkersScreen(),
           ),
           new Center(
-            child: Text("Wyszukiwarka"),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                FlatButton(
+                  onPressed: null,
+                  child: Text(
+                    'nacisnij',
+                    style: TextStyle(
+                      fontSize: 40,
+                    ),
+                  ),
+                ),
+                Icon(
+                  Icons.ac_unit,
+                ),
+              ],
+            ),
           ),
         ],
       ),

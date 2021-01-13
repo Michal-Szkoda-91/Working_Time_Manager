@@ -4,20 +4,20 @@ import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/models/eventsModel.dart';
 
-class EventDetail extends StatefulWidget {
+class EventDetailScreen extends StatefulWidget {
   final EventsModel eventsModel;
   final List workersList;
 
-  EventDetail(this.eventsModel, this.workersList);
+  EventDetailScreen(this.eventsModel, this.workersList);
   @override
   _EventDetailState createState() {
     return _EventDetailState(this.eventsModel, this.workersList);
   }
 }
 
-class _EventDetailState extends State<EventDetail> {
+class _EventDetailState extends State<EventDetailScreen> {
   EventsModel eventsModel;
-  EventHelper eventHelper = EventHelper();
+  EventHelper eventHelper;
   List workersList;
   List workersNotPaidList = [];
   List workersPaidList = [];
@@ -26,15 +26,7 @@ class _EventDetailState extends State<EventDetail> {
 
   @override
   Widget build(BuildContext context) {
-    if (this.eventsModel.workersPaid != "" &&
-        this.eventsModel.workersNotPaid != "") {
-      workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
-      workersPaidList = this.eventsModel.workersPaid.split("; ");
-    } else if (this.eventsModel.workersPaid == "") {
-      workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
-    } else if (this.eventsModel.workersNotPaid == "") {
-      workersPaidList = this.eventsModel.workersPaid.split("; ");
-    }
+    _checkWorkerPaymentStatus();
     return Scaffold(
       appBar: AppBar(
         title: Text("Szczegóły Dnia Pracy"),
@@ -173,6 +165,18 @@ class _EventDetailState extends State<EventDetail> {
         ),
       ),
     );
+  }
+
+  void _checkWorkerPaymentStatus() {
+    if (this.eventsModel.workersPaid != "" &&
+        this.eventsModel.workersNotPaid != "") {
+      workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
+      workersPaidList = this.eventsModel.workersPaid.split("; ");
+    } else if (this.eventsModel.workersPaid == "") {
+      workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
+    } else if (this.eventsModel.workersNotPaid == "") {
+      workersPaidList = this.eventsModel.workersPaid.split("; ");
+    }
   }
 
   //budowanie listy pracownikow

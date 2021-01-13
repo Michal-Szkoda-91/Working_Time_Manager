@@ -1,40 +1,40 @@
 //druga strona do dodawania pracownika
 import 'package:flutter/material.dart';
-import 'package:working_time_management/helpers/employersHelper.dart';
-import 'package:working_time_management/models/employersModel.dart';
+import 'package:working_time_management/helpers/workersHelper.dart';
+import 'package:working_time_management/models/workersModel.dart';
 
 // ignore: must_be_immutable
-class AddEmployers extends StatefulWidget {
-  final String title;
-  final EmployersModel employersModel;
+class AddWorkersScreen extends StatefulWidget {
+  final String _title;
+  final WorkersModel workersModel;
   int position;
 
-  AddEmployers(this.employersModel, this.title, this.position);
+  AddWorkersScreen(this.workersModel, this._title, this.position);
 
   @override
-  _AddEmployersState createState() {
-    return _AddEmployersState(this.title, this.employersModel);
+  _AddWorkersState createState() {
+    return _AddWorkersState(this._title, this.workersModel);
   }
 }
 
-class _AddEmployersState extends State<AddEmployers> {
-  EmployersModel employersModel;
-  TextEditingController namecontroller = new TextEditingController();
-  TextEditingController shortNameController = new TextEditingController();
-  String title;
-  EmployersHelper employersHelper = EmployersHelper();
-  RegExp re = RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*^%0-9-]');
+class _AddWorkersState extends State<AddWorkersScreen> {
+  WorkersModel workersModel;
+  TextEditingController _namecontroller = new TextEditingController();
+  TextEditingController _shortNameController = new TextEditingController();
+  String _title;
+  WorkersHelper workersHelper = WorkersHelper();
+  RegExp _reg = RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*^%0-9-]');
 
-  _AddEmployersState(this.title, this.employersModel);
+  _AddWorkersState(this._title, this.workersModel);
 
   @override
   Widget build(BuildContext context) {
-    namecontroller.text = employersModel.name;
-    shortNameController.text = employersModel.shortName;
+    _namecontroller.text = workersModel.name;
+    _shortNameController.text = workersModel.shortName;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          title,
+          _title,
           style: TextStyle(color: Theme.of(context).hoverColor),
         ),
       ),
@@ -48,19 +48,19 @@ class _AddEmployersState extends State<AddEmployers> {
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).textSelectionColor),
               onChanged: (value) {
-                updateName();
+                _updateName();
               },
               decoration: InputDecoration(
-                  hintText: 'Imie pracodawcy',
+                  hintText: 'Imię pracownika',
                   fillColor: Theme.of(context).textSelectionColor),
-              controller: namecontroller,
+              controller: _namecontroller,
             ),
             TextField(
                 style: new TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).textSelectionColor),
                 onChanged: (value) {
-                  updateShortname();
+                  _updateShortname();
                 },
                 maxLength: 5,
                 cursorColor: Theme.of(context).textSelectionColor,
@@ -72,21 +72,22 @@ class _AddEmployersState extends State<AddEmployers> {
                       fontSize: 14,
                       color: Theme.of(context).textSelectionColor),
                 ),
-                controller: shortNameController),
+                controller: _shortNameController),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 new RaisedButton(
                   color: Theme.of(context).accentColor,
                   onPressed: () {
-                    if (shortNameController.text.isEmpty ||
-                        namecontroller.text.isEmpty ||
-                        re.hasMatch(shortNameController.text) ||
-                        re.hasMatch(namecontroller.text)) {
+                    if (_shortNameController.text.isEmpty ||
+                        _namecontroller.text.isEmpty ||
+                        _reg.hasMatch(_shortNameController.text) ||
+                        _reg.hasMatch(_namecontroller.text)) {
                       _showDialog("Błąd",
                           "Wypełnij wszystkie pola! Nie używaj znaków specjalnych!");
                     } else {
-                      _saveData(namecontroller.text, shortNameController.text);
+                      _saveData(
+                          _namecontroller.text, _shortNameController.text);
                     }
                   },
                   child: Text(
@@ -105,8 +106,8 @@ class _AddEmployersState extends State<AddEmployers> {
                       //anulowanie wpisywanego tekstu
                       Navigator.pop(context);
                       setState(() {
-                        shortNameController.text = "";
-                        namecontroller.text = "";
+                        _shortNameController.text = " ";
+                        _namecontroller.text = " ";
                       });
                     },
                     child: Text(
@@ -125,40 +126,40 @@ class _AddEmployersState extends State<AddEmployers> {
   }
 
   //funkcje pomocnicze do ustawienia imienia i ksywy
-  void updateName() {
-    employersModel.name = namecontroller.text;
+  void _updateName() {
+    workersModel.name = _namecontroller.text;
   }
 
-  void updateShortname() {
-    employersModel.shortName = shortNameController.text;
+  void _updateShortname() {
+    workersModel.shortName = _shortNameController.text;
   }
 
 //funkcja zatwierdzajaca dane
   void _saveData(String nameGets, String shortNameGets) async {
     Navigator.pop(context, true);
-    int checkResult = await employersHelper.getEmployerName(nameGets);
+    int checkResultName = await workersHelper.getWorkerName(nameGets);
     int checkResultShortName =
-        await employersHelper.getWorkerShortName(shortNameGets);
-    if (checkResult == 0 &&
+        await workersHelper.getWorkerShortName(shortNameGets);
+    if (checkResultName == 0 &&
         nameGets.substring(nameGets.length - 1) != " " &&
         checkResultShortName == 0 &&
         shortNameGets.substring(shortNameGets.length - 1) != " ") {
       int result;
-      result = await employersHelper.insertEmployer(employersModel);
+      result = await workersHelper.insertWorker(workersModel);
       if (result != 0) {
-        _showDialog('Status', 'Dodano pracodawcę');
+        _showDialog('Status', 'Dodano pracownika');
       } else {
-        _showDialog('Status', 'Nie udało się dodać pracodawcy');
+        _showDialog('Status', 'Nie udało się dodać pracownikia');
       }
     } else {
-      _showDialog('Status', 'Ten pracodawca już istnieje');
+      _showDialog('Status', 'Ten pracownik już istnieje');
     }
   }
 
-  void _showDialog(String title, String message) {
+  void _showDialog(String _title, String message) {
     AlertDialog alertDialog = AlertDialog(
       backgroundColor: Theme.of(context).selectedRowColor,
-      title: Text(title,
+      title: Text(_title,
           textAlign: TextAlign.center,
           style: (TextStyle(color: Theme.of(context).textSelectionColor))),
       content: Text(message,

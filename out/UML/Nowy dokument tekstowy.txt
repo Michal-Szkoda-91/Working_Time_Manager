@@ -1,0 +1,7 @@
+1. poprawic diagram, i nazwy klass. 
+2. dodac strukture plikow
+3. bibliografia dodac tytul, autora itd.
+4. odnosniki do bibliografii
+5. poszukac lepszego zrodla o flutter, ksiazki artykulu manuala.
+6. umiescic diagram uzycia
+7. recenzent: Tkacz
