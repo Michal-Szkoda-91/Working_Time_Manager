@@ -607,39 +607,29 @@ class _CalendarState extends State<Calendar> {
             calendarController: _controller,
           ),
           //przycisk odpowiedzialny za dodawanie nowego eventu
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                _selectedEvents.length > 0
-                    ? Icon(
-                        Icons.arrow_right,
-                        color: Theme.of(context).textSelectionColor,
-                        size: 40,
-                      )
-                    : Text(""),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-                  child: RaisedButton(
-                    color: Theme.of(context).accentColor,
-                    onPressed: () {
-                      _employerNameValue = null;
-                      choosenWorkers = [];
-                      _showDialogAddEvent();
-                      _createNameList();
-                    },
-                    child: Text(
-                      "Dodaj",
-                      style: TextStyle(
-                        color: Theme.of(context).hoverColor,
-                        fontSize: 16,
-                      ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+                child: RaisedButton(
+                  color: Theme.of(context).accentColor,
+                  onPressed: () {
+                    _employerNameValue = null;
+                    choosenWorkers = [];
+                    _showDialogAddEvent();
+                    _createNameList();
+                  },
+                  child: Text(
+                    "Dodaj",
+                    style: TextStyle(
+                      color: Theme.of(context).hoverColor,
+                      fontSize: 16,
                     ),
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
           //event wyswietlany pod kalendarzem jako lista
           ..._selectedEvents.map(
@@ -651,53 +641,64 @@ class _CalendarState extends State<Calendar> {
                 child: Container(
                   color: Theme.of(context).selectedRowColor,
                   child: ListTile(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          event,
-                          style: TextStyle(
-                            color: Theme.of(context).textSelectionColor,
-                            fontSize: 16,
+                    leading: Container(
+                      width: 5,
+                      child: Icon(
+                        Icons.arrow_right,
+                        color: Theme.of(context).textSelectionColor,
+                        size: 60,
+                      ),
+                    ),
+                    title: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            event,
+                            style: TextStyle(
+                              color: Theme.of(context).textSelectionColor,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                        //icona zmienia kolor w zaleznosci od statusu eventu
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Rozliczenie:",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Theme.of(context).textSelectionColor,
+                          //icona zmienia kolor w zaleznosci od statusu eventu
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Rozliczenie:",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Theme.of(context).textSelectionColor,
+                                  ),
                                 ),
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.business_center,
-                                    color: _checkIfEventIsPaidEmployer(
-                                            event, this._eventsModelList)
-                                        ? Theme.of(context).indicatorColor
-                                        : Theme.of(context).errorColor,
-                                    size: 50,
-                                  ),
-                                  Icon(
-                                    Icons.people,
-                                    color: _checkIfEventIsPaidWorker(
-                                            event, this._eventsModelList)
-                                        ? Theme.of(context).indicatorColor
-                                        : Theme.of(context).errorColor,
-                                    size: 50,
-                                  ),
-                                ],
-                              ),
-                            ],
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.business_center,
+                                      color: _checkIfEventIsPaidEmployer(
+                                              event, this._eventsModelList)
+                                          ? Theme.of(context).indicatorColor
+                                          : Theme.of(context).errorColor,
+                                      size: 50,
+                                    ),
+                                    Icon(
+                                      Icons.people,
+                                      color: _checkIfEventIsPaidWorker(
+                                              event, this._eventsModelList)
+                                          ? Theme.of(context).indicatorColor
+                                          : Theme.of(context).errorColor,
+                                      size: 50,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -732,7 +733,7 @@ class _CalendarState extends State<Calendar> {
   }
 
 //okienko wyświetlające się przy dodawaniu nowego eventu
-  void _showDialogAddEvent() async {
+  void _showDialogAddEvent() {
     String summary = "";
     showDialog(
       context: context,
@@ -1166,9 +1167,14 @@ class _CalendarState extends State<Calendar> {
     } else if (modelTaked.workersNotPaid == "") {
       workersList = modelTaked.workersPaid.split("; ");
     }
-    await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return EventDetailScreen(modelTaked, workersList);
-    }));
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return EventDetailScreen(modelTaked, workersList);
+        },
+      ),
+    );
   }
 
   void _showDialog(String title, String message) {

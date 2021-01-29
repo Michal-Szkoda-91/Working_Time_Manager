@@ -17,7 +17,7 @@ class EventDetailScreen extends StatefulWidget {
 
 class _EventDetailState extends State<EventDetailScreen> {
   EventsModel eventsModel;
-  EventHelper eventHelper;
+  EventHelper eventHelper = EventHelper();
   List workersList;
   List workersNotPaidList = [];
   List workersPaidList = [];
@@ -26,7 +26,15 @@ class _EventDetailState extends State<EventDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _checkWorkerPaymentStatus();
+    if (this.eventsModel.workersPaid != "" &&
+        this.eventsModel.workersNotPaid != "") {
+      workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
+      workersPaidList = this.eventsModel.workersPaid.split("; ");
+    } else if (this.eventsModel.workersPaid == "") {
+      workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
+    } else if (this.eventsModel.workersNotPaid == "") {
+      workersPaidList = this.eventsModel.workersPaid.split("; ");
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("Szczegóły Dnia Pracy"),
@@ -167,18 +175,6 @@ class _EventDetailState extends State<EventDetailScreen> {
     );
   }
 
-  void _checkWorkerPaymentStatus() {
-    if (this.eventsModel.workersPaid != "" &&
-        this.eventsModel.workersNotPaid != "") {
-      workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
-      workersPaidList = this.eventsModel.workersPaid.split("; ");
-    } else if (this.eventsModel.workersPaid == "") {
-      workersNotPaidList = this.eventsModel.workersNotPaid.split("; ");
-    } else if (this.eventsModel.workersNotPaid == "") {
-      workersPaidList = this.eventsModel.workersPaid.split("; ");
-    }
-  }
-
   //budowanie listy pracownikow
   ListView getList() {
     return ListView.builder(
@@ -231,15 +227,19 @@ class _EventDetailState extends State<EventDetailScreen> {
                         }
                         //zapis danych do bazy
                         if (workersNotPaidList.isNotEmpty) {
-                          eventHelper.updateWorkersNotPaid(this.eventsModel.id,
-                              workersNotPaidList.join("; "));
+                          eventHelper.updateWorkersNotPaid(
+                            this.eventsModel.id,
+                            workersNotPaidList.join("; "),
+                          );
                         } else {
                           eventHelper.updateWorkersNotPaid(
                               this.eventsModel.id, "");
                         }
                         if (workersPaidList.isNotEmpty) {
                           eventHelper.updateWorkersPaid(
-                              this.eventsModel.id, workersPaidList.join("; "));
+                            this.eventsModel.id,
+                            workersPaidList.join("; "),
+                          );
                         } else {
                           eventHelper.updateWorkersPaid(
                               this.eventsModel.id, "");
