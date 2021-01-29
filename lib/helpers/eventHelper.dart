@@ -8,22 +8,23 @@ class EventHelper {
   static EventHelper _databasehelper;
   static Database _database;
 
-  String eventsTable = 'eventsTable';
-  String colID = 'id';
-  String colTitle = 'title';
-  String colDate = 'date';
-  String colWorkTime = 'workTime';
-  String colEmployer = 'employer';
-  String colWorkersNotPaid = 'workersNotPaid';
-  String colWorkersPaid = 'workersPaid';
-  String colWorkersNumber = 'workersNumber';
-  String colDayNumber = 'dayNumber';
-  String colBreakTime = 'breakTime';
-  String colHourSum = 'hourSum';
-  String colIsPaid = 'isPaid';
+  String _eventsTable = '_eventsTable';
+  String _colID = 'id';
+  String _colTitle = 'title';
+  String _colDate = 'date';
+  String _colWorkTime = 'workTime';
+  String _colEmployer = 'employer';
+  String _colWorkersNotPaid = 'workersNotPaid';
+  String _colWorkersPaid = 'workersPaid';
+  String _colWorkersNumber = 'workersNumber';
+  String _colDayNumber = 'dayNumber';
+  String _colBreakTime = 'breakTime';
+  String _colHourSum = 'hourSum';
+  String _colIsPaid = 'isPaid';
 
   EventHelper._createInstance();
 
+  //
   factory EventHelper() {
     if (_databasehelper == null) {
       _databasehelper = EventHelper._createInstance();
@@ -48,13 +49,13 @@ class EventHelper {
 
   void _createDB(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $eventsTable($colID INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colDate TEXT, $colWorkTime TEXT, $colEmployer TEXT, $colWorkersNotPaid TEXT, $colWorkersPaid TEXT, $colWorkersNumber INTEGER, $colDayNumber INTEGER, $colBreakTime INTEGER, $colHourSum REAL, $colIsPaid BOOLEAN)');
+        'CREATE TABLE $_eventsTable($_colID INTEGER PRIMARY KEY AUTOINCREMENT, $_colTitle TEXT, $_colDate TEXT, $_colWorkTime TEXT, $_colEmployer TEXT, $_colWorkersNotPaid TEXT, $_colWorkersPaid TEXT, $_colWorkersNumber INTEGER, $_colDayNumber INTEGER, $_colBreakTime INTEGER, $_colHourSum REAL, $_colIsPaid BOOLEAN)');
   }
 
   //wstawianie eventu
   Future<int> insertEvent(EventsModel eventsModel) async {
     Database db = await this.database;
-    var result = await db.insert(eventsTable, eventsModel.toMap());
+    var result = await db.insert(_eventsTable, eventsModel.toMap());
     return result;
   }
 
@@ -62,7 +63,7 @@ class EventHelper {
   Future<int> updateEvent(int isPaid, int id) async {
     Database db = await this.database;
     var result = await db.rawUpdate(
-        "UPDATE $eventsTable SET $colIsPaid = $isPaid WHERE $colID = $id");
+        "UPDATE $_eventsTable SET $_colIsPaid = $isPaid WHERE $_colID = $id");
     return result;
   }
 
@@ -70,7 +71,7 @@ class EventHelper {
   Future<int> deleteEvent(String title) async {
     Database db = await this.database;
     var result = await db
-        .rawDelete('DELETE FROM $eventsTable WHERE $colTitle = "$title"');
+        .rawDelete('DELETE FROM $_eventsTable WHERE $_colTitle = "$title"');
     return result;
   }
 
@@ -78,7 +79,7 @@ class EventHelper {
   Future<EventsModel> getEventFromDB(String title) async {
     Database db = await database;
     var datas = await db
-        .query("eventsTable", where: '$colTitle = ?', whereArgs: [title]);
+        .query("_eventsTable", where: '$_colTitle = ?', whereArgs: [title]);
     if (datas.length > 0) {
       return EventsModel.fromMapObject(datas.first);
     }
@@ -89,7 +90,7 @@ class EventHelper {
   Future<List> getHourEmployerSum(String name) async {
     Database db = await database;
     var datas = await db.rawQuery(
-        'SELECT * FROM $eventsTable WHERE $colEmployer="$name" AND $colIsPaid=0');
+        'SELECT * FROM $_eventsTable WHERE $_colEmployer="$name" AND $_colIsPaid=0');
     return datas;
   }
 
@@ -97,14 +98,14 @@ class EventHelper {
   Future<List> getEventsList(String title) async {
     Database db = await database;
     var datas = await db
-        .rawQuery('SELECT * FROM $eventsTable WHERE $colTitle="$title"');
+        .rawQuery('SELECT * FROM $_eventsTable WHERE $_colTitle="$title"');
     return datas;
   }
 
   //pobieranie pracownikow w postaci map
   Future<List<Map<String, dynamic>>> getEventsMapList() async {
     Database db = await this.database;
-    var result = await db.query(eventsTable, orderBy: '$colID ASC');
+    var result = await db.query(_eventsTable, orderBy: '$_colID ASC');
     return result;
   }
 
@@ -124,7 +125,7 @@ class EventHelper {
   Future<List> getEmployersEventsList(String name) async {
     Database db = await database;
     var datas = await db
-        .rawQuery('SELECT * FROM $eventsTable WHERE $colEmployer="$name"');
+        .rawQuery('SELECT * FROM $_eventsTable WHERE $_colEmployer="$name"');
     return datas;
   }
 
@@ -132,7 +133,7 @@ class EventHelper {
   Future<List> getWorkersEventsList(String shortname) async {
     Database db = await database;
     var datas = await db.rawQuery(
-        'SELECT * FROM $eventsTable WHERE $colWorkersNotPaid LIKE "%$shortname%" OR $colWorkersPaid LIKE "%$shortname%" ');
+        'SELECT * FROM $_eventsTable WHERE $_colWorkersNotPaid LIKE "%$shortname%" OR $_colWorkersPaid LIKE "%$shortname%" ');
     return datas;
   }
 
@@ -140,7 +141,7 @@ class EventHelper {
   Future<List> getWorkersEventsListNotPaid(String shortname) async {
     Database db = await database;
     var datas = await db.rawQuery(
-        'SELECT * FROM $eventsTable WHERE $colWorkersNotPaid LIKE "%$shortname%" ');
+        'SELECT * FROM $_eventsTable WHERE $_colWorkersNotPaid LIKE "%$shortname%" ');
     return datas;
   }
 
@@ -148,7 +149,7 @@ class EventHelper {
   Future<List> getWorkersEventsListPaid(String shortname) async {
     Database db = await database;
     var datas = await db.rawQuery(
-        'SELECT * FROM $eventsTable WHERE $colWorkersPaid LIKE "%$shortname%" ');
+        'SELECT * FROM $_eventsTable WHERE $_colWorkersPaid LIKE "%$shortname%" ');
     return datas;
   }
 
@@ -156,7 +157,7 @@ class EventHelper {
   Future<int> updateWorkersNotPaid(int id, String list) async {
     Database db = await this.database;
     var result = await db.rawUpdate(
-        "UPDATE $eventsTable SET $colWorkersNotPaid = '$list' WHERE $colID = $id");
+        "UPDATE $_eventsTable SET $_colWorkersNotPaid = '$list' WHERE $_colID = $id");
     return result;
   }
 
@@ -164,7 +165,7 @@ class EventHelper {
   Future<int> updateWorkersPaid(int id, String list) async {
     Database db = await this.database;
     var result = await db.rawUpdate(
-        "UPDATE $eventsTable SET $colWorkersPaid = '$list' WHERE $colID = $id");
+        "UPDATE $_eventsTable SET $_colWorkersPaid = '$list' WHERE $_colID = $id");
     return result;
   }
 }

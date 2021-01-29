@@ -4,38 +4,38 @@ import 'package:intl/intl.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/models/eventsModel.dart';
 
-class EmployersArchive extends StatefulWidget {
-  final String name;
+class EmployersArchiveScreen extends StatefulWidget {
+  final String _name;
 
-  EmployersArchive(this.name);
+  EmployersArchiveScreen(this._name);
 
   @override
   _EmployersArchiveState createState() {
-    return _EmployersArchiveState(this.name);
+    return _EmployersArchiveState(this._name);
   }
 }
 
-class _EmployersArchiveState extends State<EmployersArchive> {
-  String name;
+class _EmployersArchiveState extends State<EmployersArchiveScreen> {
+  String _name;
   EventHelper eventHelper = EventHelper();
-  List<EventsModel> eventsModelList = new List();
+  List<EventsModel> _eventsModelList = new List();
   int count = 0;
-  DateFormat format = DateFormat("dd-MM-yyyy");
+  DateFormat _format = DateFormat("dd-MM-yyyy");
 
-  _EmployersArchiveState(this.name);
+  _EmployersArchiveState(this._name);
 
   @override
   void initState() {
     super.initState();
-    eventHelper.getEmployersEventsList(this.name).then((event) {
+    eventHelper.getEmployersEventsList(this._name).then((event) {
       setState(() {
         event.forEach((element) {
-          eventsModelList.add(EventsModel.fromMapObject(element));
+          _eventsModelList.add(EventsModel.fromMapObject(element));
         });
         //sortowanie listy wg daty eventu
-        eventsModelList.sort((a, b) {
-          var adate = format.parse(a.date);
-          var bdate = format.parse(b.date);
+        _eventsModelList.sort((a, b) {
+          var adate = _format.parse(a.date);
+          var bdate = _format.parse(b.date);
           return bdate.compareTo(adate);
         });
       });
@@ -53,7 +53,7 @@ class _EmployersArchiveState extends State<EmployersArchive> {
               Navigator.pop(context, true);
             }),
         title: Text(
-          "Archiwum" + " - " + name,
+          "Archiwum" + " - " + _name,
           style: TextStyle(
             color: Theme.of(context).hoverColor,
           ),
@@ -61,7 +61,7 @@ class _EmployersArchiveState extends State<EmployersArchive> {
       ),
       body: Center(
         child: ListView.builder(
-            itemCount: eventsModelList.length,
+            itemCount: _eventsModelList.length,
             padding: const EdgeInsets.all(3.0),
             itemBuilder: (context, position) {
               return Column(
@@ -70,9 +70,9 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                   ListTile(
                     //tytul wyswietlany jak dzien i data
                     title: Text(
-                      getDayFromNumber(eventsModelList[position].dayNumber) +
+                      _getDayFromNumber(_eventsModelList[position].dayNumber) +
                           " - " +
-                          eventsModelList[position].date,
+                          _eventsModelList[position].date,
                       style: TextStyle(
                           fontSize: 18.0,
                           color: Theme.of(context).textSelectionColor,
@@ -81,17 +81,17 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                     //podtytul wyswietlany z informacjami o pracy
                     subtitle: Text(
                       "Pracowali: " +
-                          eventsModelList[position].workersNotPaid +
+                          _eventsModelList[position].workersNotPaid +
                           " ;" +
-                          eventsModelList[position].workersPaid +
+                          _eventsModelList[position].workersPaid +
                           "\n" +
                           "Czas : " +
-                          eventsModelList[position].workTime +
+                          _eventsModelList[position].workTime +
                           ", Przerwa: " +
-                          eventsModelList[position].breakTime.toString() +
+                          _eventsModelList[position].breakTime.toString() +
                           " min" +
                           "\nPrzepracowano: " +
-                          eventsModelList[position].hourSum.toString() +
+                          _eventsModelList[position].hourSum.toString() +
                           " godz.",
                       style: new TextStyle(
                           fontSize: 16.0,
@@ -104,12 +104,12 @@ class _EmployersArchiveState extends State<EmployersArchive> {
                           padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: CircleAvatar(
                               backgroundColor:
-                                  eventsModelList[position].isPaid == 1
+                                  _eventsModelList[position].isPaid == 1
                                       ? Theme.of(context).indicatorColor
                                       : Theme.of(context).errorColor,
                               radius: 14.0,
                               child: Icon(
-                                eventsModelList[position].isPaid == 1
+                                _eventsModelList[position].isPaid == 1
                                     ? Icons.attach_money
                                     : Icons.money_off,
                                 color: Theme.of(context).hoverColor,
@@ -126,7 +126,7 @@ class _EmployersArchiveState extends State<EmployersArchive> {
   }
 
   //funkcja zwracająca dzień tygodnia
-  String getDayFromNumber(int i) {
+  String _getDayFromNumber(int i) {
     switch (i) {
       case 1:
         return "Poniedziałek";

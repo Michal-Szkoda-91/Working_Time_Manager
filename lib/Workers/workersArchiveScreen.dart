@@ -4,40 +4,40 @@ import 'package:intl/intl.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/models/eventsModel.dart';
 
-class WorkersArchive extends StatefulWidget {
-  final String name;
-  final String shortname;
+class WorkersArchiveScreen extends StatefulWidget {
+  final String _name;
+  final String _shortname;
 
-  WorkersArchive(this.name, this.shortname);
+  WorkersArchiveScreen(this._name, this._shortname);
 
   @override
   _WorkersArchiveState createState() {
-    return _WorkersArchiveState(this.name, this.shortname);
+    return _WorkersArchiveState(this._name, this._shortname);
   }
 }
 
-class _WorkersArchiveState extends State<WorkersArchive> {
-  String name;
-  String shortname;
+class _WorkersArchiveState extends State<WorkersArchiveScreen> {
+  String _name;
+  String _shortname;
   EventHelper eventHelper = EventHelper();
   List<EventsModel> eventsModelList = new List();
   int count = 0;
-  DateFormat format = DateFormat("dd-MM-yyyy");
+  DateFormat _format = DateFormat("dd-MM-yyyy");
 
-  _WorkersArchiveState(this.name, this.shortname);
+  _WorkersArchiveState(this._name, this._shortname);
 
   @override
   void initState() {
     super.initState();
-    eventHelper.getWorkersEventsList(this.shortname).then((event) {
+    eventHelper.getWorkersEventsList(this._shortname).then((event) {
       setState(() {
         event.forEach((element) {
           eventsModelList.add(EventsModel.fromMapObject(element));
         });
         //sortowanie listy wg daty eventu
         eventsModelList.sort((a, b) {
-          var adate = format.parse(a.date);
-          var bdate = format.parse(b.date);
+          var adate = _format.parse(a.date);
+          var bdate = _format.parse(b.date);
           return bdate.compareTo(adate);
         });
       });
@@ -55,7 +55,7 @@ class _WorkersArchiveState extends State<WorkersArchive> {
               Navigator.pop(context, true);
             }),
         title: Text(
-          "Archiwum" + " - " + name,
+          "Archiwum" + " - " + _name,
           style: TextStyle(
             color: Theme.of(context).hoverColor,
           ),
@@ -72,7 +72,7 @@ class _WorkersArchiveState extends State<WorkersArchive> {
                   ListTile(
                     //tytul wyswietlany jak dzien i data
                     title: Text(
-                      getDayFromNumber(eventsModelList[position].dayNumber) +
+                      _getDayFromNumber(eventsModelList[position].dayNumber) +
                           " - " +
                           eventsModelList[position].date,
                       style: TextStyle(
@@ -106,14 +106,14 @@ class _WorkersArchiveState extends State<WorkersArchive> {
                               //sprawdanie czy pracownik jest na liscie oplaconych
                               backgroundColor: eventsModelList[position]
                                       .workersPaid
-                                      .contains(this.shortname)
+                                      .contains(this._shortname)
                                   ? Theme.of(context).indicatorColor
                                   : Theme.of(context).errorColor,
                               radius: 14.0,
                               child: Icon(
                                 eventsModelList[position]
                                         .workersPaid
-                                        .contains(this.shortname)
+                                        .contains(this._shortname)
                                     ? Icons.attach_money
                                     : Icons.money_off,
                                 color: Theme.of(context).hoverColor,
@@ -131,7 +131,7 @@ class _WorkersArchiveState extends State<WorkersArchive> {
   }
 
   //funkcja zwracająca dzień tygodnia
-  String getDayFromNumber(int i) {
+  String _getDayFromNumber(int i) {
     switch (i) {
       case 1:
         return "Poniedziałek";

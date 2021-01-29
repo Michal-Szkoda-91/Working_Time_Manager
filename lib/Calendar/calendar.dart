@@ -5,7 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:working_time_management/Calendar/eventDetail.dart';
+import 'package:working_time_management/Calendar/eventDetailScreen.dart';
 import 'package:working_time_management/Calendar/widgets.dart';
 import 'package:working_time_management/helpers/employersHelper.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
@@ -25,91 +25,91 @@ class _CalendarState extends State<Calendar> {
   CalendarController _controller;
   Map<DateTime, List<dynamic>> _events;
   List<dynamic> _selectedEvents;
-  SharedPreferences prefs;
-  String employerNameValue;
+  SharedPreferences _prefs;
+  String _employerNameValue;
   String choosenEmployerName;
-  String titleCreated;
+  String _titleCreated;
 
   //EVENTY - BAZA DANYCH
 
   EventHelper eventHelper = EventHelper();
   EventsModel eventsModel;
-  List<EventsModel> eventsModelList;
+  List<EventsModel> _eventsModelList;
   int eventsLenght = 0;
 
   //PRACODAWCY i PRACOWNICY
   //dane pracodawców
   EmployersHelper employersHelper = EmployersHelper();
-  List<EmployersModel> employersModelList;
+  List<EmployersModel> _employersModelList;
   int employersLenght = 0;
 
   //dane pracowników
   WorkersHelper workersHelper = WorkersHelper();
-  List<WorkersModel> workersModelList;
+  List<WorkersModel> _workersModelList;
   int workersLenght = 0;
 
   //pobieranie listy modeli eventow
-  void updateListViewEvents() {
+  void _updateListViewEvents() {
     final Future<Database> dbFuture = eventHelper.initialDatabase();
     dbFuture.then((databse) {
       Future<List<EventsModel>> eventModelListFuture =
           eventHelper.getEventAllList();
-      eventModelListFuture.then((eventsModelList) {
+      eventModelListFuture.then((_eventsModelList) {
         if (this.mounted)
           setState(() {
-            this.eventsModelList = eventsModelList;
-            this.eventsLenght = eventsModelList.length;
+            this._eventsModelList = _eventsModelList;
+            this.eventsLenght = _eventsModelList.length;
           });
       });
     });
   }
 
   //pobieranie listy modeli pracodawców
-  void updateListViewEmployers() {
+  void _updateListViewEmployers() {
     final Future<Database> dbFuture = employersHelper.initialDatabase();
     dbFuture.then((databse) {
       Future<List<EmployersModel>> employersModelListFuture =
           employersHelper.getEmployersList();
-      employersModelListFuture.then((employersModelList) {
+      employersModelListFuture.then((_employersModelList) {
         if (this.mounted)
           setState(() {
-            this.employersModelList = employersModelList;
-            this.employersLenght = employersModelList.length;
+            this._employersModelList = _employersModelList;
+            this.employersLenght = _employersModelList.length;
           });
       });
     });
   }
 
   //pobieranie listy modeli pracodawców
-  void updateListViewWorkers() {
+  void _updateListViewWorkers() {
     final Future<Database> dbFuture = workersHelper.initialDatabase();
     dbFuture.then((databse) {
       Future<List<WorkersModel>> workersModelListFuture =
           workersHelper.getWorkersList();
-      workersModelListFuture.then((workersModelList) {
+      workersModelListFuture.then((_workersModelList) {
         if (this.mounted)
           setState(() {
-            this.workersModelList = workersModelList;
-            this.workersLenght = workersModelList.length;
+            this._workersModelList = _workersModelList;
+            this.workersLenght = _workersModelList.length;
           });
       });
     });
   }
 
   //metoda tworzaca liste imion Pracodawcow z bazy danych
-  createNameList() {
+  void _createNameList() {
     employersNameList = [];
     workersShortNameList = [];
     for (int i = 0; i < employersLenght; i++) {
-      employersNameList.add(this.employersModelList[i].name);
+      employersNameList.add(this._employersModelList[i].name);
     }
     for (int i = 0; i < workersLenght; i++) {
-      workersShortNameList.add(this.workersModelList[i].shortName);
+      workersShortNameList.add(this._workersModelList[i].shortName);
     }
   }
 
   //pobranie wybranego numeru wg imion
-  int choosenNameNumberEmployer(String name) {
+  int _choosenNameNumberEmployer(String name) {
     return employersNameList.indexOf(name);
   }
 
@@ -124,24 +124,24 @@ class _CalendarState extends State<Calendar> {
     _controller = CalendarController();
     _events = {};
     _selectedEvents = [];
-    initPrefs();
-    updateListViewEmployers();
-    updateListViewWorkers();
-    updateListViewEvents();
+    _initPrefs();
+    _updateListViewEmployers();
+    _updateListViewWorkers();
+    _updateListViewEvents();
   }
 
   //PREFERENCJE
 
-  initPrefs() async {
-    prefs = await SharedPreferences.getInstance();
+  _initPrefs() async {
+    _prefs = await SharedPreferences.getInstance();
     setState(() {
       _events = Map<DateTime, List<dynamic>>.from(
-          decodeMap(json.decode(prefs.getString("events") ?? "{}")));
+          _decodeMap(json.decode(_prefs.getString("events") ?? "{}")));
     });
   }
 
   //metoda ladujaca event do share-preference
-  Map<String, dynamic> encodeMap(Map<DateTime, dynamic> map) {
+  Map<String, dynamic> _encodeMap(Map<DateTime, dynamic> map) {
     Map<String, dynamic> newMap = {};
     map.forEach((key, value) {
       newMap[key.toString()] = map[key];
@@ -150,7 +150,7 @@ class _CalendarState extends State<Calendar> {
   }
 
   //metoda pobierajaca z share event
-  Map<DateTime, dynamic> decodeMap(Map<String, dynamic> map) {
+  Map<DateTime, dynamic> _decodeMap(Map<String, dynamic> map) {
     Map<DateTime, dynamic> newMap = {};
     map.forEach((key, value) {
       newMap[DateTime.parse(key)] = map[key];
@@ -160,9 +160,9 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    updateListViewEmployers();
-    updateListViewWorkers();
-    updateListViewEvents();
+    _updateListViewEmployers();
+    _updateListViewWorkers();
+    _updateListViewEvents();
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
@@ -197,7 +197,7 @@ class _CalendarState extends State<Calendar> {
               weekendStyle:
                   TextStyle(color: Theme.of(context).cardColor, fontSize: 14),
             ),
-            onDaySelected: (date, events) {
+            onDaySelected: (date, events, _events) {
               //zdarzenie po kliknieciu w dzien
               setState(() {
                 _selectedEvents = events;
@@ -243,8 +243,8 @@ class _CalendarState extends State<Calendar> {
                     //jesli sa eventy i wszystkie sa zaplacone u pracodawcow buduje dzien z kolorem zielonym
                     if (_events[date] != null &&
                         _events[date].toString() != "[]" &&
-                        checkIfEventIsPaidEmployerList(
-                            _events[date], eventsModelList))
+                        _checkIfEventIsPaidCalendar(
+                            _events[date], _eventsModelList))
                       Column(
                         children: [
                           Container(
@@ -262,8 +262,8 @@ class _CalendarState extends State<Calendar> {
                           ),
                           if (_events[date].length > 0)
                             Text(
-                              getEmployerShortName(
-                                  _events[date][0], eventsModelList),
+                              _getEmployerShortName(
+                                  _events[date][0], _eventsModelList),
                               style: TextStyle(
                                   color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
@@ -274,8 +274,8 @@ class _CalendarState extends State<Calendar> {
                     //jesli eventy sa i chociaz jeden jest nie oplacony buduje dzien czerwony
                     if (_events[date] != null &&
                         _events[date].toString() != "[]" &&
-                        !checkIfEventIsPaidEmployerList(
-                            _events[date], eventsModelList))
+                        !_checkIfEventIsPaidCalendar(
+                            _events[date], _eventsModelList))
                       Column(
                         children: [
                           Container(
@@ -293,8 +293,8 @@ class _CalendarState extends State<Calendar> {
                           ),
                           if (_events[date].length > 0)
                             Text(
-                              getEmployerShortName(
-                                  _events[date][0], eventsModelList),
+                              _getEmployerShortName(
+                                  _events[date][0], _eventsModelList),
                               style: TextStyle(
                                   color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
@@ -341,8 +341,8 @@ class _CalendarState extends State<Calendar> {
                     //jesli sa eventy i wszystkie sa zaplacone u pracodawcow buduje dzien z kolorem zielonym
                     if (_events[date] != null &&
                         _events[date].toString() != "[]" &&
-                        checkIfEventIsPaidEmployerList(
-                            _events[date], eventsModelList))
+                        _checkIfEventIsPaidCalendar(
+                            _events[date], _eventsModelList))
                       Column(
                         children: [
                           Container(
@@ -360,8 +360,8 @@ class _CalendarState extends State<Calendar> {
                           ),
                           if (_events[date].length > 0)
                             Text(
-                              getEmployerShortName(
-                                  _events[date][0], eventsModelList),
+                              _getEmployerShortName(
+                                  _events[date][0], _eventsModelList),
                               style: TextStyle(
                                   color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
@@ -372,8 +372,8 @@ class _CalendarState extends State<Calendar> {
                     //jesli eventy sa i chociaz jeden jest nie oplacony buduje dzien czerwony
                     if (_events[date] != null &&
                         _events[date].toString() != "[]" &&
-                        !checkIfEventIsPaidEmployerList(
-                            _events[date], eventsModelList))
+                        !_checkIfEventIsPaidCalendar(
+                            _events[date], _eventsModelList))
                       Column(
                         children: [
                           Container(
@@ -391,8 +391,8 @@ class _CalendarState extends State<Calendar> {
                           ),
                           if (_events[date].length > 0)
                             Text(
-                              getEmployerShortName(
-                                  _events[date][0], eventsModelList),
+                              _getEmployerShortName(
+                                  _events[date][0], _eventsModelList),
                               style: TextStyle(
                                   color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
@@ -440,8 +440,8 @@ class _CalendarState extends State<Calendar> {
                     //jesli sa eventy i wszystkie sa zaplacone u pracodawcow buduje dzien z kolorem zielonym
                     if (_events[date] != null &&
                         _events[date].toString() != "[]" &&
-                        checkIfEventIsPaidEmployerList(
-                            _events[date], eventsModelList))
+                        _checkIfEventIsPaidCalendar(
+                            _events[date], _eventsModelList))
                       Column(
                         children: [
                           Container(
@@ -459,8 +459,8 @@ class _CalendarState extends State<Calendar> {
                           ),
                           if (_events[date].length > 0)
                             Text(
-                              getEmployerShortName(
-                                  _events[date][0], eventsModelList),
+                              _getEmployerShortName(
+                                  _events[date][0], _eventsModelList),
                               style: TextStyle(
                                   color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
@@ -471,8 +471,8 @@ class _CalendarState extends State<Calendar> {
                     //jesli eventy sa i chociaz jeden jest nie oplacony buduje dzien czerwony
                     if (_events[date] != null &&
                         _events[date].toString() != "[]" &&
-                        !checkIfEventIsPaidEmployerList(
-                            _events[date], eventsModelList))
+                        !_checkIfEventIsPaidCalendar(
+                            _events[date], _eventsModelList))
                       Column(
                         children: [
                           Container(
@@ -490,8 +490,8 @@ class _CalendarState extends State<Calendar> {
                           ),
                           if (_events[date].length > 0)
                             Text(
-                              getEmployerShortName(
-                                  _events[date][0], eventsModelList),
+                              _getEmployerShortName(
+                                  _events[date][0], _eventsModelList),
                               style: TextStyle(
                                   color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
@@ -541,8 +541,8 @@ class _CalendarState extends State<Calendar> {
                     //jesli sa eventy i wszystkie sa zaplacone u pracodawcow buduje dzien z kolorem zielonym
                     if (_events[date] != null &&
                         _events[date].toString() != "[]" &&
-                        checkIfEventIsPaidEmployerList(
-                            _events[date], eventsModelList))
+                        _checkIfEventIsPaidCalendar(
+                            _events[date], _eventsModelList))
                       Column(
                         children: [
                           Container(
@@ -560,8 +560,8 @@ class _CalendarState extends State<Calendar> {
                           ),
                           if (_events[date].length > 0)
                             Text(
-                              getEmployerShortName(
-                                  _events[date][0], eventsModelList),
+                              _getEmployerShortName(
+                                  _events[date][0], _eventsModelList),
                               style: TextStyle(
                                   color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
@@ -572,8 +572,8 @@ class _CalendarState extends State<Calendar> {
                     //jesli eventy sa i chociaz jeden jest nie oplacony buduje dzien czerwony
                     if (_events[date] != null &&
                         _events[date].toString() != "[]" &&
-                        !checkIfEventIsPaidEmployerList(
-                            _events[date], eventsModelList))
+                        !_checkIfEventIsPaidCalendar(
+                            _events[date], _eventsModelList))
                       Column(
                         children: [
                           Container(
@@ -591,8 +591,8 @@ class _CalendarState extends State<Calendar> {
                           ),
                           if (_events[date].length > 0)
                             Text(
-                              getEmployerShortName(
-                                  _events[date][0], eventsModelList),
+                              _getEmployerShortName(
+                                  _events[date][0], _eventsModelList),
                               style: TextStyle(
                                   color: Theme.of(context).textSelectionColor,
                                   fontWeight: FontWeight.bold,
@@ -607,39 +607,29 @@ class _CalendarState extends State<Calendar> {
             calendarController: _controller,
           ),
           //przycisk odpowiedzialny za dodawanie nowego eventu
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                _selectedEvents.length > 0
-                    ? Icon(
-                        Icons.arrow_right,
-                        color: Theme.of(context).textSelectionColor,
-                        size: 40,
-                      )
-                    : Text(""),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-                  child: RaisedButton(
-                    color: Theme.of(context).accentColor,
-                    onPressed: () {
-                      employerNameValue = null;
-                      choosenWorkers = [];
-                      _showDialogAddEvent();
-                      createNameList();
-                    },
-                    child: Text(
-                      "Dodaj",
-                      style: TextStyle(
-                        color: Theme.of(context).hoverColor,
-                        fontSize: 16,
-                      ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+                child: RaisedButton(
+                  color: Theme.of(context).accentColor,
+                  onPressed: () {
+                    _employerNameValue = null;
+                    choosenWorkers = [];
+                    _showDialogAddEvent();
+                    _createNameList();
+                  },
+                  child: Text(
+                    "Dodaj",
+                    style: TextStyle(
+                      color: Theme.of(context).hoverColor,
+                      fontSize: 16,
                     ),
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
           //event wyswietlany pod kalendarzem jako lista
           ..._selectedEvents.map(
@@ -651,53 +641,64 @@ class _CalendarState extends State<Calendar> {
                 child: Container(
                   color: Theme.of(context).selectedRowColor,
                   child: ListTile(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          event,
-                          style: TextStyle(
-                            color: Theme.of(context).textSelectionColor,
-                            fontSize: 16,
+                    leading: Container(
+                      width: 5,
+                      child: Icon(
+                        Icons.arrow_right,
+                        color: Theme.of(context).textSelectionColor,
+                        size: 60,
+                      ),
+                    ),
+                    title: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            event,
+                            style: TextStyle(
+                              color: Theme.of(context).textSelectionColor,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                        //icona zmienia kolor w zaleznosci od statusu eventu
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Rozliczenie:",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Theme.of(context).textSelectionColor,
+                          //icona zmienia kolor w zaleznosci od statusu eventu
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Rozliczenie:",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Theme.of(context).textSelectionColor,
+                                  ),
                                 ),
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.business_center,
-                                    color: checkIfEventIsPaidEmployer(
-                                            event, this.eventsModelList)
-                                        ? Theme.of(context).indicatorColor
-                                        : Theme.of(context).errorColor,
-                                    size: 50,
-                                  ),
-                                  Icon(
-                                    Icons.people,
-                                    color: checkIfEventIsPaidWorker(
-                                            event, this.eventsModelList)
-                                        ? Theme.of(context).indicatorColor
-                                        : Theme.of(context).errorColor,
-                                    size: 50,
-                                  ),
-                                ],
-                              ),
-                            ],
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.business_center,
+                                      color: _checkIfEventIsPaidEmployer(
+                                              event, this._eventsModelList)
+                                          ? Theme.of(context).indicatorColor
+                                          : Theme.of(context).errorColor,
+                                      size: 50,
+                                    ),
+                                    Icon(
+                                      Icons.people,
+                                      color: _checkIfEventIsPaidWorker(
+                                              event, this._eventsModelList)
+                                          ? Theme.of(context).indicatorColor
+                                          : Theme.of(context).errorColor,
+                                      size: 50,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -720,7 +721,7 @@ class _CalendarState extends State<Calendar> {
                     caption: 'Szczeguły',
                     color: Theme.of(context).accentColor,
                     icon: Icons.assessment,
-                    onTap: () => navigateToEventDetail(event),
+                    onTap: () => _navigateToEventDetail(event),
                   ),
                 ),
               ],
@@ -732,7 +733,7 @@ class _CalendarState extends State<Calendar> {
   }
 
 //okienko wyświetlające się przy dodawaniu nowego eventu
-  void _showDialogAddEvent() async {
+  void _showDialogAddEvent() {
     String summary = "";
     showDialog(
       context: context,
@@ -753,13 +754,13 @@ class _CalendarState extends State<Calendar> {
                           color: Theme.of(context).textSelectionColor,
                         ),
                       ),
-                      value: employerNameValue,
+                      value: _employerNameValue,
                       isDense: true,
                       onChanged: (newValue) {
                         setState(() {
-                          employerNameValue = newValue;
+                          _employerNameValue = newValue;
                           choosenEmployerName = employersNameList[
-                              choosenNameNumberEmployer(employerNameValue)];
+                              _choosenNameNumberEmployer(_employerNameValue)];
                         });
                       },
                       items: employersNameList.map((var value) {
@@ -832,7 +833,7 @@ class _CalendarState extends State<Calendar> {
                       onPressed: () {
                         setState(() {
                           //wyswietlenie okienka z wyborem pracownikow
-                          showAddWorker();
+                          _showAddWorker();
                         });
                       },
                       child: Text(
@@ -851,9 +852,9 @@ class _CalendarState extends State<Calendar> {
                         setState(() {
                           //wyświetlenie podsumowanie jako tekst z danymi
                           summary = "Data zdarzenia: " +
-                              dateGenerator(_controller.selectedDay) +
+                              _dateGenerator(_controller.selectedDay) +
                               "\nPracodawca: " +
-                              employerNameValue.toString() +
+                              _employerNameValue.toString() +
                               "\nPracowali: " +
                               choosenWorkers.join("; ") +
                               "\nCzas pracy: " +
@@ -861,7 +862,7 @@ class _CalendarState extends State<Calendar> {
                               " - " +
                               timeStop.toString() +
                               "\nPrzepracowano godzin: " +
-                              workTimeCounter(workStart, workStop, timeBreak) +
+                              _workTimeCounter(workStart, workStop, timeBreak) +
                               "\nCzas przerwy: " +
                               timeBreak.toString();
                         });
@@ -888,46 +889,47 @@ class _CalendarState extends State<Calendar> {
                           color: Theme.of(context).accentColor,
                           onPressed: () {
                             //Sprawdzenie poprawności danych oraz dodanie nowego eventu do listy z danego dnia
-                            if (employerNameValue != null &&
-                                !workTimeCounter(workStart, workStop, timeBreak)
+                            if (_employerNameValue != null &&
+                                !_workTimeCounter(
+                                        workStart, workStop, timeBreak)
                                     .contains("błąd") &&
                                 choosenWorkers.length != 0 &&
                                 summary != "") {
                               //utworzenie tytulu eventu
-                              titleCreated = titleGenerator(
+                              _titleCreated = _titleGenerator(
                                   _selectedEvents.length + 1,
-                                  dateGenerator(_controller.selectedDay),
-                                  employerNameValue.toString(),
+                                  _dateGenerator(_controller.selectedDay),
+                                  _employerNameValue.toString(),
                                   choosenWorkers,
                                   timeStart.toString(),
                                   timeStop.toString());
                               if (_events[_controller.selectedDay] != null) {
                                 _events[_controller.selectedDay]
-                                    .add(titleCreated);
+                                    .add(_titleCreated);
                               } else {
                                 _events[_controller.selectedDay] = [
-                                  titleCreated
+                                  _titleCreated
                                 ];
                               }
                               //zapisanie danych do shared Preference i do bazy danych
-                              prefs.setString(
-                                  "events", json.encode(encodeMap(_events)));
+                              _prefs.setString(
+                                  "events", json.encode(_encodeMap(_events)));
                               //zapis eventu do bazy
                               int choosenWorkersLenght = choosenWorkers.length;
-                              createEventDB(
-                                  titleCreated,
-                                  dateGenerator(_controller.selectedDay),
+                              _createEventDB(
+                                  _titleCreated,
+                                  _dateGenerator(_controller.selectedDay),
                                   timeStart.toString() +
                                       " - " +
                                       timeStop.toString(),
-                                  employerNameValue.toString(),
+                                  _employerNameValue.toString(),
                                   choosenWorkers.join("; "),
                                   choosenWorkersLenght,
                                   _controller.selectedDay.weekday,
                                   timeBreak,
-                                  double.tryParse(workTimeCounter(
+                                  double.tryParse(_workTimeCounter(
                                       workStart, workStop, timeBreak)));
-                              updateListViewEvents();
+                              _updateListViewEvents();
                               _selectedEvents =
                                   _events[_controller.selectedDay];
                               Navigator.pop(context);
@@ -970,7 +972,7 @@ class _CalendarState extends State<Calendar> {
   }
 
   //wyswietlenie listy pracownikow
-  showAddWorker() {
+  _showAddWorker() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -1004,7 +1006,7 @@ class _CalendarState extends State<Calendar> {
   }
 
 //funkcja obliczajaca czas pracy
-  String workTimeCounter(var startTime, var stopTime, var breakTime) {
+  String _workTimeCounter(var startTime, var stopTime, var breakTime) {
     if (startTime == null) {
       return "0";
     }
@@ -1027,7 +1029,7 @@ class _CalendarState extends State<Calendar> {
   }
 
   //funkcja generująca napis z wybraną datą
-  String dateGenerator(var data) {
+  String _dateGenerator(var data) {
     String dayy, month;
     if (data.day < 10) {
       dayy = "0" + data.day.toString();
@@ -1047,7 +1049,7 @@ class _CalendarState extends State<Calendar> {
   }
 
 //funkcja generujaca tytul potrzebny do shared preferenced
-  String titleGenerator(int number, String date, String employerName,
+  String _titleGenerator(int number, String date, String employerName,
       List workerksList, String timeStartLocal, String timeStopLocal) {
     return number.toString() +
         ". Data: " +
@@ -1064,7 +1066,7 @@ class _CalendarState extends State<Calendar> {
   }
 
 //funkcja tworząca event do bazy danych
-  Future<void> createEventDB(
+  Future<void> _createEventDB(
       String title,
       String date,
       String workTime,
@@ -1109,12 +1111,12 @@ class _CalendarState extends State<Calendar> {
                     onPressed: () {
                       //usunięcie danych z shared preferenced
                       this._events[_controller.selectedDay].remove(event);
-                      prefs.setString(
-                          "events", json.encode(encodeMap(_events)));
+                      _prefs.setString(
+                          "events", json.encode(_encodeMap(_events)));
                       //usuwanie danych z bazy
                       eventHelper.deleteEvent(event);
-                      initPrefs();
-                      updateListViewEvents();
+                      _initPrefs();
+                      _updateListViewEvents();
                       _selectedEvents = _events[_controller.selectedDay];
                       Navigator.pop(context);
                       return;
@@ -1151,9 +1153,9 @@ class _CalendarState extends State<Calendar> {
   }
 
   //nawigowanie do strony z detalami Eventu, utworzenie nowego eventu z tytulem, przekazanie modelu eventu oraz listy pracownikow
-  void navigateToEventDetail(String title) async {
+  void _navigateToEventDetail(String title) async {
     EventsModel modelTaked;
-    eventsModelList.forEach((element) {
+    _eventsModelList.forEach((element) {
       if (element.title == title) modelTaked = element;
     });
     List workersList = [];
@@ -1165,9 +1167,14 @@ class _CalendarState extends State<Calendar> {
     } else if (modelTaked.workersNotPaid == "") {
       workersList = modelTaked.workersPaid.split("; ");
     }
-    await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return EventDetail(modelTaked, workersList);
-    }));
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return EventDetailScreen(modelTaked, workersList);
+        },
+      ),
+    );
   }
 
   void _showDialog(String title, String message) {
@@ -1191,7 +1198,7 @@ class _CalendarState extends State<Calendar> {
   //****************************************/
 
 //funkcja sprawdzajaca czy w dany event jest oplacony
-  bool checkIfEventIsPaidEmployer(String title, List<EventsModel> eventList) {
+  bool _checkIfEventIsPaidEmployer(String title, List<EventsModel> eventList) {
     bool check = false;
     if (eventList != null) {
       eventList.forEach((element) {
@@ -1202,7 +1209,7 @@ class _CalendarState extends State<Calendar> {
   }
 
   //funkcja zwracajaca krotka nazwe pracodawcy
-  String getEmployerShortName(String title, List<EventsModel> eventList) {
+  String _getEmployerShortName(String title, List<EventsModel> eventList) {
     String name = "";
     String shortname = "";
     if (eventList != null) {
@@ -1210,8 +1217,8 @@ class _CalendarState extends State<Calendar> {
         if (element.title == title) name = element.employer;
       });
       //pobranie z listy pracodawcow krotkiego imienia
-      if (employersModelList != null) {
-        employersModelList.forEach((element) {
+      if (_employersModelList != null) {
+        _employersModelList.forEach((element) {
           if (element.name == name) shortname = element.shortName;
         });
       }
@@ -1220,7 +1227,7 @@ class _CalendarState extends State<Calendar> {
   }
 
   //funkcja sprawdzajaca czy w dany event jest oplacony
-  bool checkIfEventIsPaidWorker(String title, List<EventsModel> eventList) {
+  bool _checkIfEventIsPaidWorker(String title, List<EventsModel> eventList) {
     bool check = false;
     if (eventList != null) {
       eventList.forEach((element) {
@@ -1231,8 +1238,8 @@ class _CalendarState extends State<Calendar> {
     return check;
   }
 
-//sprawdzenie dla listy eventow
-  bool checkIfEventIsPaidEmployerList(
+//sprawdzenie dla listy eventow dla kalendarza
+  bool _checkIfEventIsPaidCalendar(
       List<dynamic> list, List<EventsModel> eventList) {
     bool check = true;
     if (list != null && eventList != null) {

@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:working_time_management/Employers/addEmployers.dart';
-import 'package:working_time_management/Employers/emplyersDetail.dart';
+import 'package:working_time_management/Employers/addEmployerScreen.dart';
+import 'package:working_time_management/Employers/emplyersDetailScreen.dart';
 import 'package:working_time_management/helpers/employersHelper.dart';
 import 'package:working_time_management/models/employersModel.dart';
 
-class Employers extends StatefulWidget {
+class EmployersScreen extends StatefulWidget {
   @override
   _EmployersState createState() => _EmployersState();
 }
 
-class _EmployersState extends State<Employers> {
-  EmployersHelper databasehelper = EmployersHelper();
-  List<EmployersModel> employersModelList;
-  int count = 0;
+class _EmployersState extends State<EmployersScreen> {
+  EmployersHelper employershelper = EmployersHelper();
+  List<EmployersModel> _employersModelList;
+  int _count = 0;
 
   @override
   Widget build(BuildContext context) {
     //sprawdzanie czy lista nie jest pusta
-    if (employersModelList == null) {
-      employersModelList = List<EmployersModel>();
+    if (_employersModelList == null) {
+      _employersModelList = List<EmployersModel>();
     }
-    updateListView();
+    _updateListView();
 
     return Scaffold(
-      body: getlist(),
+      body: _getlist(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          navigateToDetail(
+          _navigateToDetail(
               EmployersModel('', '', '', ''), "Dodaj Pracodawcę", 0);
         },
         child: Icon(Icons.add),
@@ -37,9 +37,9 @@ class _EmployersState extends State<Employers> {
     );
   }
 
-  ListView getlist() {
+  ListView _getlist() {
     return ListView.builder(
-        itemCount: count,
+        itemCount: _count,
         itemBuilder: (BuildContext context, int position) {
           return Card(
             color: Theme.of(context).selectedRowColor,
@@ -51,12 +51,12 @@ class _EmployersState extends State<Employers> {
               ),
               //wyswietlenie imienia i tytulu
               title: Text(
-                this.employersModelList[position].name,
+                this._employersModelList[position].name,
                 style: new TextStyle(
                     fontSize: 22, color: Theme.of(context).textSelectionColor),
               ),
               subtitle: Text(
-                this.employersModelList[position].shortName,
+                this._employersModelList[position].shortName,
                 style: new TextStyle(
                     fontSize: 16, color: Theme.of(context).textSelectionColor),
               ),
@@ -67,11 +67,11 @@ class _EmployersState extends State<Employers> {
                     color: Theme.of(context).accentColor,
                   ),
                   onTap: () {
-                    deleteEmployers(position);
+                    _deleteEmployers(position);
                   }),
               //po nacisnieciu elementu w liscie
               onTap: () {
-                navigateToEmployerDetail(this.employersModelList[position],
+                _navigateToEmployerDetail(this._employersModelList[position],
                     'Dane Pracodawcy', position);
               },
             ),
@@ -80,16 +80,16 @@ class _EmployersState extends State<Employers> {
   }
 
   //pobieranie listy modeli
-  void updateListView() {
-    final Future<Database> dbFuture = databasehelper.initialDatabase();
+  void _updateListView() {
+    final Future<Database> dbFuture = employershelper.initialDatabase();
     dbFuture.then((databse) {
       Future<List<EmployersModel>> employersModelListFuture =
-          databasehelper.getEmployersList();
-      employersModelListFuture.then((employersModelList) {
+          employershelper.getEmployersList();
+      employersModelListFuture.then((_employersModelList) {
         if (this.mounted) {
           setState(() {
-            this.employersModelList = employersModelList;
-            this.count = employersModelList.length;
+            this._employersModelList = _employersModelList;
+            this._count = _employersModelList.length;
           });
         }
       });
@@ -97,19 +97,19 @@ class _EmployersState extends State<Employers> {
   }
 
   //nawigowanie do strony
-  void navigateToDetail(
+  void _navigateToDetail(
       EmployersModel employersObject, String title, int position) async {
     bool result =
         await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return AddEmployers(employersObject, title, position);
+      return AddEmployersScreen(employersObject, title, position);
     }));
     if (result == true) {
-      updateListView();
+      _updateListView();
     }
   }
 
   //usuwanie Pracownicy
-  deleteEmployers(int position) {
+  _deleteEmployers(int position) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -131,7 +131,7 @@ class _EmployersState extends State<Employers> {
                   new RaisedButton(
                     color: Theme.of(context).accentColor,
                     onPressed: () {
-                      _delete(context, employersModelList[position]);
+                      _delete(context, _employersModelList[position]);
                       Navigator.pop(context);
                       return;
                     },
@@ -167,22 +167,22 @@ class _EmployersState extends State<Employers> {
   }
 
   //nawigowanie do strony z wyswietleniem informacji o pracodawcy
-  void navigateToEmployerDetail(
+  void _navigateToEmployerDetail(
       EmployersModel employersModel, String title, int position) async {
     bool result =
         await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return EmployersDetail(employersModel, title, position);
+      return EmployersDetailScreen(employersModel, title, position);
     }));
     if (result == true) {
-      updateListView();
+      _updateListView();
     }
   }
 
   //usuwanie pracownika
   void _delete(BuildContext context, EmployersModel employersModel) async {
-    int result = await databasehelper.deleteEmployer(employersModel.id);
+    int result = await employershelper.deleteEmployer(employersModel.id);
     if (result != 0) {
-      updateListView();
+      _updateListView();
     }
   }
 }

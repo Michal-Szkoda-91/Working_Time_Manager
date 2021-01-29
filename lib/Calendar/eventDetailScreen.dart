@@ -4,18 +4,18 @@ import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
 import 'package:working_time_management/models/eventsModel.dart';
 
-class EventDetail extends StatefulWidget {
+class EventDetailScreen extends StatefulWidget {
   final EventsModel eventsModel;
   final List workersList;
 
-  EventDetail(this.eventsModel, this.workersList);
+  EventDetailScreen(this.eventsModel, this.workersList);
   @override
   _EventDetailState createState() {
     return _EventDetailState(this.eventsModel, this.workersList);
   }
 }
 
-class _EventDetailState extends State<EventDetail> {
+class _EventDetailState extends State<EventDetailScreen> {
   EventsModel eventsModel;
   EventHelper eventHelper = EventHelper();
   List workersList;
@@ -227,15 +227,19 @@ class _EventDetailState extends State<EventDetail> {
                         }
                         //zapis danych do bazy
                         if (workersNotPaidList.isNotEmpty) {
-                          eventHelper.updateWorkersNotPaid(this.eventsModel.id,
-                              workersNotPaidList.join("; "));
+                          eventHelper.updateWorkersNotPaid(
+                            this.eventsModel.id,
+                            workersNotPaidList.join("; "),
+                          );
                         } else {
                           eventHelper.updateWorkersNotPaid(
                               this.eventsModel.id, "");
                         }
                         if (workersPaidList.isNotEmpty) {
                           eventHelper.updateWorkersPaid(
-                              this.eventsModel.id, workersPaidList.join("; "));
+                            this.eventsModel.id,
+                            workersPaidList.join("; "),
+                          );
                         } else {
                           eventHelper.updateWorkersPaid(
                               this.eventsModel.id, "");

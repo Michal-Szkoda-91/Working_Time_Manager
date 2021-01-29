@@ -1,0 +1,129 @@
+@startuml Diagram
+set namespaceSeparator ::
+
+class "StatefullWidget" {
+    
+}
+
+class "MyHomePage" {
+
+}
+
+
+class "Calendar" {
+}
+
+
+
+class "EventDetailScreen" {
+
+}
+
+"EventDetailScreen" o-- "EventsModel"
+
+
+
+class "AddEmployersScreen" {
+
+}
+
+"AddEmployersScreen" o-- "EmployersModel"
+
+
+class "EmployersScreen" {
+}
+
+
+
+class "EmployersArchiveScreen" {
+
+}
+
+
+
+class "EmployersShortcutScreen" {
+
+}
+
+
+
+class "EmployersDetailScreen" {
+
+}
+
+"EmployersDetailScreen" o-- "EmployersModel"
+
+
+class "EmployersHelper" {
+
+}
+
+"EmployersHelper" o-- "EmployersHelper"
+"EmployersHelper" o-- "Database"
+
+class "EventHelper" {
+
+}
+
+"EventHelper" o-- "EventHelper"
+"EventHelper" o-- "Database"
+
+class "WorkersHelper" {
+  
+}
+
+"WorkersHelper" o-- "WorkersHelper"
+"WorkersHelper" o-- "Database"
+
+
+
+
+
+
+class "EmployersModel" {
+
+}
+
+class "EventsModel" {
+ 
+}
+
+class "WorkersModel" {
+ 
+}
+
+class "AddWorkersScreen" {
+
+}
+
+"AddWorkersScreen" o-- "WorkersModel"
+
+
+class "WorkersScreen" {
+}
+
+
+
+
+class "WorkersArchiveScreen" {
+
+}
+
+
+
+
+class "WorkersDetailScreen" {
+
+}
+
+"WorkersDetailScreen" o-- "WorkersModel"
+
+
+class "WorkersShortcutScreen" {
+
+}
+
+
+
+
+@enduml

@@ -1,48 +1,48 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:working_time_management/helpers/employersHelper.dart';
 import 'package:working_time_management/helpers/eventHelper.dart';
+import 'package:working_time_management/helpers/workersHelper.dart';
 import 'package:working_time_management/models/eventsModel.dart';
 
-class EmployersShortcut extends StatefulWidget {
-  final String name;
-  final String sum;
-  final List additions;
+class WorkersShortcutScreen extends StatefulWidget {
+  final String _name;
+  final String _sum;
+  final List _additions;
 
-  EmployersShortcut(this.name, this.sum, this.additions);
+  WorkersShortcutScreen(this._name, this._sum, this._additions);
 
   @override
-  _EmployersShortcutState createState() {
-    return _EmployersShortcutState(this.name, this.sum, this.additions);
+  _WorkersShortcutState createState() {
+    return _WorkersShortcutState(this._name, this._sum, this._additions);
   }
 }
 
-class _EmployersShortcutState extends State<EmployersShortcut> {
-  String name;
-  String sum;
-  List additions;
+class _WorkersShortcutState extends State<WorkersShortcutScreen> {
+  String _name;
+  String _sum;
+  List _additions;
 
   EventHelper eventHelper = EventHelper();
-  EmployersHelper employersHelper = EmployersHelper();
-  List<EventsModel> eventsModelList = new List();
+  WorkersHelper employersHelper = WorkersHelper();
+  List<EventsModel> _eventsModelList = new List();
   int count = 0;
-  DateFormat format = DateFormat("dd-MM-yyyy");
+  DateFormat _format = DateFormat("dd-MM-yyyy");
 
-  _EmployersShortcutState(this.name, this.sum, this.additions);
+  _WorkersShortcutState(this._name, this._sum, this._additions);
 
   @override
   void initState() {
     super.initState();
-    eventHelper.getHourEmployerSum(this.name).then((event) {
+    eventHelper.getWorkersEventsListNotPaid(this._name).then((event) {
       setState(() {
         event.forEach((element) {
-          eventsModelList.add(EventsModel.fromMapObject(element));
+          _eventsModelList.add(EventsModel.fromMapObject(element));
         });
         //sortowanie listy wg daty eventu
-        eventsModelList.sort((a, b) {
-          var adate = format.parse(a.date);
-          var bdate = format.parse(b.date);
+        _eventsModelList.sort((a, b) {
+          var adate = _format.parse(a.date);
+          var bdate = _format.parse(b.date);
           return adate.compareTo(bdate);
         });
       });
@@ -78,7 +78,7 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
                           color: Theme.of(context).textSelectionColor,
                           width: 4.0))),
               height: 350,
-              child: listViewEvents(),
+              child: _listViewEvents(),
             ),
           ),
           Padding(
@@ -102,7 +102,7 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
                         child: Padding(
                       padding: const EdgeInsets.fromLTRB(3, 0, 0, 0),
                       child: Text(
-                        additions.join("\n"),
+                        _additions.join("\n"),
                         style: TextStyle(
                           color: Theme.of(context).textSelectionColor,
                         ),
@@ -117,7 +117,7 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
                 child: Text(
-                  "Suma: " + sum.toString(),
+                  "Suma: " + _sum.toString(),
                   style: TextStyle(
                       fontSize: 20,
                       color: Theme.of(context).textSelectionColor),
@@ -131,9 +131,9 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
   }
 
 //metoda budująca liste eventow
-  ListView listViewEvents() {
+  ListView _listViewEvents() {
     return ListView.builder(
-        itemCount: eventsModelList.length,
+        itemCount: _eventsModelList.length,
         itemBuilder: (context, position) {
           return Container(
             height: 40,
@@ -150,23 +150,19 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(3, 0, 0, 0),
                     child: Text(
-                      getDayFromNumber(eventsModelList[position].dayNumber) +
+                      _getDayFromNumber(_eventsModelList[position].dayNumber) +
                           " - " +
-                          eventsModelList[position].date +
+                          _eventsModelList[position].date +
                           ", " +
-                          eventsModelList[position].workTime +
+                          _eventsModelList[position].workTime +
                           ". (-" +
-                          eventsModelList[position].breakTime.toString() +
+                          _eventsModelList[position].breakTime.toString() +
                           " min)" +
                           "\nPrzepracowano: " +
-                          eventsModelList[position].workersNumber.toString() +
-                          " * " +
-                          eventsModelList[position].hourSum.toString() +
-                          " = " +
-                          (eventsModelList[position].workersNumber *
-                                  eventsModelList[position].hourSum)
-                              .toString() +
-                          " godz.",
+                          _eventsModelList[position].hourSum.toString() +
+                          " godz." +
+                          " - U : " +
+                          _eventsModelList[position].employer,
                       style: TextStyle(
                         fontSize: 14.0,
                         color: Theme.of(context).textSelectionColor,
@@ -181,7 +177,7 @@ class _EmployersShortcutState extends State<EmployersShortcut> {
   }
 
   //funkcja zwracająca dzień tygodnia
-  String getDayFromNumber(int i) {
+  String _getDayFromNumber(int i) {
     switch (i) {
       case 1:
         return "Pon";
