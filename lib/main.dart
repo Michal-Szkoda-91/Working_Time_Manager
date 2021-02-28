@@ -79,8 +79,6 @@ class _MyHomePageState extends State<MyHomePage> {
               title: new Text("Pracodawcy")),
           new BottomNavigationBarItem(
               icon: new Icon(Icons.people), title: new Text("Pracownicy")),
-          new BottomNavigationBarItem(
-              icon: new Icon(Icons.search), title: new Text("Autor")),
         ],
         unselectedItemColor: Theme.of(context).accentColor,
         selectedItemColor: Theme.of(context).cardColor,
@@ -101,25 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           new Center(
             child: WorkersScreen(),
-          ),
-          new Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                FlatButton(
-                  onPressed: null,
-                  child: Text(
-                    'nacisnij',
-                    style: TextStyle(
-                      fontSize: 40,
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.ac_unit,
-                ),
-              ],
-            ),
           ),
         ],
       ),
