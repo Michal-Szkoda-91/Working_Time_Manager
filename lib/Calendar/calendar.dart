@@ -169,22 +169,22 @@ class _CalendarState extends State<Calendar> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TableCalendar(
-            locale: 'pl_PL',
+            // locale: 'pl_PL',
             events: _events,
             initialCalendarFormat: CalendarFormat.month,
             calendarStyle: CalendarStyle(
-              markersColor: Theme.of(context).textSelectionColor,
+              markersColor: Theme.of(context).hintColor,
               todayColor: Theme.of(context).cardColor,
-              selectedColor: Theme.of(context).accentColor,
+              selectedColor: Theme.of(context).backgroundColor,
               canEventMarkersOverflow: true,
               outsideDaysVisible: false,
             ),
             headerStyle: HeaderStyle(
               centerHeaderTitle: false,
-              titleTextStyle: TextStyle(
-                  color: Theme.of(context).textSelectionColor, fontSize: 20),
+              titleTextStyle:
+                  TextStyle(color: Theme.of(context).hintColor, fontSize: 20),
               formatButtonDecoration: BoxDecoration(
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).backgroundColor,
                   borderRadius: BorderRadius.circular(2.0)),
               formatButtonTextStyle:
                   TextStyle(color: Theme.of(context).hoverColor),
@@ -192,8 +192,8 @@ class _CalendarState extends State<Calendar> {
             ),
             startingDayOfWeek: StartingDayOfWeek.monday,
             daysOfWeekStyle: DaysOfWeekStyle(
-              weekdayStyle: TextStyle(
-                  color: Theme.of(context).textSelectionColor, fontSize: 14),
+              weekdayStyle:
+                  TextStyle(color: Theme.of(context).hintColor, fontSize: 14),
               weekendStyle:
                   TextStyle(color: Theme.of(context).cardColor, fontSize: 14),
             ),
@@ -211,7 +211,7 @@ class _CalendarState extends State<Calendar> {
                 alignment: Alignment.topCenter,
                 decoration: BoxDecoration(
                     border: Border.all(
-                        width: 1, color: Theme.of(context).textSelectionColor),
+                        width: 1, color: Theme.of(context).hintColor),
                     borderRadius: BorderRadius.circular(2.0)),
                 child: Column(
                   //mainAxisAlignment: MainAxisAlignment.start,
@@ -232,7 +232,7 @@ class _CalendarState extends State<Calendar> {
                               child: Text(
                                 date.day.toString(),
                                 style: TextStyle(
-                                    color: Theme.of(context).textSelectionColor,
+                                    color: Theme.of(context).hintColor,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15),
                               ),
@@ -255,7 +255,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -265,7 +265,7 @@ class _CalendarState extends State<Calendar> {
                               _getEmployerShortName(
                                   _events[date][0], _eventsModelList),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -286,7 +286,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -296,7 +296,7 @@ class _CalendarState extends State<Calendar> {
                               _getEmployerShortName(
                                   _events[date][0], _eventsModelList),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -311,7 +311,7 @@ class _CalendarState extends State<Calendar> {
                 alignment: Alignment.topCenter,
                 decoration: BoxDecoration(
                     border: Border.all(
-                        width: 1, color: Theme.of(context).textSelectionColor),
+                        width: 1, color: Theme.of(context).hintColor),
                     borderRadius: BorderRadius.circular(2.0)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -331,7 +331,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -353,7 +353,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -363,7 +363,7 @@ class _CalendarState extends State<Calendar> {
                               _getEmployerShortName(
                                   _events[date][0], _eventsModelList),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -384,7 +384,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -394,7 +394,7 @@ class _CalendarState extends State<Calendar> {
                               _getEmployerShortName(
                                   _events[date][0], _eventsModelList),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -430,7 +430,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -452,7 +452,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -462,7 +462,7 @@ class _CalendarState extends State<Calendar> {
                               _getEmployerShortName(
                                   _events[date][0], _eventsModelList),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -483,7 +483,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -493,7 +493,7 @@ class _CalendarState extends State<Calendar> {
                               _getEmployerShortName(
                                   _events[date][0], _eventsModelList),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -509,7 +509,7 @@ class _CalendarState extends State<Calendar> {
                 alignment: Alignment.topCenter,
                 decoration: BoxDecoration(
                     border: Border.all(
-                        width: 2, color: Theme.of(context).accentColor),
+                        width: 2, color: Theme.of(context).backgroundColor),
                     borderRadius: BorderRadius.circular(2.0)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -530,7 +530,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -553,7 +553,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -563,7 +563,7 @@ class _CalendarState extends State<Calendar> {
                               _getEmployerShortName(
                                   _events[date][0], _eventsModelList),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -584,7 +584,7 @@ class _CalendarState extends State<Calendar> {
                             child: Text(
                               date.day.toString(),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15),
                             ),
@@ -594,7 +594,7 @@ class _CalendarState extends State<Calendar> {
                               _getEmployerShortName(
                                   _events[date][0], _eventsModelList),
                               style: TextStyle(
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13),
                             ),
@@ -612,8 +612,11 @@ class _CalendarState extends State<Calendar> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-                child: RaisedButton(
-                  color: Theme.of(context).accentColor,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Theme.of(context).backgroundColor),
+                  ),
                   onPressed: () {
                     _employerNameValue = null;
                     choosenWorkers = [];
@@ -645,7 +648,7 @@ class _CalendarState extends State<Calendar> {
                       width: 5,
                       child: Icon(
                         Icons.arrow_right,
-                        color: Theme.of(context).textSelectionColor,
+                        color: Theme.of(context).hintColor,
                         size: 60,
                       ),
                     ),
@@ -657,7 +660,7 @@ class _CalendarState extends State<Calendar> {
                           Text(
                             event,
                             style: TextStyle(
-                              color: Theme.of(context).textSelectionColor,
+                              color: Theme.of(context).hintColor,
                               fontSize: 16,
                             ),
                           ),
@@ -671,7 +674,7 @@ class _CalendarState extends State<Calendar> {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
-                                    color: Theme.of(context).textSelectionColor,
+                                    color: Theme.of(context).hintColor,
                                   ),
                                 ),
                                 Row(
@@ -719,7 +722,7 @@ class _CalendarState extends State<Calendar> {
                   padding: const EdgeInsets.fromLTRB(0, 6, 0, 0),
                   child: IconSlideAction(
                     caption: 'Szczeguły',
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).backgroundColor,
                     icon: Icons.assessment,
                     onTap: () => _navigateToEventDetail(event),
                   ),
@@ -751,7 +754,7 @@ class _CalendarState extends State<Calendar> {
                       hint: Text(
                         "Wybierz pracodawcę",
                         style: TextStyle(
-                          color: Theme.of(context).textSelectionColor,
+                          color: Theme.of(context).hintColor,
                         ),
                       ),
                       value: _employerNameValue,
@@ -769,7 +772,7 @@ class _CalendarState extends State<Calendar> {
                           child: Text(
                             value,
                             style: TextStyle(
-                              color: Theme.of(context).textSelectionColor,
+                              color: Theme.of(context).hintColor,
                             ),
                           ),
                         );
@@ -787,15 +790,13 @@ class _CalendarState extends State<Calendar> {
                                 "Godz. rozp.",
                                 style: TextStyle(
                                     fontSize: 16,
-                                    color:
-                                        Theme.of(context).textSelectionColor),
+                                    color: Theme.of(context).hintColor),
                               ),
                               Text(
                                 "Godz. zak.",
                                 style: TextStyle(
                                     fontSize: 16,
-                                    color:
-                                        Theme.of(context).textSelectionColor),
+                                    color: Theme.of(context).hintColor),
                               ),
                             ],
                           ),
@@ -808,8 +809,7 @@ class _CalendarState extends State<Calendar> {
                                     border: Border(
                                   left: BorderSide(
                                       width: 1.0,
-                                      color:
-                                          Theme.of(context).textSelectionColor),
+                                      color: Theme.of(context).hintColor),
                                 )),
                                 child: TimeWorkStart()),
                             Container(
@@ -817,8 +817,7 @@ class _CalendarState extends State<Calendar> {
                                     border: Border(
                                   left: BorderSide(
                                       width: 1.0,
-                                      color:
-                                          Theme.of(context).textSelectionColor),
+                                      color: Theme.of(context).hintColor),
                                 )),
                                 child: TimeWorkStop()),
                           ],
@@ -828,8 +827,11 @@ class _CalendarState extends State<Calendar> {
                     //picker do wyboru czusu przerwy
                     Container(child: BreakTime()),
                     //widget dodawania pracowników
-                    RaisedButton(
-                      color: Theme.of(context).accentColor,
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Theme.of(context).backgroundColor),
+                      ),
                       onPressed: () {
                         setState(() {
                           //wyswietlenie okienka z wyborem pracownikow
@@ -846,8 +848,11 @@ class _CalendarState extends State<Calendar> {
                     ),
 
                     //Przycisk wyświetlający podsumowanie danych w evencie
-                    RaisedButton(
-                      color: Theme.of(context).accentColor,
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Theme.of(context).backgroundColor),
+                      ),
                       onPressed: () {
                         setState(() {
                           //wyświetlenie podsumowanie jako tekst z danymi
@@ -878,15 +883,17 @@ class _CalendarState extends State<Calendar> {
                     //Wyświetlenie wprowadzanych danych
                     Text(
                       summary,
-                      style: TextStyle(
-                          color: Theme.of(context).textSelectionColor),
+                      style: TextStyle(color: Theme.of(context).hintColor),
                     ),
                     //Przyciski anulowania i akceptacji zapisu eventu
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        RaisedButton(
-                          color: Theme.of(context).accentColor,
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Theme.of(context).backgroundColor),
+                          ),
                           onPressed: () {
                             //Sprawdzenie poprawności danych oraz dodanie nowego eventu do listy z danego dnia
                             if (_employerNameValue != null &&
@@ -946,8 +953,11 @@ class _CalendarState extends State<Calendar> {
                             ),
                           ),
                         ),
-                        RaisedButton(
-                          color: Theme.of(context).accentColor,
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Theme.of(context).backgroundColor),
+                          ),
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -981,7 +991,7 @@ class _CalendarState extends State<Calendar> {
             backgroundColor: Theme.of(context).selectedRowColor,
             title: Text(
               "Wybierz kto pracował:",
-              style: TextStyle(color: Theme.of(context).textSelectionColor),
+              style: TextStyle(color: Theme.of(context).hintColor),
             ),
             content: MultiSelectChip(
               workersShortNameList,
@@ -992,11 +1002,10 @@ class _CalendarState extends State<Calendar> {
               },
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                   child: Text("OK",
                       style: TextStyle(
-                          fontSize: 18,
-                          color: Theme.of(context).textSelectionColor)),
+                          fontSize: 18, color: Theme.of(context).hintColor)),
                   onPressed: () {
                     Navigator.of(context).pop();
                   })
@@ -1100,14 +1109,17 @@ class _CalendarState extends State<Calendar> {
             children: <Widget>[
               Text(
                 "Napewno usunąć zdarzenie?",
-                style: TextStyle(
-                    fontSize: 20, color: Theme.of(context).textSelectionColor),
+                style:
+                    TextStyle(fontSize: 20, color: Theme.of(context).hintColor),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  new RaisedButton(
-                    color: Theme.of(context).accentColor,
+                  new ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).backgroundColor),
+                    ),
                     onPressed: () {
                       //usunięcie danych z shared preferenced
                       this._events[_controller.selectedDay].remove(event);
@@ -1129,8 +1141,11 @@ class _CalendarState extends State<Calendar> {
                       ),
                     ),
                   ),
-                  RaisedButton(
-                    color: Theme.of(context).accentColor,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).backgroundColor),
+                    ),
                     onPressed: () {
                       Navigator.pop(context);
                       return;
@@ -1183,12 +1198,12 @@ class _CalendarState extends State<Calendar> {
       title: Text(
         title,
         textAlign: TextAlign.center,
-        style: TextStyle(color: Theme.of(context).textSelectionColor),
+        style: TextStyle(color: Theme.of(context).hintColor),
       ),
       content: Text(
         message,
         textAlign: TextAlign.center,
-        style: TextStyle(color: Theme.of(context).textSelectionColor),
+        style: TextStyle(color: Theme.of(context).hintColor),
       ),
     );
     showDialog(context: context, builder: (_) => alertDialog);

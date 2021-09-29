@@ -39,41 +39,44 @@ class _AddEmployersState extends State<AddEmployersScreen> {
         child: ListView(
           children: <Widget>[
             TextField(
-              cursorColor: Theme.of(context).textSelectionColor,
+              cursorColor: Theme.of(context).hintColor,
               style: new TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).textSelectionColor),
+                  color: Theme.of(context).hintColor),
               onChanged: (value) {
                 _updateName();
               },
               decoration: InputDecoration(
                   hintText: 'Imie pracodawcy',
-                  fillColor: Theme.of(context).textSelectionColor),
+                  fillColor: Theme.of(context).hintColor),
               controller: _namecontroller,
             ),
             TextField(
                 style: new TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textSelectionColor),
+                    color: Theme.of(context).hintColor),
                 onChanged: (value) {
                   _updateShortname();
                 },
                 maxLength: 5,
-                cursorColor: Theme.of(context).textSelectionColor,
+                cursorColor: Theme.of(context).hintColor,
                 decoration: InputDecoration(
                   hintText: 'Skrót imienia (max 5 liter)',
-                  fillColor: Theme.of(context).textSelectionColor,
+                  fillColor: Theme.of(context).hintColor,
                   counterStyle: new TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 14,
-                      color: Theme.of(context).textSelectionColor),
+                      color: Theme.of(context).hintColor),
                 ),
                 controller: _shortNameController),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                new RaisedButton(
-                  color: Theme.of(context).accentColor,
+                new ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Theme.of(context).backgroundColor),
+                  ),
                   onPressed: () {
                     if (_shortNameController.text.isEmpty ||
                         _namecontroller.text.isEmpty ||
@@ -96,8 +99,11 @@ class _AddEmployersState extends State<AddEmployersScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: RaisedButton(
-                    color: Theme.of(context).accentColor,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).backgroundColor),
+                    ),
                     onPressed: () {
                       //anulowanie wpisywanego tekstu
                       Navigator.pop(context);
@@ -157,10 +163,10 @@ class _AddEmployersState extends State<AddEmployersScreen> {
       backgroundColor: Theme.of(context).selectedRowColor,
       title: Text(_title,
           textAlign: TextAlign.center,
-          style: (TextStyle(color: Theme.of(context).textSelectionColor))),
+          style: (TextStyle(color: Theme.of(context).hintColor))),
       content: Text(message,
           textAlign: TextAlign.center,
-          style: (TextStyle(color: Theme.of(context).textSelectionColor))),
+          style: (TextStyle(color: Theme.of(context).hintColor))),
     );
     showDialog(context: context, builder: (_) => alertDialog);
   }

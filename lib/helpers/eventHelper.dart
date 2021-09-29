@@ -114,7 +114,7 @@ class EventHelper {
     var eventListMap = await getEventsMapList();
     int count = eventListMap.length;
 
-    List<EventsModel> eventsList = List<EventsModel>();
+    List<EventsModel> eventsList = [];
     for (int i = 0; i < count; i++) {
       eventsList.add(EventsModel.fromMapObject((eventListMap[i])));
     }

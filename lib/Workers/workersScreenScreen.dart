@@ -21,7 +21,7 @@ class _WorkersState extends State<WorkersScreen> {
   Widget build(BuildContext context) {
     //sprawdzanie czy lista nie jest pusta
     if (_workersModelList == null) {
-      _workersModelList = List<WorkersModel>();
+      _workersModelList = [];
     }
     _updateListView();
 
@@ -33,7 +33,7 @@ class _WorkersState extends State<WorkersScreen> {
               WorkersModel('', '', 0.0, '', ''), "Dodaj Pracownika", 0);
         },
         child: Icon(Icons.add),
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: Theme.of(context).backgroundColor,
         tooltip: "Dodaj uzytkownika",
       ),
     );
@@ -48,25 +48,25 @@ class _WorkersState extends State<WorkersScreen> {
             elevation: 2.0,
             child: ListTile(
               leading: CircleAvatar(
-                backgroundColor: Theme.of(context).accentColor,
+                backgroundColor: Theme.of(context).backgroundColor,
                 child: Icon(Icons.arrow_forward_ios),
               ),
               //wyswietlenie imienia i tytulu
               title: Text(
                 this._workersModelList[position].name,
                 style: new TextStyle(
-                    fontSize: 22, color: Theme.of(context).textSelectionColor),
+                    fontSize: 22, color: Theme.of(context).hintColor),
               ),
               subtitle: Text(
                 this._workersModelList[position].shortName,
                 style: new TextStyle(
-                    fontSize: 14, color: Theme.of(context).textSelectionColor),
+                    fontSize: 14, color: Theme.of(context).hintColor),
               ),
               //ikona usowania oraz dodana do niej metoda
               trailing: GestureDetector(
                   child: Icon(
                     Icons.delete,
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).backgroundColor,
                   ),
                   onTap: () {
                     _deleteWorkers(position);
@@ -124,14 +124,17 @@ class _WorkersState extends State<WorkersScreen> {
               Text(
                 "Na pewno usunąć pracownika?",
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 20, color: Theme.of(context).textSelectionColor),
+                style:
+                    TextStyle(fontSize: 20, color: Theme.of(context).hintColor),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  new RaisedButton(
-                    color: Theme.of(context).accentColor,
+                  new ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).backgroundColor),
+                    ),
                     onPressed: () {
                       _delete(context, _workersModelList[position]);
                       Navigator.pop(context);
@@ -145,8 +148,11 @@ class _WorkersState extends State<WorkersScreen> {
                       ),
                     ),
                   ),
-                  RaisedButton(
-                    color: Theme.of(context).accentColor,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).backgroundColor),
+                    ),
                     onPressed: () {
                       Navigator.pop(context);
                       return;

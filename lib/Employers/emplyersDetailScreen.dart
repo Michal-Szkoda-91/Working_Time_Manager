@@ -32,7 +32,7 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
   double _additionsSum;
   EmployersHelper employersHelper = EmployersHelper();
   EventHelper eventHelper = EventHelper();
-  List<EventsModel> _eventsModelList = new List();
+  List<EventsModel> _eventsModelList = [];
   List<EmployersModel> employersModelList;
   List<String> _additionsList;
   double _hoursSum = 0;
@@ -81,14 +81,14 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
           _title,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Theme.of(context).textSelectionColor,
+            color: Theme.of(context).hintColor,
           ),
         ),
         content: Text(
           message,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Theme.of(context).textSelectionColor,
+            color: Theme.of(context).hintColor,
           ),
         ),
       );
@@ -122,8 +122,7 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                   Text(
                     employersModel.name,
                     style: TextStyle(
-                        fontSize: 25,
-                        color: Theme.of(context).textSelectionColor),
+                        fontSize: 25, color: Theme.of(context).hintColor),
                   ),
                 ],
               ),
@@ -133,8 +132,11 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    child: RaisedButton(
-                      color: Theme.of(context).accentColor,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Theme.of(context).backgroundColor),
+                      ),
                       child: Text(
                         "Skrót",
                         style: TextStyle(
@@ -172,8 +174,11 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                       },
                     ),
                   ),
-                  RaisedButton(
-                    color: Theme.of(context).accentColor,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).backgroundColor),
+                    ),
                     child: Text(
                       "Archiwum",
                       style: TextStyle(
@@ -183,8 +188,11 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                       _navigateToEmployerArchives(employersModel.name);
                     },
                   ),
-                  RaisedButton(
-                    color: Theme.of(context).accentColor,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).backgroundColor),
+                    ),
                     child: Text(
                       "Zapłacono",
                       style: TextStyle(
@@ -206,8 +214,7 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                           _hoursSum.toString() +
                           " godzin/y.",
                       style: TextStyle(
-                          fontSize: 18,
-                          color: Theme.of(context).textSelectionColor),
+                          fontSize: 18, color: Theme.of(context).hintColor),
                     ),
                   ),
                 ],
@@ -219,8 +226,7 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                   Text(
                     "Stawka za godzine:",
                     style: TextStyle(
-                        fontSize: 18,
-                        color: Theme.of(context).textSelectionColor),
+                        fontSize: 18, color: Theme.of(context).hintColor),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 30, 12),
@@ -228,13 +234,13 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                       width: 88,
                       height: 40,
                       child: TextField(
-                        cursorColor: Theme.of(context).textSelectionColor,
+                        cursorColor: Theme.of(context).hintColor,
                         onChanged: (value) {
                           _rate = value;
                         },
                         style: TextStyle(
                           fontSize: 18,
-                          color: Theme.of(context).textSelectionColor,
+                          color: Theme.of(context).hintColor,
                         ),
                         textAlign: TextAlign.center,
                         controller: _hoursRateController,
@@ -251,13 +257,15 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                   Text(
                     "Dodatki finansowe:",
                     style: TextStyle(
-                        fontSize: 18,
-                        color: Theme.of(context).textSelectionColor),
+                        fontSize: 18, color: Theme.of(context).hintColor),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-                    child: RaisedButton(
-                      color: Theme.of(context).accentColor,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Theme.of(context).backgroundColor),
+                      ),
                       child: Text(
                         "Dodaj",
                         style: TextStyle(
@@ -278,16 +286,18 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                   decoration: BoxDecoration(
                       border: Border(
                           left: BorderSide(
-                              color: Theme.of(context).textSelectionColor,
-                              width: 2.0))),
+                              color: Theme.of(context).hintColor, width: 2.0))),
                   height: 150,
                   child: _getList(),
                 ),
               ),
 
               //podsumowanie godzin pracy
-              RaisedButton(
-                color: Theme.of(context).accentColor,
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Theme.of(context).backgroundColor),
+                ),
                 child: Text(
                   "Podsumowanie",
                   style: TextStyle(
@@ -321,8 +331,7 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                     child: Text(
                       "Suma wypłaty: " + _receivable.toString(),
                       style: TextStyle(
-                          fontSize: 22,
-                          color: Theme.of(context).textSelectionColor),
+                          fontSize: 22, color: Theme.of(context).hintColor),
                     ),
                   ),
                 ],
@@ -335,14 +344,16 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                     child: Text(
                       "Notatki:",
                       style: TextStyle(
-                          fontSize: 18,
-                          color: Theme.of(context).textSelectionColor),
+                          fontSize: 18, color: Theme.of(context).hintColor),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
-                    child: RaisedButton(
-                      color: Theme.of(context).accentColor,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Theme.of(context).backgroundColor),
+                      ),
                       child: Text(
                         "Zapisz",
                         style: TextStyle(
@@ -362,25 +373,24 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: TextField(
-                    style:
-                        TextStyle(color: Theme.of(context).textSelectionColor),
+                    style: TextStyle(color: Theme.of(context).hintColor),
                     controller: _notesController,
                     minLines: 2,
                     maxLines: 30,
                     autocorrect: false,
-                    cursorColor: Theme.of(context).textSelectionColor,
+                    cursorColor: Theme.of(context).hintColor,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Theme.of(context).selectedRowColor,
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide:
-                            BorderSide(color: Theme.of(context).cursorColor),
+                            BorderSide(color: Theme.of(context).dividerColor),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         borderSide:
-                            BorderSide(color: Theme.of(context).cursorColor),
+                            BorderSide(color: Theme.of(context).dividerColor),
                       ),
                     ),
                     onChanged: (value) {},
@@ -411,15 +421,13 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                   decoration: BoxDecoration(
                       border: Border(
                           left: BorderSide(
-                              color: Theme.of(context).textSelectionColor,
-                              width: 2.0))),
+                              color: Theme.of(context).hintColor, width: 2.0))),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                     child: Text(
                       _additionsList[index],
                       style: TextStyle(
-                          fontSize: 18,
-                          color: Theme.of(context).textSelectionColor),
+                          fontSize: 18, color: Theme.of(context).hintColor),
                     ),
                   ),
                 ),
@@ -442,14 +450,17 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
             children: <Widget>[
               Text(
                 "Na pewno usunąć wpis?",
-                style: TextStyle(
-                    fontSize: 20, color: Theme.of(context).textSelectionColor),
+                style:
+                    TextStyle(fontSize: 20, color: Theme.of(context).hintColor),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  new RaisedButton(
-                    color: Theme.of(context).accentColor,
+                  new ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).backgroundColor),
+                    ),
                     onPressed: () {
                       //usuniecie wpisu z listy
                       _additionsList.remove(stringToDelete);
@@ -469,8 +480,11 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                       ),
                     ),
                   ),
-                  RaisedButton(
-                    color: Theme.of(context).accentColor,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).backgroundColor),
+                    ),
                     onPressed: () {
                       Navigator.pop(context);
                       return;
@@ -500,11 +514,11 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
         backgroundColor: Theme.of(context).selectedRowColor,
         title: Text(
           _title,
-          style: TextStyle(color: Theme.of(context).textSelectionColor),
+          style: TextStyle(color: Theme.of(context).hintColor),
         ),
         content: Text(
           message,
-          style: TextStyle(color: Theme.of(context).textSelectionColor),
+          style: TextStyle(color: Theme.of(context).hintColor),
         ),
       );
       showDialog(context: context, builder: (_) => alertDialog);
@@ -528,18 +542,17 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                             "Tytuł dodatku:",
                             style: TextStyle(
                                 fontSize: 18,
-                                color: Theme.of(context).textSelectionColor),
+                                color: Theme.of(context).hintColor),
                           ),
                         ],
                       ),
                       TextField(
-                        cursorColor: Theme.of(context).textSelectionColor,
+                        cursorColor: Theme.of(context).hintColor,
                         onChanged: (value) {
                           _titleToCheck = value;
                         },
                         style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context).textSelectionColor),
+                            fontSize: 18, color: Theme.of(context).hintColor),
                         textAlign: TextAlign.center,
                         controller: _titleToCheckController,
                         keyboardType: TextInputType.text,
@@ -551,21 +564,20 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                             "Kwota:",
                             style: TextStyle(
                                 fontSize: 18,
-                                color: Theme.of(context).textSelectionColor),
+                                color: Theme.of(context).hintColor),
                           ),
                           Container(
                             width: 120,
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(50, 0, 0, 0),
                               child: TextField(
-                                cursorColor:
-                                    Theme.of(context).textSelectionColor,
+                                cursorColor: Theme.of(context).hintColor,
                                 onChanged: (value) {
                                   _amount = value;
                                 },
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: Theme.of(context).textSelectionColor,
+                                  color: Theme.of(context).hintColor,
                                 ),
                                 textAlign: TextAlign.center,
                                 controller: _amountController,
@@ -580,8 +592,12 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            RaisedButton(
-                              color: Theme.of(context).accentColor,
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Theme.of(context).backgroundColor),
+                              ),
                               onPressed: () {
                                 //dodawanie do bazy danych wpisu o dodatkach
                                 if (_reg.hasMatch(_amount) &&
@@ -613,8 +629,12 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                                 ),
                               ),
                             ),
-                            RaisedButton(
-                              color: Theme.of(context).accentColor,
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Theme.of(context).backgroundColor),
+                              ),
                               onPressed: () {
                                 Navigator.pop(context);
                                 return;
@@ -695,15 +715,18 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
             children: <Widget>[
               Text(
                 "Na pewno ustawić status zapłacono dla wszystkich wydarzeń? Przeniesie to wszystkie eventy pracodawcy do archiwum oraz usunie wszystkie dodatki!!",
-                style: TextStyle(
-                    fontSize: 20, color: Theme.of(context).textSelectionColor),
+                style:
+                    TextStyle(fontSize: 20, color: Theme.of(context).hintColor),
                 textAlign: TextAlign.center,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  new RaisedButton(
-                    color: Theme.of(context).accentColor,
+                  new ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).backgroundColor),
+                    ),
                     onPressed: () {
                       //zmiana wszystkich statusow eventow na zaplacone
                       setState(() {
@@ -726,8 +749,11 @@ class _EmployersDetailState extends State<EmployersDetailScreen> {
                       ),
                     ),
                   ),
-                  RaisedButton(
-                    color: Theme.of(context).accentColor,
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).backgroundColor),
+                    ),
                     onPressed: () {
                       Navigator.pop(context, true);
                       return;

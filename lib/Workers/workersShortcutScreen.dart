@@ -25,7 +25,7 @@ class _WorkersShortcutState extends State<WorkersShortcutScreen> {
 
   EventHelper eventHelper = EventHelper();
   WorkersHelper employersHelper = WorkersHelper();
-  List<EventsModel> _eventsModelList = new List();
+  List<EventsModel> _eventsModelList = [];
   int count = 0;
   DateFormat _format = DateFormat("dd-MM-yyyy");
 
@@ -75,8 +75,7 @@ class _WorkersShortcutState extends State<WorkersShortcutScreen> {
               decoration: BoxDecoration(
                   border: Border(
                       left: BorderSide(
-                          color: Theme.of(context).textSelectionColor,
-                          width: 4.0))),
+                          color: Theme.of(context).hintColor, width: 4.0))),
               height: 350,
               child: _listViewEvents(),
             ),
@@ -87,8 +86,7 @@ class _WorkersShortcutState extends State<WorkersShortcutScreen> {
               decoration: BoxDecoration(
                   border: Border(
                       left: BorderSide(
-                          color: Theme.of(context).textSelectionColor,
-                          width: 4.0))),
+                          color: Theme.of(context).hintColor, width: 4.0))),
               height: 100,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(21, 10, 0, 0),
@@ -96,7 +94,7 @@ class _WorkersShortcutState extends State<WorkersShortcutScreen> {
                     decoration: BoxDecoration(
                         border: Border(
                             left: BorderSide(
-                                color: Theme.of(context).textSelectionColor,
+                                color: Theme.of(context).hintColor,
                                 width: 4.0))),
                     child: SingleChildScrollView(
                         child: Padding(
@@ -104,7 +102,7 @@ class _WorkersShortcutState extends State<WorkersShortcutScreen> {
                       child: Text(
                         _additions.join("\n"),
                         style: TextStyle(
-                          color: Theme.of(context).textSelectionColor,
+                          color: Theme.of(context).hintColor,
                         ),
                       ),
                     ))),
@@ -119,8 +117,7 @@ class _WorkersShortcutState extends State<WorkersShortcutScreen> {
                 child: Text(
                   "Suma: " + _sum.toString(),
                   style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textSelectionColor),
+                      fontSize: 20, color: Theme.of(context).hintColor),
                 ),
               ),
             ],
@@ -145,8 +142,7 @@ class _WorkersShortcutState extends State<WorkersShortcutScreen> {
                   decoration: BoxDecoration(
                       border: Border(
                           left: BorderSide(
-                              color: Theme.of(context).textSelectionColor,
-                              width: 4.0))),
+                              color: Theme.of(context).hintColor, width: 4.0))),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(3, 0, 0, 0),
                     child: Text(
@@ -165,7 +161,7 @@ class _WorkersShortcutState extends State<WorkersShortcutScreen> {
                           _eventsModelList[position].employer,
                       style: TextStyle(
                         fontSize: 14.0,
-                        color: Theme.of(context).textSelectionColor,
+                        color: Theme.of(context).hintColor,
                       ),
                     ),
                   ),

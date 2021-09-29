@@ -23,13 +23,13 @@ class _TimeWorkStart extends State<TimeWorkStart> {
         is24HourMode: true,
         normalTextStyle: TextStyle(
           fontSize: 20,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).backgroundColor,
           fontWeight: FontWeight.w500,
         ),
         highlightedTextStyle: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w500,
-            color: Theme.of(context).textSelectionColor),
+            color: Theme.of(context).hintColor),
         spacing: 1,
         itemHeight: 25,
         isForce2Digits: true,
@@ -63,13 +63,13 @@ class _TimeWorkStop extends State<TimeWorkStop> {
         is24HourMode: true,
         normalTextStyle: TextStyle(
           fontSize: 20,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).backgroundColor,
           fontWeight: FontWeight.w500,
         ),
         highlightedTextStyle: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w500,
-            color: Theme.of(context).textSelectionColor),
+            color: Theme.of(context).hintColor),
         spacing: 1,
         itemHeight: 25,
         isForce2Digits: true,
@@ -118,15 +118,15 @@ class _BreakTime extends State<BreakTime> {
           children: <Widget>[
             Text(
               'Przerwa: ${(breakValue * 90).round()} minut.',
-              style: TextStyle(
-                  fontSize: 16, color: Theme.of(context).textSelectionColor),
+              style:
+                  TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
             ),
             ClipRRect(
                 borderRadius: BorderRadius.circular(5.0),
                 child: Slider(
                   value: breakValue,
                   onChanged: _setvalue,
-                  activeColor: Theme.of(context).accentColor,
+                  activeColor: Theme.of(context).backgroundColor,
                   divisions: 18,
                 ))
           ],
@@ -162,16 +162,16 @@ class MultiSelectChip extends StatefulWidget {
 }
 
 class _MultiSelectChipState extends State<MultiSelectChip> {
-  List<String> selectedChoices = List();
+  List<String> selectedChoices = [];
 
   _buildChoiceList() {
-    List<Widget> choices = List();
+    List<Widget> choices = [];
 
     widget.reportList.forEach((item) {
       choices.add(Container(
         padding: const EdgeInsets.all(2.0),
         child: ChoiceChip(
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).backgroundColor,
           label: Text(
             item,
             style: TextStyle(fontSize: 18, color: Theme.of(context).hoverColor),

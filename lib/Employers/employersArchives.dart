@@ -18,7 +18,7 @@ class EmployersArchiveScreen extends StatefulWidget {
 class _EmployersArchiveState extends State<EmployersArchiveScreen> {
   String _name;
   EventHelper eventHelper = EventHelper();
-  List<EventsModel> _eventsModelList = new List();
+  List<EventsModel> _eventsModelList = [];
   int count = 0;
   DateFormat _format = DateFormat("dd-MM-yyyy");
 
@@ -75,7 +75,7 @@ class _EmployersArchiveState extends State<EmployersArchiveScreen> {
                           _eventsModelList[position].date,
                       style: TextStyle(
                           fontSize: 18.0,
-                          color: Theme.of(context).textSelectionColor,
+                          color: Theme.of(context).hintColor,
                           fontWeight: FontWeight.bold),
                     ),
                     //podtytul wyswietlany z informacjami o pracy
@@ -96,7 +96,7 @@ class _EmployersArchiveState extends State<EmployersArchiveScreen> {
                       style: new TextStyle(
                           fontSize: 16.0,
                           fontStyle: FontStyle.italic,
-                          color: Theme.of(context).textSelectionColor),
+                          color: Theme.of(context).hintColor),
                     ),
                     leading: Column(
                       children: <Widget>[

@@ -20,7 +20,7 @@ class _WorkersArchiveState extends State<WorkersArchiveScreen> {
   String _name;
   String _shortname;
   EventHelper eventHelper = EventHelper();
-  List<EventsModel> eventsModelList = new List();
+  List<EventsModel> eventsModelList = [];
   int count = 0;
   DateFormat _format = DateFormat("dd-MM-yyyy");
 
@@ -77,7 +77,7 @@ class _WorkersArchiveState extends State<WorkersArchiveScreen> {
                           eventsModelList[position].date,
                       style: TextStyle(
                           fontSize: 18.0,
-                          color: Theme.of(context).textSelectionColor,
+                          color: Theme.of(context).hintColor,
                           fontWeight: FontWeight.bold),
                     ),
                     //podtytul wyswietlany z informacjami o pracy
@@ -96,7 +96,7 @@ class _WorkersArchiveState extends State<WorkersArchiveScreen> {
                       style: new TextStyle(
                           fontSize: 16.0,
                           fontStyle: FontStyle.italic,
-                          color: Theme.of(context).textSelectionColor),
+                          color: Theme.of(context).hintColor),
                     ),
                     leading: Column(
                       children: <Widget>[

@@ -53,7 +53,7 @@ class _EventDetailState extends State<EventDetailScreen> {
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textSelectionColor),
+                    color: Theme.of(context).hintColor),
               ),
             ),
             Padding(
@@ -63,7 +63,7 @@ class _EventDetailState extends State<EventDetailScreen> {
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textSelectionColor),
+                    color: Theme.of(context).hintColor),
               ),
             ),
             Padding(
@@ -73,7 +73,7 @@ class _EventDetailState extends State<EventDetailScreen> {
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textSelectionColor),
+                    color: Theme.of(context).hintColor),
               ),
             ),
             Padding(
@@ -83,7 +83,7 @@ class _EventDetailState extends State<EventDetailScreen> {
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textSelectionColor),
+                    color: Theme.of(context).hintColor),
               ),
             ),
             Padding(
@@ -95,7 +95,7 @@ class _EventDetailState extends State<EventDetailScreen> {
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textSelectionColor),
+                    color: Theme.of(context).hintColor),
               ),
             ),
             Padding(
@@ -107,7 +107,7 @@ class _EventDetailState extends State<EventDetailScreen> {
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).textSelectionColor),
+                    color: Theme.of(context).hintColor),
               ),
             ),
             //przycisk do ustawiania czy dany event jest juz oplacony
@@ -119,7 +119,7 @@ class _EventDetailState extends State<EventDetailScreen> {
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).textSelectionColor)),
+                          color: Theme.of(context).hintColor)),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -158,7 +158,7 @@ class _EventDetailState extends State<EventDetailScreen> {
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).textSelectionColor)),
+                          color: Theme.of(context).hintColor)),
                 ),
               ],
             ),
@@ -192,7 +192,7 @@ class _EventDetailState extends State<EventDetailScreen> {
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).textSelectionColor)),
+                          color: Theme.of(context).hintColor)),
                   LiteRollingSwitch(
                       value: true
                           ? this

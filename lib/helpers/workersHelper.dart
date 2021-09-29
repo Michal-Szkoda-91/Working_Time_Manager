@@ -93,7 +93,7 @@ class WorkersHelper {
     var workersListMap = await getWorkersMapList();
     int count = workersListMap.length;
 
-    List<WorkersModel> workersList = List<WorkersModel>();
+    List<WorkersModel> workersList = [];
     for (int i = 0; i < count; i++) {
       workersList.add(WorkersModel.fromMapObject((workersListMap[i])));
     }

@@ -25,7 +25,7 @@ class _EmployersShortcutState extends State<EmployersShortcutScreen> {
 
   EventHelper eventHelper = EventHelper();
   EmployersHelper employersHelper = EmployersHelper();
-  List<EventsModel> _eventsModelList = new List();
+  List<EventsModel> _eventsModelList = [];
   int count = 0;
   DateFormat _format = DateFormat("dd-MM-yyyy");
 
@@ -60,7 +60,7 @@ class _EmployersShortcutState extends State<EmployersShortcutScreen> {
               Navigator.pop(context, true);
             }),
         title: Text(
-          "Podsumowanie",
+          "Summary",
           style: TextStyle(
             color: Theme.of(context).hoverColor,
           ),
@@ -75,8 +75,7 @@ class _EmployersShortcutState extends State<EmployersShortcutScreen> {
               decoration: BoxDecoration(
                   border: Border(
                       left: BorderSide(
-                          color: Theme.of(context).textSelectionColor,
-                          width: 4.0))),
+                          color: Theme.of(context).hintColor, width: 4.0))),
               height: 350,
               child: _listViewEvents(),
             ),
@@ -87,8 +86,7 @@ class _EmployersShortcutState extends State<EmployersShortcutScreen> {
               decoration: BoxDecoration(
                   border: Border(
                       left: BorderSide(
-                          color: Theme.of(context).textSelectionColor,
-                          width: 4.0))),
+                          color: Theme.of(context).hintColor, width: 4.0))),
               height: 100,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(21, 10, 0, 0),
@@ -96,7 +94,7 @@ class _EmployersShortcutState extends State<EmployersShortcutScreen> {
                     decoration: BoxDecoration(
                         border: Border(
                             left: BorderSide(
-                                color: Theme.of(context).textSelectionColor,
+                                color: Theme.of(context).hintColor,
                                 width: 4.0))),
                     child: SingleChildScrollView(
                         child: Padding(
@@ -104,7 +102,7 @@ class _EmployersShortcutState extends State<EmployersShortcutScreen> {
                       child: Text(
                         _additions.join("\n"),
                         style: TextStyle(
-                          color: Theme.of(context).textSelectionColor,
+                          color: Theme.of(context).hintColor,
                         ),
                       ),
                     ))),
@@ -117,10 +115,9 @@ class _EmployersShortcutState extends State<EmployersShortcutScreen> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
                 child: Text(
-                  "Suma: " + _sum.toString(),
+                  "Sum: " + _sum.toString(),
                   style: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).textSelectionColor),
+                      fontSize: 20, color: Theme.of(context).hintColor),
                 ),
               ),
             ],
@@ -145,8 +142,7 @@ class _EmployersShortcutState extends State<EmployersShortcutScreen> {
                   decoration: BoxDecoration(
                       border: Border(
                           left: BorderSide(
-                              color: Theme.of(context).textSelectionColor,
-                              width: 4.0))),
+                              color: Theme.of(context).hintColor, width: 4.0))),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(3, 0, 0, 0),
                     child: Text(
@@ -158,7 +154,7 @@ class _EmployersShortcutState extends State<EmployersShortcutScreen> {
                           ". (-" +
                           _eventsModelList[position].breakTime.toString() +
                           " min)" +
-                          "\nPrzepracowano: " +
+                          "\nWork Sum: " +
                           _eventsModelList[position].workersNumber.toString() +
                           " * " +
                           _eventsModelList[position].hourSum.toString() +
@@ -167,10 +163,10 @@ class _EmployersShortcutState extends State<EmployersShortcutScreen> {
                           (_eventsModelList[position].workersNumber *
                                   _eventsModelList[position].hourSum)
                               .toString() +
-                          " godz.",
+                          " h",
                       style: TextStyle(
                         fontSize: 14.0,
-                        color: Theme.of(context).textSelectionColor,
+                        color: Theme.of(context).hintColor,
                       ),
                     ),
                   ),
@@ -185,25 +181,25 @@ class _EmployersShortcutState extends State<EmployersShortcutScreen> {
   String _getDayFromNumber(int i) {
     switch (i) {
       case 1:
-        return "Pon";
+        return "Mon.";
         break;
       case 2:
-        return "Wt";
+        return "Tue.";
         break;
       case 3:
-        return "Śr";
+        return "Wed.";
         break;
       case 4:
-        return "Czw";
+        return "Thur.";
         break;
       case 5:
-        return "Pią";
+        return "Fri.";
         break;
       case 6:
-        return "Sob";
+        return "Sat.";
         break;
       case 7:
-        return "Nie";
+        return "Sun.";
         break;
     }
     return null;

@@ -92,7 +92,7 @@ class EmployersHelper {
     var employersListMap = await getEmployersMapList();
     int count = employersListMap.length;
 
-    List<EmployersModel> employersList = List<EmployersModel>();
+    List<EmployersModel> employersList = [];
     for (int i = 0; i < count; i++) {
       employersList.add(EmployersModel.fromMapObject((employersListMap[i])));
     }

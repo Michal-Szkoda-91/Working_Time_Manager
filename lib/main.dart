@@ -15,14 +15,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.grey[900],
         canvasColor: Colors.grey[300], //tło aplikacji
-        accentColor: Colors.grey[800], //przyciski
+        backgroundColor: Colors.grey[800], //przyciski
         cardColor: Colors.blue[400], //drobiazgi
         selectedRowColor: Colors.blueGrey[200], //karty, tlo okien
-        textSelectionColor: Colors.black, //napisy
+        hintColor: Colors.black, //napisy
         hoverColor: Colors.grey[100], //napis przyciski
         errorColor: Colors.red, //negatywne oznacz
         indicatorColor: Colors.green, //pozytywne oznaczenie
-        cursorColor: Colors.black,
+        dividerColor: Colors.black,
       ),
       home: MyHomePage(title: 'Menadżer czasu pracy'),
     );
@@ -72,15 +72,13 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         items: [
           new BottomNavigationBarItem(
-              icon: new Icon(Icons.calendar_today),
-              title: new Text("Kalendarz")),
+              icon: new Icon(Icons.calendar_today), label: "Kalendarz"),
           new BottomNavigationBarItem(
-              icon: new Icon(Icons.business_center),
-              title: new Text("Pracodawcy")),
+              icon: new Icon(Icons.business_center), label: "Pracodawcy"),
           new BottomNavigationBarItem(
-              icon: new Icon(Icons.people), title: new Text("Pracownicy")),
+              icon: new Icon(Icons.people), label: "Pracownicy"),
         ],
-        unselectedItemColor: Theme.of(context).accentColor,
+        unselectedItemColor: Theme.of(context).backgroundColor,
         selectedItemColor: Theme.of(context).cardColor,
       ),
       body: new PageView(
